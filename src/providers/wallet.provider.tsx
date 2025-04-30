@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 type WalletContextType = {
   walletAddress: string | null;
@@ -15,14 +21,27 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
 
+  // Cargar desde localStorage al montar
+  useEffect(() => {
+    const storedAddress = localStorage.getItem("walletAddress");
+    const storedName = localStorage.getItem("walletName");
+
+    if (storedAddress) setWalletAddress(storedAddress);
+    if (storedName) setWalletName(storedName);
+  }, []);
+
   const setWalletInfo = (address: string, name: string) => {
     setWalletAddress(address);
     setWalletName(name);
+    localStorage.setItem("walletAddress", address);
+    localStorage.setItem("walletName", name);
   };
 
   const clearWalletInfo = () => {
     setWalletAddress(null);
     setWalletName(null);
+    localStorage.removeItem("walletAddress");
+    localStorage.removeItem("walletName");
   };
 
   return (
