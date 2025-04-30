@@ -1,6 +1,10 @@
-import { redirect } from "next/navigation"
+import { Dashboard } from "@/components/dashboard";
+import { MainLayout } from "@/components/main-layout";
 
 export default function Home() {
-  // Redirect to dashboard immediately
-  redirect("/dashboard")
+  return (
+    <MainLayout>
+      <Dashboard />
+    </MainLayout>
+  );
 }
