@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DeployEndpoints } from "@/components/endpoints/deploy-endpoints";
 import { EscrowEndpoints } from "@/components/endpoints/escrow-endpoints";
 import { HelperEndpoints } from "@/components/endpoints/helper-endpoints";
-import { ApiKeyBadge } from "@/components/api-key-badge";
 import {
   Card,
   CardContent,
@@ -27,7 +26,6 @@ export function Dashboard() {
             using the <span className="font-bold">Trustless Work API.</span>
           </p>
         </div>
-        <ApiKeyBadge />
       </div>
 
       <Card className="border shadow-sm">
