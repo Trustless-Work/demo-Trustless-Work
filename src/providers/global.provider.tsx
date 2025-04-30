@@ -1,5 +1,5 @@
-import { ApiProvider } from "@/components/api-provider";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ApiProvider } from "@/providers/api.provider";
+import { ThemeProvider } from "@/providers/theme.provider";
 import { EscrowProvider } from "./escrow.provider";
 
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
