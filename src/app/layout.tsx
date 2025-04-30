@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <GlobalProvider>
           <div className="min-h-screen">
-            <div className="flex-1 space-y-4 p-4 pt-4 md:p-8 h-full">
+            <div className="flex-1 space-y-4 px-4 h-full">
               <Header />
               {children}
               <Footer />
