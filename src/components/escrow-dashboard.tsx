@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Card,
@@ -23,8 +22,6 @@ interface EscrowDashboardProps {
 }
 
 export function EscrowDashboard({ escrow }: EscrowDashboardProps) {
-  const [activeTab, setActiveTab] = useState("details");
-
   return (
     <div className="space-y-6">
       <Card>
