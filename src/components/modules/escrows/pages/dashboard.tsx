@@ -1,10 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DeployEndpoints } from "@/components/endpoints/deploy-endpoints";
-import { EscrowEndpoints } from "@/components/endpoints/escrow-endpoints";
-import { HelperEndpoints } from "@/components/endpoints/helper-endpoints";
 import {
   Card,
   CardContent,
@@ -13,10 +8,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { MainTabs } from "../../ui/tabs/MainTabs";
 import { ConnectWalletWarning } from "../../ui/ConnectWalletWarning";
 
 export function Dashboard() {
-  const [activeTab, setActiveTab] = useState("deploy");
   const { walletAddress } = useWalletContext();
 
   return (
@@ -39,47 +34,7 @@ export function Dashboard() {
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
-          {walletAddress ? (
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              className="w-full"
-            >
-              <TabsList className="grid w-full grid-cols-3 rounded-none border-b bg-transparent p-0">
-                <TabsTrigger
-                  value="deploy"
-                  className="rounded-none border-b-2 border-b-transparent data-[state=active]:border-b-primary data-[state=active]:shadow-none py-3"
-                >
-                  Deploy
-                </TabsTrigger>
-                <TabsTrigger
-                  value="escrow"
-                  className="rounded-none border-b-2 border-b-transparent data-[state=active]:border-b-primary data-[state=active]:shadow-none py-3"
-                >
-                  Escrows
-                </TabsTrigger>
-                <TabsTrigger
-                  value="helper"
-                  className="rounded-none border-b-2 border-b-transparent data-[state=active]:border-b-primary data-[state=active]:shadow-none py-3"
-                >
-                  Helpers
-                </TabsTrigger>
-              </TabsList>
-              <div className="p-6">
-                <TabsContent value="deploy" className="mt-0">
-                  <DeployEndpoints />
-                </TabsContent>
-                <TabsContent value="escrow" className="mt-0">
-                  <EscrowEndpoints />
-                </TabsContent>
-                <TabsContent value="helper" className="mt-0">
-                  <HelperEndpoints />
-                </TabsContent>
-              </div>
-            </Tabs>
-          ) : (
-            <ConnectWalletWarning />
-          )}
+          {walletAddress ? <MainTabs /> : <ConnectWalletWarning />}
         </CardContent>
       </Card>
     </div>
