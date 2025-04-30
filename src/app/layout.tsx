@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { GlobalProvider } from "@/providers/global.provider";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +24,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <GlobalProvider>
           <div className="min-h-screen">
-            <div className="flex-1 space-y-4 p-4 pt-6 md:p-8 h-full">
+            <div className="flex-1 space-y-4 p-4 pt-4 md:p-8 h-full">
+              <Header />
               {children}
+              <Footer />
             </div>
           </div>
         </GlobalProvider>

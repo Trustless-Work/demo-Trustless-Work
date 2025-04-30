@@ -1,10 +1,11 @@
 import { Dashboard } from "@/components/dashboard";
-import { MainLayout } from "@/components/main-layout";
 
 export default function Home() {
   return (
-    <MainLayout>
-      <Dashboard />
-    </MainLayout>
+    <main className="flex-1 py-8">
+      <div className="container mx-auto">
+        <Dashboard />
+      </div>
+    </main>
   );
 }
