@@ -30,9 +30,6 @@ interface EscrowProviderProps {
   children: ReactNode;
 }
 
-/**
- * Provider component for managing escrow state throughout the application
- */
 export function EscrowProvider({ children }: EscrowProviderProps) {
   const [escrow, setEscrowState] = useState<Escrow | null>(null);
 
