@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useState, useCallback, useMemo, type ReactNode } from "react"
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+  type ReactNode,
+} from "react";
 
 // Define types for our API context
 export interface ApiContextType {
-  apiKey: string
-  setApiKey: (key: string) => void
-  baseUrl: string
-  setBaseUrl: (url: string) => void
-  clearCredentials: () => void
-  isAuthenticated: boolean
+  apiKey: string;
+  setApiKey: (key: string) => void;
+  baseUrl: string;
+  setBaseUrl: (url: string) => void;
+  clearCredentials: () => void;
+  isAuthenticated: boolean;
 }
 
 // Create context with default values that include a demo API key
@@ -20,13 +27,13 @@ const ApiContext = createContext<ApiContextType>({
   setBaseUrl: () => {},
   clearCredentials: () => {},
   isAuthenticated: true, // Default to authenticated
-})
+});
 
 // Custom hook for using the API context
-export const useApi = () => useContext(ApiContext)
+export const useApi = () => useContext(ApiContext);
 
 interface ApiProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 /**
@@ -35,30 +42,29 @@ interface ApiProviderProps {
  */
 export function ApiProvider({ children }: ApiProviderProps) {
   // Initialize with demo values
-  const [apiKey, setApiKeyState] = useState("demo-api-key-for-testing")
-  const [baseUrl, setBaseUrlState] = useState("https://api.trustlesswork.com")
-  const [isLoaded, setIsLoaded] = useState(true)
+  const [apiKey, setApiKeyState] = useState("demo-api-key-for-testing");
+  const [baseUrl, setBaseUrlState] = useState("https://api.trustlesswork.com");
 
   // Persist API key to localStorage
   const setApiKey = useCallback((key: string) => {
-    setApiKeyState(key)
-    localStorage.setItem("trustless-work-api-key", key)
-  }, [])
+    setApiKeyState(key);
+    localStorage.setItem("trustless-work-api-key", key);
+  }, []);
 
   // Persist base URL to localStorage
   const setBaseUrl = useCallback((url: string) => {
-    setBaseUrlState(url)
-    localStorage.setItem("trustless-work-base-url", url)
-  }, [])
+    setBaseUrlState(url);
+    localStorage.setItem("trustless-work-base-url", url);
+  }, []);
 
   // Clear all credentials
   const clearCredentials = useCallback(() => {
-    setApiKeyState("demo-api-key-for-testing") // Reset to demo key instead of clearing
-    localStorage.removeItem("trustless-work-api-key")
-  }, [])
+    setApiKeyState("demo-api-key-for-testing"); // Reset to demo key instead of clearing
+    localStorage.removeItem("trustless-work-api-key");
+  }, []);
 
   // Always authenticated with demo key
-  const isAuthenticated = true
+  const isAuthenticated = true;
 
   // Memoize context value to prevent unnecessary re-renders
   const contextValue = useMemo(
@@ -70,8 +76,10 @@ export function ApiProvider({ children }: ApiProviderProps) {
       clearCredentials,
       isAuthenticated,
     }),
-    [apiKey, setApiKey, baseUrl, setBaseUrl, clearCredentials, isAuthenticated],
-  )
+    [apiKey, setApiKey, baseUrl, setBaseUrl, clearCredentials, isAuthenticated]
+  );
 
-  return <ApiContext.Provider value={contextValue}>{children}</ApiContext.Provider>
+  return (
+    <ApiContext.Provider value={contextValue}>{children}</ApiContext.Provider>
+  );
 }
