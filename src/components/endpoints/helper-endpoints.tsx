@@ -17,7 +17,7 @@ export function HelperEndpoints() {
 
   return (
     <Card className="border shadow-sm">
-      <CardHeader className="bg-muted/50">
+      <CardHeader className="pb-3">
         <CardTitle className="text-xl">Helper Endpoints</CardTitle>
         <CardDescription>
           Utility endpoints for blockchain interactions

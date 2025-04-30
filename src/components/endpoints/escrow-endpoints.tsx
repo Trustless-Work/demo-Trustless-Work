@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FundEscrowForm } from "@/components/forms/fund-escrow-form"
-import { GetEscrowForm } from "@/components/forms/get-escrow-form"
-import { ResolveDisputeForm } from "@/components/forms/resolve-dispute-form"
-import { ChangeMilestoneStatusForm } from "@/components/forms/change-milestone-status-form"
-import { ChangeMilestoneFlagForm } from "@/components/forms/change-milestone-flag-form"
-import { ChangeDisputeFlagForm } from "@/components/forms/change-dispute-flag-form"
-import { DistributeEarningsForm } from "@/components/forms/distribute-earnings-form"
-import { UpdateEscrowForm } from "@/components/forms/update-escrow-form"
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { FundEscrowForm } from "@/components/forms/fund-escrow-form";
+import { GetEscrowForm } from "@/components/forms/get-escrow-form";
+import { ResolveDisputeForm } from "@/components/forms/resolve-dispute-form";
+import { ChangeMilestoneStatusForm } from "@/components/forms/change-milestone-status-form";
+import { ChangeMilestoneFlagForm } from "@/components/forms/change-milestone-flag-form";
+import { ChangeDisputeFlagForm } from "@/components/forms/change-dispute-flag-form";
+import { DistributeEarningsForm } from "@/components/forms/distribute-earnings-form";
+import { UpdateEscrowForm } from "@/components/forms/update-escrow-form";
 
 export function EscrowEndpoints() {
-  const [activeTab, setActiveTab] = useState("get-escrow")
+  const [activeTab, setActiveTab] = useState("get-escrow");
 
   // Create a mock escrow for demo purposes
   const mockEscrow = {
@@ -39,13 +45,15 @@ export function EscrowEndpoints() {
     releaseSigner: "GRELEASE123456789",
     user: "demo-user",
     issuer: "GISSUER123456789",
-  }
+  };
 
   return (
     <Card className="border shadow-sm">
-      <CardHeader className="bg-muted/50">
+      <CardHeader className="pb-3">
         <CardTitle className="text-xl">Escrow Endpoints</CardTitle>
-        <CardDescription>Manage escrow contracts, milestones, and funds</CardDescription>
+        <CardDescription>
+          Manage escrow contracts, milestones, and funds
+        </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -104,5 +112,5 @@ export function EscrowEndpoints() {
         </Tabs>
       </CardContent>
     </Card>
-  )
+  );
 }

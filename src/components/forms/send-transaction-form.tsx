@@ -1,40 +1,42 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useApiContext } from "@/components/api-provider"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Switch } from "@/components/ui/switch"
-import { ResponseDisplay } from "@/components/response-display"
+import { useState } from "react";
+import { useApiContext } from "@/providers/api.provider";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { ResponseDisplay } from "@/components/response-display";
 
 export function SendTransactionForm() {
-  const { apiKey, baseUrl } = useApiContext()
-  const [loading, setLoading] = useState(false)
-  const [response, setResponse] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { apiKey, baseUrl } = useApiContext();
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     signedXdr: "",
     returnEscrowDataIsRequired: false,
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSwitchChange = (checked: boolean) => {
-    setFormData((prev) => ({ ...prev, returnEscrowDataIsRequired: checked }))
-  }
+    setFormData((prev) => ({ ...prev, returnEscrowDataIsRequired: checked }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setResponse(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setResponse(null);
 
     try {
       const response = await fetch(`${baseUrl}/helper/send-transaction`, {
@@ -44,21 +46,23 @@ export function SendTransactionForm() {
           Authorization: `Bearer ${apiKey}`,
         },
         body: JSON.stringify(formData),
-      })
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send transaction")
+        throw new Error(data.message || "Failed to send transaction");
       }
 
-      setResponse(data)
+      setResponse(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred")
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -78,7 +82,9 @@ export function SendTransactionForm() {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="returnEscrowDataIsRequired">Return Escrow Data</Label>
+            <Label htmlFor="returnEscrowDataIsRequired">
+              Return Escrow Data
+            </Label>
             <Switch
               id="returnEscrowDataIsRequired"
               checked={formData.returnEscrowDataIsRequired}
@@ -94,5 +100,5 @@ export function SendTransactionForm() {
 
       <ResponseDisplay response={response} error={error} />
     </div>
-  )
+  );
 }

@@ -1,27 +1,27 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useApiContext } from "@/components/api-provider"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent } from "@/components/ui/card"
-import { Plus, Trash } from "lucide-react"
-import { ResponseDisplay } from "@/components/response-display"
+import { useState } from "react";
+import { useApiContext } from "@/providers/api.provider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent } from "@/components/ui/card";
+import { Plus, Trash } from "lucide-react";
+import { ResponseDisplay } from "@/components/response-display";
 
 type Milestone = {
-  description: string
-  status: string
-}
+  description: string;
+  status: string;
+};
 
 export function UpdateEscrowForm() {
-  const { apiKey, baseUrl } = useApiContext()
-  const [loading, setLoading] = useState(false)
-  const [response, setResponse] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
+  const { apiKey, baseUrl } = useApiContext();
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     signer: "",
@@ -47,92 +47,106 @@ export function UpdateEscrowForm() {
       trustline: "",
       trustlineDecimals: "",
     },
-  })
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
     if (name.includes("escrow.")) {
-      const escrowField = name.replace("escrow.", "")
+      const escrowField = name.replace("escrow.", "");
       setFormData((prev) => ({
         ...prev,
         escrow: {
           ...prev.escrow,
           [escrowField]: value,
         },
-      }))
+      }));
     } else {
-      setFormData((prev) => ({ ...prev, [name]: value }))
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
-  }
+  };
 
-  const handleMilestoneChange = (index: number, field: string, value: string) => {
-    const updatedMilestones = [...formData.escrow.milestones]
+  const handleMilestoneChange = (
+    index: number,
+    field: string,
+    value: string
+  ) => {
+    const updatedMilestones = [...formData.escrow.milestones];
     updatedMilestones[index] = {
       ...updatedMilestones[index],
       [field]: value,
-    }
+    };
     setFormData((prev) => ({
       ...prev,
       escrow: {
         ...prev.escrow,
         milestones: updatedMilestones,
       },
-    }))
-  }
+    }));
+  };
 
   const addMilestone = () => {
     setFormData((prev) => ({
       ...prev,
       escrow: {
         ...prev.escrow,
-        milestones: [...prev.escrow.milestones, { description: "", status: "pending" }],
+        milestones: [
+          ...prev.escrow.milestones,
+          { description: "", status: "pending" },
+        ],
       },
-    }))
-  }
+    }));
+  };
 
   const removeMilestone = (index: number) => {
     if (formData.escrow.milestones.length > 1) {
-      const updatedMilestones = [...formData.escrow.milestones]
-      updatedMilestones.splice(index, 1)
+      const updatedMilestones = [...formData.escrow.milestones];
+      updatedMilestones.splice(index, 1);
       setFormData((prev) => ({
         ...prev,
         escrow: {
           ...prev.escrow,
           milestones: updatedMilestones,
         },
-      }))
+      }));
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-    setResponse(null)
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setResponse(null);
 
     try {
-      const response = await fetch(`${baseUrl}/escrow/update-escrow-by-contract-id`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(formData),
-      })
+      const response = await fetch(
+        `${baseUrl}/escrow/update-escrow-by-contract-id`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${apiKey}`,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to update escrow")
+        throw new Error(data.message || "Failed to update escrow");
       }
 
-      setResponse(data)
+      setResponse(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred")
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -211,7 +225,9 @@ export function UpdateEscrowForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="escrow.serviceProvider">Service Provider Address</Label>
+            <Label htmlFor="escrow.serviceProvider">
+              Service Provider Address
+            </Label>
             <Input
               id="escrow.serviceProvider"
               name="escrow.serviceProvider"
@@ -226,7 +242,12 @@ export function UpdateEscrowForm() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label>Milestones</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addMilestone}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addMilestone}
+            >
               <Plus className="h-4 w-4 mr-2" /> Add Milestone
             </Button>
           </div>
@@ -237,28 +258,45 @@ export function UpdateEscrowForm() {
                 <div className="flex items-start gap-2">
                   <div className="flex-1 space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor={`milestone-desc-${index}`}>Description</Label>
+                      <Label htmlFor={`milestone-desc-${index}`}>
+                        Description
+                      </Label>
                       <Textarea
                         id={`milestone-desc-${index}`}
                         value={milestone.description}
-                        onChange={(e) => handleMilestoneChange(index, "description", e.target.value)}
+                        onChange={(e) =>
+                          handleMilestoneChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
                         placeholder="Milestone description"
                         required
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor={`milestone-status-${index}`}>Status</Label>
+                      <Label htmlFor={`milestone-status-${index}`}>
+                        Status
+                      </Label>
                       <Input
                         id={`milestone-status-${index}`}
                         value={milestone.status}
-                        onChange={(e) => handleMilestoneChange(index, "status", e.target.value)}
+                        onChange={(e) =>
+                          handleMilestoneChange(index, "status", e.target.value)
+                        }
                         placeholder="pending"
                         required
                       />
                     </div>
                   </div>
                   {formData.escrow.milestones.length > 1 && (
-                    <Button type="button" variant="ghost" size="icon" onClick={() => removeMilestone(index)}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => removeMilestone(index)}
+                    >
                       <Trash className="h-4 w-4" />
                     </Button>
                   )}
@@ -275,5 +313,5 @@ export function UpdateEscrowForm() {
 
       <ResponseDisplay response={response} error={error} />
     </div>
-  )
+  );
 }
