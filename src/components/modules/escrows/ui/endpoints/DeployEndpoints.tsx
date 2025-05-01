@@ -13,11 +13,11 @@ import { useInitializeEscrow } from "../../hooks/initialize-escrow-form.hook";
 
 export function DeployEndpoints() {
   const {
-    loadTemplate,
     form,
     loading,
     response,
     error,
+    loadTemplate,
     addMilestone,
     removeMilestone,
     onSubmit,
