@@ -1,0 +1,97 @@
+"use client";
+
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { FundEscrowForm } from "@/components/modules/ui/forms/fund-escrow-form";
+import { GetEscrowForm } from "@/components/modules/ui/forms/get-escrow-form";
+import { ResolveDisputeForm } from "@/components/modules/ui/forms/resolve-dispute-form";
+import { ChangeMilestoneStatusForm } from "@/components/modules/ui/forms/change-milestone-status-form";
+import { ChangeMilestoneFlagForm } from "@/components/modules/ui/forms/change-milestone-flag-form";
+import { ChangeDisputeFlagForm } from "@/components/modules/ui/forms/change-dispute-flag-form";
+import { DistributeEarningsForm } from "@/components/modules/ui/forms/distribute-earnings-form";
+import { UpdateEscrowForm } from "@/components/modules/ui/forms/update-escrow-form";
+import { EscrowCreatedSection } from "../../escrows/ui/sections/EscrowCreatedSection";
+
+export function EscrowEndpoints() {
+  const [activeTab, setActiveTab] = useState("get-escrow");
+
+  return (
+    <Card className="border shadow-sm">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-xl">Escrow Endpoints</CardTitle>
+        <CardDescription>
+          Manage escrow contracts, milestones, and funds
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="p-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="w-full flex flex-wrap mb-4 gap-1">
+            <TabsTrigger value="get-escrow" className="flex-1">
+              Get Escrow
+            </TabsTrigger>
+            <TabsTrigger value="fund-escrow" className="flex-1">
+              Fund Escrow
+            </TabsTrigger>
+            <TabsTrigger value="change-milestone-status" className="flex-1">
+              Change Status
+            </TabsTrigger>
+            <TabsTrigger value="change-milestone-flag" className="flex-1">
+              Approve Milestone
+            </TabsTrigger>
+            <TabsTrigger value="change-dispute-flag" className="flex-1">
+              Start Dispute
+            </TabsTrigger>
+            <TabsTrigger value="resolve-dispute" className="flex-1">
+              Resolve Dispute
+            </TabsTrigger>
+            <TabsTrigger value="distribute-earnings" className="flex-1">
+              Distribute Funds
+            </TabsTrigger>
+            <TabsTrigger value="update-escrow" className="flex-1">
+              Update Escrow
+            </TabsTrigger>
+          </TabsList>
+          <div className="flex gap-10 w-full">
+            <div className="w-1/3">
+              <div className="mt-2 pt-4 border-t">
+                <TabsContent value="get-escrow" className="mt-0">
+                  <GetEscrowForm />
+                </TabsContent>
+                <TabsContent value="fund-escrow" className="mt-0">
+                  <FundEscrowForm />
+                </TabsContent>
+                <TabsContent value="change-milestone-status" className="mt-0">
+                  <ChangeMilestoneStatusForm />
+                </TabsContent>
+                <TabsContent value="change-milestone-flag" className="mt-0">
+                  <ChangeMilestoneFlagForm />
+                </TabsContent>
+                <TabsContent value="change-dispute-flag" className="mt-0">
+                  <ChangeDisputeFlagForm />
+                </TabsContent>
+                <TabsContent value="resolve-dispute" className="mt-0">
+                  <ResolveDisputeForm />
+                </TabsContent>
+                <TabsContent value="distribute-earnings" className="mt-0">
+                  <DistributeEarningsForm />
+                </TabsContent>
+                <TabsContent value="update-escrow" className="mt-0">
+                  <UpdateEscrowForm />
+                </TabsContent>
+              </div>
+            </div>
+
+            <EscrowCreatedSection />
+          </div>
+        </Tabs>
+      </CardContent>
+    </Card>
+  );
+}

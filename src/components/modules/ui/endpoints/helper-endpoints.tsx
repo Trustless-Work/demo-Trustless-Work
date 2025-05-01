@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SendTransactionForm } from "@/components/forms/send-transaction-form";
-import { GetMultipleEscrowBalanceForm } from "@/components/forms/get-multiple-escrow-balance-form";
+import { SendTransactionForm } from "@/components/modules/ui/forms/send-transaction-form";
+import { GetMultipleEscrowBalanceForm } from "@/components/modules/ui/forms/get-multiple-escrow-balance-form";
 
 export function HelperEndpoints() {
   const [activeTab, setActiveTab] = useState("set-trustline");

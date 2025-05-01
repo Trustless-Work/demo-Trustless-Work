@@ -1,6 +1,6 @@
 "use client";
 
-import { InitializeEscrowForm } from "@/components/forms/initialize-escrow-form";
+import { InitializeEscrowForm } from "@/components/modules/ui/forms/initialize-escrow-form";
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ export function DeployEndpoints() {
         </CardDescription>
       </CardHeader>
       <CardContent className="p-6">
-        <InitializeEscrowForm onEscrowInitialized={() => {}} />
+        <InitializeEscrowForm />
       </CardContent>
     </Card>
   );
