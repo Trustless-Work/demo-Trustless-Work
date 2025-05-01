@@ -18,6 +18,7 @@ import { ChangeDisputeFlagForm } from "@/components/modules/ui/forms/ChangeDispu
 import { DistributeEarningsForm } from "@/components/modules/ui/forms/DistributeEarningsForm";
 import { UpdateEscrowForm } from "@/components/modules/ui/forms/UpdateEscrowForm";
 import { EscrowCreatedSection } from "../../escrows/ui/sections/EscrowCreatedSection";
+import { StartDisputeForm } from "../forms/StartDisputeForm";
 
 export function EscrowEndpoints() {
   const [activeTab, setActiveTab] = useState("get-escrow");
@@ -74,7 +75,7 @@ export function EscrowEndpoints() {
                   <ChangeMilestoneFlagForm />
                 </TabsContent>
                 <TabsContent value="change-dispute-flag" className="mt-0">
-                  <ChangeDisputeFlagForm />
+                  <StartDisputeForm />
                 </TabsContent>
                 <TabsContent value="resolve-dispute" className="mt-0">
                   <ResolveDisputeForm />

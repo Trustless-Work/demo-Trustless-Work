@@ -9,11 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SendTransactionForm } from "@/components/modules/ui/forms/SendTransactionForm";
 import { GetMultipleEscrowBalanceForm } from "@/components/modules/ui/forms/GetMultipleEscrowBalanceForm";
 
 export function HelperEndpoints() {
-  const [activeTab, setActiveTab] = useState("set-trustline");
+  const [activeTab, setActiveTab] = useState("get-multiple-escrow-balance");
 
   return (
     <Card className="border shadow-sm">
@@ -26,20 +25,11 @@ export function HelperEndpoints() {
       <CardContent className="p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full mb-4">
-            <TabsTrigger value="set-trustline" className="flex-1">
-              Set Trustline
-            </TabsTrigger>
-            <TabsTrigger value="send-transaction" className="flex-1">
-              Send Transaction
-            </TabsTrigger>
             <TabsTrigger value="get-multiple-escrow-balance" className="flex-1">
               Get Balances
             </TabsTrigger>
           </TabsList>
           <div className="mt-2 pt-4 border-t">
-            <TabsContent value="send-transaction" className="mt-0">
-              <SendTransactionForm />
-            </TabsContent>
             <TabsContent value="get-multiple-escrow-balance" className="mt-0">
               <GetMultipleEscrowBalanceForm />
             </TabsContent>
