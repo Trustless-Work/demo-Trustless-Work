@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DeployEndpoints } from "@/components/modules/ui/endpoints/deploy-endpoints";
-import { EscrowEndpoints } from "@/components/modules/ui/endpoints/escrow-endpoints";
-import { HelperEndpoints } from "@/components/modules/ui/endpoints/helper-endpoints";
+import { DeployEndpoints } from "@/components/modules/ui/endpoints/DeployEndpoints";
+import { EscrowEndpoints } from "@/components/modules/ui/endpoints/EscrowEndpoints";
+import { HelperEndpoints } from "@/components/modules/ui/endpoints/HelperEndpoints";
 import { useTabsContext } from "@/providers/tabs.provider";
 
 export const MainTabs = () => {

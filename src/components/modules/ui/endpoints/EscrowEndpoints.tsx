@@ -9,14 +9,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FundEscrowForm } from "@/components/modules/ui/forms/fund-escrow-form";
-import { GetEscrowForm } from "@/components/modules/ui/forms/get-escrow-form";
-import { ResolveDisputeForm } from "@/components/modules/ui/forms/resolve-dispute-form";
-import { ChangeMilestoneStatusForm } from "@/components/modules/ui/forms/change-milestone-status-form";
-import { ChangeMilestoneFlagForm } from "@/components/modules/ui/forms/change-milestone-flag-form";
-import { ChangeDisputeFlagForm } from "@/components/modules/ui/forms/change-dispute-flag-form";
-import { DistributeEarningsForm } from "@/components/modules/ui/forms/distribute-earnings-form";
-import { UpdateEscrowForm } from "@/components/modules/ui/forms/update-escrow-form";
+import { FundEscrowForm } from "@/components/modules/ui/forms/FundEscrowForm";
+import { GetEscrowForm } from "@/components/modules/ui/forms/GetEscrowForm";
+import { ResolveDisputeForm } from "@/components/modules/ui/forms/ResolveDisputeForm";
+import { ChangeMilestoneStatusForm } from "@/components/modules/ui/forms/ChangeMilestoneStatusForm";
+import { ChangeMilestoneFlagForm } from "@/components/modules/ui/forms/ChangeMilestoneFlagForm";
+import { ChangeDisputeFlagForm } from "@/components/modules/ui/forms/ChangeDisputeFlagForm";
+import { DistributeEarningsForm } from "@/components/modules/ui/forms/DistributeEarningsForm";
+import { UpdateEscrowForm } from "@/components/modules/ui/forms/UpdateEscrowForm";
 import { EscrowCreatedSection } from "../../escrows/ui/sections/EscrowCreatedSection";
 
 export function EscrowEndpoints() {
