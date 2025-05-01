@@ -1,9 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,126 +13,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
-import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
+import { useInitializeEscrow } from "../../escrows/hooks/initialize-escrow.hook";
+import { ResponseDisplay } from "../../../response-display";
 
-// Define the form schema with Zod
-const milestoneSchema = z.object({
-  description: z.string().min(1, "Description is required"),
-});
-
-const formSchema = z.object({
-  engagementId: z.string().min(1, "Engagement ID is required"),
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  approver: z.string().min(1, "Approver address is required"),
-  serviceProvider: z.string().min(1, "Service Provider address is required"),
-  platformAddress: z.string().min(1, "Platform address is required"),
-  amount: z.string().min(1, "Amount is required"),
-  platformFee: z.string().min(1, "Platform fee is required"),
-  milestones: z
-    .array(milestoneSchema)
-    .min(1, "At least one milestone is required"),
-  releaseSigner: z.string().min(1, "Release signer address is required"),
-  disputeResolver: z.string().min(1, "Dispute resolver address is required"),
-  issuer: z.string().min(1, "Issuer address is required"),
-  token: z.string().min(1, "Token address is required"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
-interface InitializeEscrowFormProps {
-  onEscrowInitialized: (escrow: Escrow) => void;
-}
-
-export function InitializeEscrowForm({
-  onEscrowInitialized,
-}: InitializeEscrowFormProps) {
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Initialize the form
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      engagementId: "",
-      title: "",
-      description: "",
-      approver: "",
-      serviceProvider: "",
-      platformAddress: "",
-      amount: "",
-      platformFee: "",
-      milestones: [{ description: "" }],
-      releaseSigner: "",
-      disputeResolver: "",
-      issuer: "",
-      token: "",
-    },
-  });
-
-  const addMilestone = () => {
-    const currentMilestones = form.getValues("milestones");
-    form.setValue("milestones", [...currentMilestones, { description: "" }]);
-  };
-
-  const removeMilestone = (index: number) => {
-    const currentMilestones = form.getValues("milestones");
-    if (currentMilestones.length > 1) {
-      form.setValue(
-        "milestones",
-        currentMilestones.filter((_, i) => i !== index)
-      );
-    }
-  };
-
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    try {
-      const response = await fetch("/api/escrow/initialize", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to initialize escrow");
-      }
-
-      setResponse(result);
-
-      // Create an escrow object from the form data and response
-      const escrow: Escrow = {
-        id: result.escrow?.id || "pending",
-        contractId: result.contract_id || result.escrow?.contractId,
-        ...data,
-        user: "current-user", // This would normally come from authentication
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        milestones: data.milestones.map((m) => ({
-          ...m,
-          status: "pending",
-          flag: false,
-        })),
-      };
-
-      onEscrowInitialized(escrow);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+export const InitializeEscrowForm = () => {
+  const {
+    form,
+    loading,
+    response,
+    error,
+    addMilestone,
+    removeMilestone,
+    onSubmit,
+  } = useInitializeEscrow();
 
   return (
     <div className="space-y-6">
@@ -145,25 +34,26 @@ export function InitializeEscrowForm({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="engagementId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Engagement ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="ENG12345" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="title"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Title</FormLabel>
                   <FormControl>
                     <Input placeholder="Escrow Title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="engagementId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Engagement ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ENG12345" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -286,29 +176,43 @@ export function InitializeEscrowForm({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="token"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Token Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="GTOKEN...XYZ" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           <FormField
             control={form.control}
-            name="issuer"
+            name="receiver"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Issuer Address</FormLabel>
+                <FormLabel>Receiver Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="GISSUER...XYZ" {...field} />
+                  <Input placeholder="GRECEIVER...XYZ" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="receiverMemo"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="flex items-center">
+                  Receiver Memo (opcional)
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    placeholder="Enter the escrow receiver Memo"
+                    value={field.value ?? ""}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value === ""
+                          ? undefined
+                          : Number(e.target.value)
+                      )
+                    }
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -378,4 +282,4 @@ export function InitializeEscrowForm({
       <ResponseDisplay response={response} error={error} />
     </div>
   );
-}
+};

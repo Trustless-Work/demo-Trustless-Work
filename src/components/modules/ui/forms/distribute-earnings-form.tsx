@@ -15,22 +15,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
+import { useEscrowContext } from "@/providers/escrow.provider";
 
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
-  disputeResolver: z.string().min(1, "Dispute resolver address is required"),
-  approverFunds: z.string().min(1, "Approver funds is required"),
-  serviceProviderFunds: z.string().min(1, "Service provider funds is required"),
+  releaseSigner: z.string().min(1, "Release signer address is required"),
+  signer: z.string().min(1, "Signer address is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface ResolveDisputeFormProps {
-  escrow?: Escrow;
-}
-
-export function ResolveDisputeForm({ escrow }: ResolveDisputeFormProps) {
+export function DistributeEarningsForm() {
+  const { escrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,9 +35,8 @@ export function ResolveDisputeForm({ escrow }: ResolveDisputeFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      disputeResolver: escrow?.disputeResolver || "GDISPUTE123456789",
-      approverFunds: "300",
-      serviceProviderFunds: "700",
+      releaseSigner: escrow?.releaseSigner || "GRELEASE123456789",
+      signer: "GSIGNER123456789",
     },
   });
 
@@ -51,7 +46,7 @@ export function ResolveDisputeForm({ escrow }: ResolveDisputeFormProps) {
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/resolve-dispute", {
+      const response = await fetch("/api/escrow/distribute-earnings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +57,7 @@ export function ResolveDisputeForm({ escrow }: ResolveDisputeFormProps) {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to resolve dispute");
+        throw new Error(result.message || "Failed to distribute earnings");
       }
 
       setResponse(result);
@@ -95,10 +90,10 @@ export function ResolveDisputeForm({ escrow }: ResolveDisputeFormProps) {
 
           <FormField
             control={form.control}
-            name="disputeResolver"
+            name="releaseSigner"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Dispute Resolver Address</FormLabel>
+                <FormLabel>Release Signer Address</FormLabel>
                 <FormControl>
                   <Input {...field} readOnly />
                 </FormControl>
@@ -107,37 +102,22 @@ export function ResolveDisputeForm({ escrow }: ResolveDisputeFormProps) {
             )}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="approverFunds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Approver Funds</FormLabel>
-                  <FormControl>
-                    <Input placeholder="300" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="serviceProviderFunds"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service Provider Funds</FormLabel>
-                  <FormControl>
-                    <Input placeholder="700" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          <FormField
+            control={form.control}
+            name="signer"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Signer Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="GSIGN...XYZ" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Resolving..." : "Resolve Dispute"}
+            {loading ? "Distributing..." : "Distribute Earnings"}
           </Button>
         </form>
       </Form>

@@ -22,8 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
-
+import { useEscrowContext } from "@/providers/escrow.provider";
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
   milestoneIndex: z.string().min(1, "Milestone index is required"),
@@ -33,13 +32,8 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface ChangeMilestoneStatusFormProps {
-  escrow?: Escrow;
-}
-
-export function ChangeMilestoneStatusForm({
-  escrow,
-}: ChangeMilestoneStatusFormProps) {
+export function ChangeMilestoneStatusForm() {
+  const { escrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);

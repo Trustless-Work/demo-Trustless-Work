@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import {
   Form,
   FormField,
@@ -14,32 +15,43 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
-
+import { useEscrowContext } from "@/providers/escrow.provider";
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
-  signer: z.string().min(1, "Signer address is required"),
-  amount: z.string().min(1, "Amount is required"),
+  milestoneIndex: z.string().min(1, "Milestone index is required"),
+  newFlag: z.boolean(),
+  approver: z.string().min(1, "Approver address is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface FundEscrowFormProps {
-  escrow?: Escrow;
-}
-
-export function FundEscrowForm({ escrow }: FundEscrowFormProps) {
+export function ChangeMilestoneFlagForm() {
+  const { escrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Default milestones if escrow is undefined
+  const milestones = escrow?.milestones || [
+    { description: "Initial setup", status: "pending" },
+    { description: "Development phase", status: "pending" },
+  ];
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      signer: "",
-      amount: escrow?.amount || "1000",
+      milestoneIndex: "",
+      newFlag: true,
+      approver: escrow?.approver || "GAPPROVER123456789",
     },
   });
 
@@ -49,7 +61,7 @@ export function FundEscrowForm({ escrow }: FundEscrowFormProps) {
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/fund", {
+      const response = await fetch("/api/escrow/change-milestone-flag", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +72,7 @@ export function FundEscrowForm({ escrow }: FundEscrowFormProps) {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to fund escrow");
+        throw new Error(result.message || "Failed to change milestone flag");
       }
 
       setResponse(result);
@@ -93,12 +105,26 @@ export function FundEscrowForm({ escrow }: FundEscrowFormProps) {
 
           <FormField
             control={form.control}
-            name="signer"
+            name="milestoneIndex"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Signer Address</FormLabel>
+                <FormLabel>Milestone Index</FormLabel>
                 <FormControl>
-                  <Input placeholder="GSIGN...XYZ" {...field} />
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a milestone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {milestones.map((_, index) => (
+                        <SelectItem key={index} value={index.toString()}>
+                          Milestone {index + 1}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -107,12 +133,31 @@ export function FundEscrowForm({ escrow }: FundEscrowFormProps) {
 
           <FormField
             control={form.control}
-            name="amount"
+            name="newFlag"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                <div className="space-y-0.5">
+                  <FormLabel>Approve Milestone</FormLabel>
+                </div>
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="approver"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Amount</FormLabel>
+                <FormLabel>Approver Address</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input {...field} readOnly />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -120,7 +165,7 @@ export function FundEscrowForm({ escrow }: FundEscrowFormProps) {
           />
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Funding..." : "Fund Escrow"}
+            {loading ? "Updating..." : "Change Milestone Flag"}
           </Button>
         </form>
       </Form>

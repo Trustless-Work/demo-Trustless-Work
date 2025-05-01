@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   Form,
   FormField,
@@ -15,49 +14,30 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
-
+import { useEscrowContext } from "@/providers/escrow.provider";
+import { useWalletContext } from "@/providers/wallet.provider";
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
-  milestoneIndex: z.string().min(1, "Milestone index is required"),
-  newFlag: z.boolean(),
-  approver: z.string().min(1, "Approver address is required"),
+  signer: z.string().min(1, "Signer address is required"),
+  amount: z.string().min(1, "Amount is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface ChangeMilestoneFlagFormProps {
-  escrow?: Escrow;
-}
-
-export function ChangeMilestoneFlagForm({
-  escrow,
-}: ChangeMilestoneFlagFormProps) {
+export function FundEscrowForm() {
+  const { escrow } = useEscrowContext();
+  const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
-
-  // Default milestones if escrow is undefined
-  const milestones = escrow?.milestones || [
-    { description: "Initial setup", status: "pending" },
-    { description: "Development phase", status: "pending" },
-  ];
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      milestoneIndex: "",
-      newFlag: true,
-      approver: escrow?.approver || "GAPPROVER123456789",
+      signer: walletAddress || "",
+      amount: escrow?.amount || "1000",
     },
   });
 
@@ -67,7 +47,7 @@ export function ChangeMilestoneFlagForm({
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/change-milestone-flag", {
+      const response = await fetch("/api/escrow/fund", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,7 +58,7 @@ export function ChangeMilestoneFlagForm({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to change milestone flag");
+        throw new Error(result.message || "Failed to fund escrow");
       }
 
       setResponse(result);
@@ -111,26 +91,12 @@ export function ChangeMilestoneFlagForm({
 
           <FormField
             control={form.control}
-            name="milestoneIndex"
+            name="signer"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Milestone Index</FormLabel>
+                <FormLabel>Signer Address</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a milestone" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {milestones.map((_, index) => (
-                        <SelectItem key={index} value={index.toString()}>
-                          Milestone {index + 1}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Input placeholder="GSIGN...XYZ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -139,31 +105,12 @@ export function ChangeMilestoneFlagForm({
 
           <FormField
             control={form.control}
-            name="newFlag"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <FormLabel>Approve Milestone</FormLabel>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="approver"
+            name="amount"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Approver Address</FormLabel>
+                <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly />
+                  <Input {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,7 +118,7 @@ export function ChangeMilestoneFlagForm({
           />
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Updating..." : "Change Milestone Flag"}
+            {loading ? "Funding..." : "Fund Escrow"}
           </Button>
         </form>
       </Form>

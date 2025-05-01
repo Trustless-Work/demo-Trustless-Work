@@ -15,23 +15,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
+import { useEscrowContext } from "@/providers/escrow.provider";
+import { useWalletContext } from "@/providers/wallet.provider";
 
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
-  releaseSigner: z.string().min(1, "Release signer address is required"),
   signer: z.string().min(1, "Signer address is required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface DistributeEarningsFormProps {
-  escrow?: Escrow;
-}
-
-export function DistributeEarningsForm({
-  escrow,
-}: DistributeEarningsFormProps) {
+export function StartDisputeForm() {
+  const { escrow } = useEscrowContext();
+  const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,9 +35,8 @@ export function DistributeEarningsForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      releaseSigner: escrow?.releaseSigner || "GRELEASE123456789",
-      signer: "GSIGNER123456789",
+      contractId: escrow?.contractId || "",
+      signer: walletAddress || "",
     },
   });
 
@@ -51,7 +46,7 @@ export function DistributeEarningsForm({
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/distribute-earnings", {
+      const response = await fetch("/api/escrow/start-dispute", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -62,7 +57,7 @@ export function DistributeEarningsForm({
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.message || "Failed to distribute earnings");
+        throw new Error(result.message || "Failed to start dispute");
       }
 
       setResponse(result);
@@ -95,20 +90,6 @@ export function DistributeEarningsForm({
 
           <FormField
             control={form.control}
-            name="releaseSigner"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Release Signer Address</FormLabel>
-                <FormControl>
-                  <Input {...field} readOnly />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="signer"
             render={({ field }) => (
               <FormItem>
@@ -122,7 +103,7 @@ export function DistributeEarningsForm({
           />
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Distributing..." : "Distribute Earnings"}
+            {loading ? "Starting Dispute..." : "Start Dispute"}
           </Button>
         </form>
       </Form>
