@@ -1,5 +1,5 @@
 import { Escrow } from "@/@types/escrow.entity";
-import { DollarSign, Landmark, Percent } from "lucide-react";
+import { DollarSign, Landmark, Percent, PiggyBank } from "lucide-react";
 
 interface FinancialDetailsSectionProps {
   escrow: Escrow | null;
@@ -21,6 +21,16 @@ export const FinancialDetailsSection = ({
           <div>
             <p className="font-medium">Amount</p>
             <p className="text-muted-foreground text-xs">{escrow?.amount}</p>
+          </div>
+        </div>
+
+        <div className="flex items-start gap-3">
+          <PiggyBank className="h-4 w-4 text-muted-foreground mt-0.5" />
+          <div>
+            <p className="font-medium">Balance</p>
+            <p className="text-muted-foreground text-xs">
+              {escrow?.balance || "0"}
+            </p>
           </div>
         </div>
 

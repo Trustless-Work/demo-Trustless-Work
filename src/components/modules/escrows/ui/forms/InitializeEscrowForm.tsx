@@ -13,7 +13,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
-import { useInitializeEscrow } from "@/components/modules/escrows/hooks/initialize-escrow-form.hook";
 import { ResponseDisplay } from "@/components/response-display";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
@@ -21,22 +20,22 @@ import { GetFormSchema } from "../../schemas/initialize-escrow-form.schema";
 
 interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;
-  onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
-  addMilestone: () => void;
-  removeMilestone: (index: number) => void;
   loading?: boolean;
   response?: any;
   error?: string | null;
+  onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
+  addMilestone: () => void;
+  removeMilestone: (index: number) => void;
 }
 
 export const InitializeEscrowForm = ({
   form,
-  onSubmit,
-  addMilestone,
-  removeMilestone,
   loading,
   response,
   error,
+  onSubmit,
+  addMilestone,
+  removeMilestone,
 }: InitializeEscrowFormProps) => {
   return (
     <div className="space-y-6">
