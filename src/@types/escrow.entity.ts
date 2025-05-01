@@ -10,7 +10,6 @@ export type Milestone = {
 };
 
 export interface Escrow {
-  id: string;
   title: string;
   description: string;
   createdAt: CreatedAt;
@@ -27,7 +26,6 @@ export interface Escrow {
   platformFee: string;
   approver: string;
   releaseSigner: string;
-  user: string;
   issuer: string;
   disputeFlag?: boolean;
   releaseFlag?: boolean;
