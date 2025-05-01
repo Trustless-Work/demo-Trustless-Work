@@ -67,9 +67,6 @@ export const GetFormSchema = () => {
       .number()
       .transform((val) => (isNaN(val) ? undefined : val))
       .optional()
-      .refine((val) => val === undefined || val > 0, {
-        message: "Receiver Memo must be greater than 0.",
-      })
       .refine((val) => val === undefined || Number.isInteger(val), {
         message: "Receiver Memo must be a whole number (no decimals).",
       }),
