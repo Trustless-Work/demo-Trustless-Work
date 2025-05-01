@@ -13,8 +13,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
-import { useInitializeEscrow } from "../../escrows/hooks/initialize-escrow.hook";
-import { ResponseDisplay } from "../../../response-display";
+import { useInitializeEscrow } from "@/components/modules/escrows/hooks/initialize-escrow.hook";
+import { ResponseDisplay } from "@/components/response-display";
 
 export const InitializeEscrowForm = () => {
   const {

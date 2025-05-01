@@ -8,8 +8,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useWalletContext } from "@/providers/wallet.provider";
-import { MainTabs } from "../../ui/tabs/MainTabs";
-import { ConnectWalletWarning } from "../../ui/ConnectWalletWarning";
+import { MainTabs } from "../ui/tabs/MainTabs";
+import { ConnectWalletWarning } from "../ui/ConnectWalletWarning";
 
 export function Dashboard() {
   const { walletAddress } = useWalletContext();

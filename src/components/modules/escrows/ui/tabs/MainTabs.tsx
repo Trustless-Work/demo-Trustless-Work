@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DeployEndpoints } from "@/components/modules/ui/endpoints/DeployEndpoints";
-import { EscrowEndpoints } from "@/components/modules/ui/endpoints/EscrowEndpoints";
-import { HelperEndpoints } from "@/components/modules/ui/endpoints/HelperEndpoints";
 import { useTabsContext } from "@/providers/tabs.provider";
+import { DeployEndpoints } from "../endpoints/DeployEndpoints";
+import { EscrowEndpoints } from "../endpoints/EscrowEndpoints";
+import { HelperEndpoints } from "../endpoints/HelperEndpoints";
 
 export const MainTabs = () => {
   const { activeTab, setActiveTab } = useTabsContext();

@@ -1,6 +1,6 @@
 "use client";
 
-import { InitializeEscrowForm } from "@/components/modules/ui/forms/InitializeEscrowForm";
+import { InitializeEscrowForm } from "../forms/InitializeEscrowForm";
 import {
   Card,
   CardContent,

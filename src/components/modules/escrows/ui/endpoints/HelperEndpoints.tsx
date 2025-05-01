@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { GetMultipleEscrowBalanceForm } from "@/components/modules/ui/forms/GetMultipleEscrowBalanceForm";
+import { GetMultipleEscrowBalanceForm } from "../forms/GetMultipleEscrowBalanceForm";
 
 export function HelperEndpoints() {
   const [activeTab, setActiveTab] = useState("get-multiple-escrow-balance");

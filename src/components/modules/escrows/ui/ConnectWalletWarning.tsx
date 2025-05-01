@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { AlertCircle, Wallet } from "lucide-react";
-import { useWallet } from "../auth/hooks/wallet.hook";
+import { useWallet } from "@/components/modules/auth/hooks/wallet.hook";
 
 export const ConnectWalletWarning = () => {
   const { handleConnect } = useWallet();

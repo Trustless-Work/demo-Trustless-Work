@@ -9,16 +9,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FundEscrowForm } from "@/components/modules/ui/forms/FundEscrowForm";
-import { GetEscrowForm } from "@/components/modules/ui/forms/GetEscrowForm";
-import { ResolveDisputeForm } from "@/components/modules/ui/forms/ResolveDisputeForm";
-import { ChangeMilestoneStatusForm } from "@/components/modules/ui/forms/ChangeMilestoneStatusForm";
-import { ChangeMilestoneFlagForm } from "@/components/modules/ui/forms/ChangeMilestoneFlagForm";
-import { ChangeDisputeFlagForm } from "@/components/modules/ui/forms/ChangeDisputeFlagForm";
-import { DistributeEarningsForm } from "@/components/modules/ui/forms/DistributeEarningsForm";
-import { UpdateEscrowForm } from "@/components/modules/ui/forms/UpdateEscrowForm";
-import { EscrowCreatedSection } from "../../escrows/ui/sections/EscrowCreatedSection";
 import { StartDisputeForm } from "../forms/StartDisputeForm";
+import { GetEscrowForm } from "../forms/GetEscrowForm";
+import { FundEscrowForm } from "../forms/FundEscrowForm";
+import { ChangeMilestoneStatusForm } from "../forms/ChangeMilestoneStatusForm";
+import { ChangeMilestoneFlagForm } from "../forms/ChangeMilestoneFlagForm";
+import { DistributeEarningsForm } from "../forms/DistributeEarningsForm";
+import { ResolveDisputeForm } from "../forms/ResolveDisputeForm";
+import { UpdateEscrowForm } from "../forms/UpdateEscrowForm";
+import { EscrowCreatedSection } from "../sections/EscrowCreatedSection";
 
 export function EscrowEndpoints() {
   const [activeTab, setActiveTab] = useState("get-escrow");
