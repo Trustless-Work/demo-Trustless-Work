@@ -5,9 +5,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formSchema } from "../schemas/fund-escrow-form.schema";
+import { escrowService } from "../services/escrow.service";
+import { toast } from "sonner";
+import { Escrow } from "@/@types/escrow.entity";
 
 export const useFundEscrowForm = () => {
   const { escrow } = useEscrowContext();
+  const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
@@ -17,34 +21,38 @@ export const useFundEscrowForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "",
-      amount: escrow?.amount || "1000",
+      amount: escrow?.amount?.toString() || "1000",
       signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError(null);
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/fund", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const result = await escrowService({
+        payload,
+        endpoint: "/escrow/fund-escrow",
+        method: "post",
       });
 
-      const result = await response.json();
+      if (result.status === "SUCCESS") {
+        const escrowUpdated: Escrow = {
+          ...escrow!,
+          balance: (
+            Number(payload.amount) + Number(escrow!.balance)
+          ).toString(),
+        };
 
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to fund escrow");
+        setEscrow(escrowUpdated);
+
+        toast.info("Escrow Funded");
+        setResponse(result);
       }
-
-      setResponse(result);
     } catch (err) {
-      setError(
+      toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     } finally {

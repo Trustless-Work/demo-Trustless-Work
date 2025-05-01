@@ -3,11 +3,9 @@ import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useApiContext } from "@/providers/api.provider";
 import { formSchema } from "../schemas/get-multiple-escrow-balances-form.schema";
 
 export const useGetMultipleEscrowBalancesForm = () => {
-  const { apiKey, baseUrl } = useApiContext();
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
@@ -32,26 +30,6 @@ export const useGetMultipleEscrowBalancesForm = () => {
     setResponse(null);
 
     try {
-      const url = new URL(`${baseUrl}/helper/get-multiple-escrow-balance`);
-      url.searchParams.append("signer", values.signer);
-      values.addresses.forEach((addr) =>
-        url.searchParams.append("addresses", addr.value)
-      );
-
-      const res = await fetch(url.toString(), {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Failed to get escrow balances");
-      }
-
-      setResponse(data);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"

@@ -2,13 +2,11 @@ import { formSchema } from "../schemas/update-escrow-form.schema";
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useApiContext } from "@/providers/api.provider";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 
 export const useUpdateEscrowForm = () => {
-  const { apiKey, baseUrl } = useApiContext();
   const { escrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
   const [response, setResponse] = useState<any>(null);
@@ -54,22 +52,6 @@ export const useUpdateEscrowForm = () => {
     setResponse(null);
 
     try {
-      const res = await fetch(
-        `${baseUrl}/escrow/update-escrow-by-contract-id`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.message || "Failed to update escrow");
-      setResponse(json);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"

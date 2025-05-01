@@ -6,11 +6,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
 import { Escrow, Milestone } from "@/@types/escrow.entity";
-import { initializeEscrow } from "../services/initialize-escrow.service";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
 import { useTabsContext } from "@/providers/tabs.provider";
+import { escrowService } from "../services/escrow.service";
 
 export const useInitializeEscrow = () => {
   const [loading, setLoading] = useState(false);
@@ -68,30 +68,12 @@ export const useInitializeEscrow = () => {
     form.setValue("engagementId", "ENG12345");
     form.setValue("amount", "50");
     form.setValue("platformFee", "5");
-    form.setValue(
-      "approver",
-      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
-    );
-    form.setValue(
-      "serviceProvider",
-      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
-    );
-    form.setValue(
-      "platformAddress",
-      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
-    );
-    form.setValue(
-      "releaseSigner",
-      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
-    );
-    form.setValue(
-      "disputeResolver",
-      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
-    );
-    form.setValue(
-      "receiver",
-      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
-    );
+    form.setValue("approver", walletAddress || "");
+    form.setValue("serviceProvider", walletAddress || "");
+    form.setValue("platformAddress", walletAddress || "");
+    form.setValue("releaseSigner", walletAddress || "");
+    form.setValue("disputeResolver", walletAddress || "");
+    form.setValue("receiver", walletAddress || "");
     form.setValue("receiverMemo", 90909090);
     form.setValue("milestones", [
       { description: "Initial milestone" },
@@ -114,13 +96,15 @@ export const useInitializeEscrow = () => {
         ),
       };
 
-      const result: InitializeEscrowResponse = await initializeEscrow(
-        finalPayload
-      );
+      const result = (await escrowService({
+        payload: finalPayload,
+        endpoint: "/deployer/invoke-deployer-contract",
+        method: "post",
+      })) as InitializeEscrowResponse;
 
       if (result.status === "SUCCESS") {
         const escrow: Escrow = {
-          contractId: result.contract_id || result.escrow?.contractId,
+          contractId: result.contract_id,
           issuer: walletAddress || "",
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),

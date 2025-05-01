@@ -1,4 +1,3 @@
-import { useApiContext } from "@/providers/api.provider";
 import { formSchema } from "../schemas/get-escrow-form.schema";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useEscrowContext } from "@/providers/escrow.provider";
@@ -6,9 +5,11 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { GetEscrowPayload } from "@/@types/escrow-payload.entity";
+import { escrowService } from "../services/escrow.service";
+import { toast } from "sonner";
 
 export const useGetEscrowForm = () => {
-  const { apiKey, baseUrl } = useApiContext();
   const { walletAddress } = useWalletContext();
   const { escrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
@@ -23,32 +24,22 @@ export const useGetEscrowForm = () => {
     },
   });
 
-  const onSubmit = async (formData: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: GetEscrowPayload) => {
     setLoading(true);
     setError(null);
     setResponse(null);
-
     try {
-      const url = new URL(`${baseUrl}/escrow/get-escrow-by-contract-id`);
-      url.searchParams.append("contractId", formData.contractId);
-      url.searchParams.append("signer", formData.signer);
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
+      const result = await escrowService({
+        payload,
+        endpoint: "/escrow/get-escrow-by-contract-id",
+        method: "get",
+        requiresSignature: false,
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to get escrow");
-      }
-
-      setResponse(data);
+      toast.info("Escrow Received");
+      setResponse(result);
     } catch (err) {
-      setError(
+      toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     } finally {
