@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useInitializeEscrow } from "../../hooks/initialize-escrow.hook";
+import { useInitializeEscrow } from "../../hooks/initialize-escrow-form.hook";
 
 export function DeployEndpoints() {
   const {
