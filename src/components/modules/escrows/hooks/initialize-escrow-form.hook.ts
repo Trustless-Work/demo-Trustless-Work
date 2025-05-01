@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { GetFormSchema } from "../schemas/initialize-escrow.schema";
+import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
 import { Escrow, Milestone } from "@/@types/escrow.entity";
 import { initializeEscrow } from "../services/initialize-escrow.service";
 import { toast } from "sonner";
