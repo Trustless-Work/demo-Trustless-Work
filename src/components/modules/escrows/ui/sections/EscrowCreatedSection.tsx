@@ -2,7 +2,7 @@ import { CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { Milestone as MilestoneIcon, User } from "lucide-react";
+import { AlertCircle, Milestone as MilestoneIcon, User } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { EntityCard } from "../cards/EntityCard";
 import { EscrowDetailsSection } from "./EscrowDetailsSection";
@@ -12,6 +12,7 @@ import { HeaderSection } from "./HeaderSection";
 
 export const EscrowCreatedSection = () => {
   const { escrow } = useEscrowContext();
+
   const totalMilestones = escrow?.milestones.length || 0;
   const completedMilestones =
     escrow?.milestones.filter(
@@ -20,7 +21,7 @@ export const EscrowCreatedSection = () => {
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
-  return (
+  return escrow ? (
     <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto">
       <Card className="border-l-4 border-l-primary shadow-sm">
         <CardHeader className="pb-2">
@@ -98,5 +99,16 @@ export const EscrowCreatedSection = () => {
         </CardContent>
       </Card>
     </div>
+  ) : (
+    <Card className="w-full max-w-4xl mx-auto shadow-sm border-l-4 border-l-muted">
+      <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+        <AlertCircle className="h-12 w-12 text-muted-foreground mb-4" />
+        <h3 className="text-xl font-medium mb-2">No Escrow Available</h3>
+        <p className="text-muted-foreground max-w-md">
+          There is no escrow data to display at the moment. Please create a new
+          escrow.
+        </p>
+      </CardContent>
+    </Card>
   );
 };
