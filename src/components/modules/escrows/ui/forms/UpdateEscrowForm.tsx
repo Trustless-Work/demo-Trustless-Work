@@ -1,14 +1,7 @@
 "use client";
 
-import React from "react";
-import { useForm, useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-import { useApiContext } from "@/providers/api.provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Trash } from "lucide-react";
@@ -21,110 +14,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useUpdateEscrowForm } from "../../hooks/update-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { useWalletContext } from "@/providers/wallet.provider";
-
-// Zod schema
-const milestoneSchema = z.object({
-  description: z.string().min(1, "Required"),
-  status: z.string().min(1, "Required"),
-});
-
-const formSchema = z.object({
-  contractId: z.string().optional(),
-  signer: z.string().optional(),
-  escrow: z.object({
-    title: z.string(),
-    engagementId: z.string(),
-    description: z.string(),
-    approver: z.string(),
-    serviceProvider: z.string(),
-    platformAddress: z.string(),
-    amount: z.string(),
-    platformFee: z.string(),
-    milestones: z.array(milestoneSchema).min(1),
-    releaseSigner: z.string(),
-    disputeResolver: z.string(),
-    receiver: z.string(),
-    receiverMemo: z.number().optional(),
-    trustline: z.string().optional(),
-    trustlineDecimals: z.number().optional(),
-  }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
 
 export function UpdateEscrowForm() {
-  const { apiKey, baseUrl } = useApiContext();
+  const { form, loading, response, error, fields, append, remove, onSubmit } =
+    useUpdateEscrowForm();
   const { escrow } = useEscrowContext();
-  const { walletAddress } = useWalletContext();
-  const [response, setResponse] = React.useState<any>(null);
-  const [error, setError] = React.useState<string | null>(null);
-  const [loading, setLoading] = React.useState(false);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      contractId: escrow?.contractId || "",
-      signer: walletAddress || "",
-      escrow: {
-        title: escrow?.title || "",
-        engagementId: escrow?.engagementId || "",
-        description: escrow?.description || "",
-        approver: escrow?.approver || "",
-        serviceProvider: escrow?.serviceProvider || "",
-        platformAddress: escrow?.platformAddress || "",
-        amount: escrow?.amount || "",
-        platformFee: escrow?.platformFee || "",
-        milestones: escrow?.milestones?.length
-          ? escrow.milestones.map((m) => ({
-              ...m,
-              status: m.status || "pending",
-            }))
-          : [{ description: "", status: "pending" }],
-        releaseSigner: escrow?.releaseSigner || "",
-        disputeResolver: escrow?.disputeResolver || "",
-        receiver: escrow?.receiver || "",
-        receiverMemo: escrow?.receiverMemo || 0,
-      },
-    },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "escrow.milestones",
-  });
-
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    try {
-      const res = await fetch(
-        `${baseUrl}/escrow/update-escrow-by-contract-id`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      const json = await res.json();
-
-      if (!res.ok) throw new Error(json.message || "Failed to update escrow");
-      setResponse(json);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="space-y-6">

@@ -13,11 +13,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent } from "@/components/ui/card";
-import { useInitializeEscrow } from "@/components/modules/escrows/hooks/initialize-escrow.hook";
+import { useInitializeEscrow } from "@/components/modules/escrows/hooks/initialize-escrow-form.hook";
 import { ResponseDisplay } from "@/components/response-display";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { GetFormSchema } from "../../schemas/initialize-escrow.schema";
+import { GetFormSchema } from "../../schemas/initialize-escrow-form.schema";
 
 interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;

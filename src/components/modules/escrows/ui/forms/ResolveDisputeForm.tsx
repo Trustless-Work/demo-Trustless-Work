@@ -1,9 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,63 +11,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/response-display";
-import type { Escrow } from "@/@types/escrow.entity";
+import { useResolveDisputeForm } from "../../hooks/resolve-dispute-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 
-const formSchema = z.object({
-  contractId: z.string().min(1, "Contract ID is required"),
-  disputeResolver: z.string().min(1, "Dispute resolver address is required"),
-  approverFunds: z.string().min(1, "Approver funds is required"),
-  serviceProviderFunds: z.string().min(1, "Service provider funds is required"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
-
 export function ResolveDisputeForm() {
+  const { form, loading, response, error, onSubmit } = useResolveDisputeForm();
   const { escrow } = useEscrowContext();
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      contractId: escrow?.contractId || "",
-      disputeResolver: escrow?.disputeResolver || "",
-      approverFunds: "0",
-      serviceProviderFunds: "0",
-    },
-  });
-
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    try {
-      const response = await fetch("/api/escrow/resolve-dispute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to resolve dispute");
-      }
-
-      setResponse(result);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="space-y-6">

@@ -1,9 +1,5 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,62 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/response-display";
+import { useDistributeEscrowEarningsForm } from "../../hooks/distribute-escrow-earnings-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { useWalletContext } from "@/providers/wallet.provider";
-
-const formSchema = z.object({
-  contractId: z.string().min(1, "Contract ID is required"),
-  releaseSigner: z.string().min(1, "Release signer address is required"),
-  signer: z.string().min(1, "Signer address is required"),
-});
-
-type FormValues = z.infer<typeof formSchema>;
 
 export function DistributeEarningsForm() {
+  const { form, loading, response, error, onSubmit } =
+    useDistributeEscrowEarningsForm();
   const { escrow } = useEscrowContext();
-  const { walletAddress } = useWalletContext();
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const form = useForm({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      contractId: escrow?.contractId || "",
-      releaseSigner: escrow?.releaseSigner || "",
-      signer: walletAddress || "Connect your wallet to get your address",
-    },
-  });
-
-  const onSubmit = async (data: FormValues) => {
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    try {
-      const response = await fetch("/api/escrow/distribute-earnings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to distribute earnings");
-      }
-
-      setResponse(result);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="space-y-6">

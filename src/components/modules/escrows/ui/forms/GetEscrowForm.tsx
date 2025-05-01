@@ -1,12 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useApiContext } from "@/providers/api.provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ResponseDisplay } from "@/components/response-display";
-import { useEscrowContext } from "@/providers/escrow.provider";
-import { useWalletContext } from "@/providers/wallet.provider";
 import {
   Form,
   FormField,
@@ -14,67 +10,12 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form"; // Asegúrate de tener estos componentes o adaptarlos
-
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-
-// Define Zod validation schema
-const schema = z.object({
-  contractId: z.string().min(1, "Contract ID is required"),
-  signer: z.string().min(1, "Signer Address is required"),
-});
-
+} from "@/components/ui/form";
+import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
+import { useEscrowContext } from "@/providers/escrow.provider";
 export function GetEscrowForm() {
-  const { apiKey, baseUrl } = useApiContext();
-  const { walletAddress } = useWalletContext();
+  const { form, loading, response, error, onSubmit } = useGetEscrowForm();
   const { escrow } = useEscrowContext();
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Initialize react-hook-form with Zod validation
-  const form = useForm({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      contractId: escrow?.contractId || "",
-      signer: walletAddress || "Connect your wallet to get your address",
-    },
-  });
-
-  const onSubmit = async (formData: any) => {
-    setLoading(true);
-    setError(null);
-    setResponse(null);
-
-    try {
-      const url = new URL(`${baseUrl}/escrow/get-escrow-by-contract-id`);
-      url.searchParams.append("contractId", formData.contractId);
-      url.searchParams.append("signer", formData.signer);
-
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to get escrow");
-      }
-
-      setResponse(data);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Form {...form}>
