@@ -1,17 +1,20 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DeployEndpoints } from "@/components/endpoints/deploy-endpoints";
-import { EscrowEndpoints } from "@/components/endpoints/escrow-endpoints";
-import { HelperEndpoints } from "@/components/endpoints/helper-endpoints";
-import { useState } from "react";
+import { DeployEndpoints } from "@/components/modules/ui/endpoints/deploy-endpoints";
+import { EscrowEndpoints } from "@/components/modules/ui/endpoints/escrow-endpoints";
+import { HelperEndpoints } from "@/components/modules/ui/endpoints/helper-endpoints";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const MainTabs = () => {
-  const [activeTab, setActiveTab] = useState("deploy");
+  const { activeTab, setActiveTab } = useTabsContext();
 
   return (
     <Tabs
+      key={activeTab}
       value={activeTab}
-      onValueChange={setActiveTab}
-      className="w-full px-4"
+      onValueChange={(val) =>
+        setActiveTab(val as "deploy" | "escrow" | "helper")
+      }
+      className="w-full"
     >
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="deploy" className="">
