@@ -57,6 +57,49 @@ export const useInitializeEscrow = () => {
     }
   };
 
+  const loadTemplate = () => {
+    console.log("loadTemplate");
+
+    form.setValue("title", "Sample TW Escrow");
+    form.setValue(
+      "description",
+      "This is a sample TW escrow for testing purposes"
+    );
+    form.setValue("engagementId", "ENG12345");
+    form.setValue("amount", "50");
+    form.setValue("platformFee", "5");
+    form.setValue(
+      "approver",
+      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
+    );
+    form.setValue(
+      "serviceProvider",
+      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
+    );
+    form.setValue(
+      "platformAddress",
+      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
+    );
+    form.setValue(
+      "releaseSigner",
+      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
+    );
+    form.setValue(
+      "disputeResolver",
+      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
+    );
+    form.setValue(
+      "receiver",
+      "GCU2QK44SQVUOSZZTMT4TQPNSSWSXBPU7VZV2MSJRMO7TPDTHIQE6UEG"
+    );
+    form.setValue("receiverMemo", 90909090);
+    form.setValue("milestones", [
+      { description: "Initial milestone" },
+      { description: "Second milestone" },
+      { description: "Final milestone" },
+    ]);
+  };
+
   const onSubmit = async (payload: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError(null);
@@ -120,6 +163,7 @@ export const useInitializeEscrow = () => {
     error,
     addMilestone,
     removeMilestone,
+    loadTemplate,
     onSubmit,
   };
 };
