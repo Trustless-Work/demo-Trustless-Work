@@ -43,8 +43,6 @@ export function GetEscrowForm() {
     },
   });
 
-  const { handleSubmit, control } = form;
-
   const onSubmit = async (formData: any) => {
     setLoading(true);
     setError(null);
@@ -80,7 +78,7 @@ export function GetEscrowForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="contractId"
@@ -100,7 +98,7 @@ export function GetEscrowForm() {
         />
 
         <FormField
-          control={control}
+          control={form.control}
           name="signer"
           render={({ field }) => (
             <FormItem>

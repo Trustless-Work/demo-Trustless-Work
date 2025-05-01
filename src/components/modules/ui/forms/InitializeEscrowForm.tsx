@@ -31,7 +31,7 @@ export const InitializeEscrowForm = () => {
     <div className="space-y-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField
               control={form.control}
               name="title"
@@ -46,14 +46,156 @@ export const InitializeEscrowForm = () => {
               )}
             />
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="engagementId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Engagement ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="ENG12345" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="receiverMemo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="flex items-center">
+                      Receiver Memo (opcional)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Receiver Memo"
+                        value={field.value ?? ""}
+                        onChange={(e) =>
+                          field.onChange(
+                            e.target.value === "" ? 0 : Number(e.target.value)
+                          )
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Amount</FormLabel>
+                    <FormControl>
+                      <Input placeholder="1000" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="platformFee"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Platform Fee (%)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="5" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="engagementId"
+              name="approver"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Engagement ID</FormLabel>
+                  <FormLabel>Approver Address</FormLabel>
                   <FormControl>
-                    <Input placeholder="ENG12345" {...field} />
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="serviceProvider"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Provider Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="platformAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Platform Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="releaseSigner"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Release Signer Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="disputeResolver"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dispute Resolver Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="receiver"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Receiver Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -69,150 +211,6 @@ export const InitializeEscrowForm = () => {
                 <FormLabel>Description</FormLabel>
                 <FormControl>
                   <Textarea placeholder="Escrow description" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="approver"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Approver Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="GAPPROVER...XYZ" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="serviceProvider"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service Provider Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="GSERVICE...XYZ" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="platformAddress"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Platform Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="GPLATFORM...XYZ" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1000" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="platformFee"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Platform Fee (%)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="5" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="releaseSigner"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Release Signer Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="GREL...XYZ" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="disputeResolver"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dispute Resolver Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="GDISPUTE...XYZ" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <FormField
-            control={form.control}
-            name="receiver"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Receiver Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="GRECEIVER...XYZ" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="receiverMemo"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex items-center">
-                  Receiver Memo (opcional)
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Enter the escrow receiver Memo"
-                    value={field.value ?? ""}
-                    onChange={(e) =>
-                      field.onChange(
-                        e.target.value === ""
-                          ? undefined
-                          : Number(e.target.value)
-                      )
-                    }
-                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -243,7 +241,7 @@ export const InitializeEscrowForm = () => {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>
-                              Milestone {index + 1} Description
+                              Milestone {index + 1} - Description
                             </FormLabel>
                             <FormControl>
                               <Textarea

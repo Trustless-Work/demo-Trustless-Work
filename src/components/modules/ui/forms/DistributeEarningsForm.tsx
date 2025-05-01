@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/response-display";
 import { useEscrowContext } from "@/providers/escrow.provider";
+import { useWalletContext } from "@/providers/wallet.provider";
 
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
@@ -27,16 +28,17 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function DistributeEarningsForm() {
   const { escrow } = useEscrowContext();
+  const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      releaseSigner: escrow?.releaseSigner || "GRELEASE123456789",
-      signer: "GSIGNER123456789",
+      contractId: escrow?.contractId || "",
+      releaseSigner: escrow?.releaseSigner || "",
+      signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
@@ -79,23 +81,13 @@ export function DistributeEarningsForm() {
             name="contractId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract ID</FormLabel>
+                <FormLabel>Contract / Escrow ID</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly={!!escrow?.contractId} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="releaseSigner"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Release Signer Address</FormLabel>
-                <FormControl>
-                  <Input {...field} readOnly />
+                  <Input
+                    placeholder="CAZ6UQX7..."
+                    {...field}
+                    disabled={!!escrow?.contractId}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -109,7 +101,21 @@ export function DistributeEarningsForm() {
               <FormItem>
                 <FormLabel>Signer Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="GSIGN...XYZ" {...field} />
+                  <Input disabled placeholder="GSIGN...XYZ" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="releaseSigner"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Release Signer Address</FormLabel>
+                <FormControl>
+                  <Input disabled placeholder="GSERVICE...XYZ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

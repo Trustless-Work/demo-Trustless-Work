@@ -36,10 +36,10 @@ export function ResolveDisputeForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      disputeResolver: escrow?.disputeResolver || "GDISPUTE123456789",
-      approverFunds: "300",
-      serviceProviderFunds: "700",
+      contractId: escrow?.contractId || "",
+      disputeResolver: escrow?.disputeResolver || "",
+      approverFunds: "0",
+      serviceProviderFunds: "0",
     },
   });
 
@@ -82,9 +82,13 @@ export function ResolveDisputeForm() {
             name="contractId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract ID</FormLabel>
+                <FormLabel>Contract / Escrow ID</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly={!!escrow?.contractId} />
+                  <Input
+                    placeholder="CAZ6UQX7..."
+                    {...field}
+                    disabled={!!escrow?.contractId}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -98,7 +102,7 @@ export function ResolveDisputeForm() {
               <FormItem>
                 <FormLabel>Dispute Resolver Address</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly />
+                  <Input disabled placeholder="GDISPUTE...XYZ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

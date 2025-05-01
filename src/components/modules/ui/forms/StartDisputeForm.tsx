@@ -32,11 +32,11 @@ export function StartDisputeForm() {
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "",
-      signer: walletAddress || "",
+      signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
@@ -79,9 +79,13 @@ export function StartDisputeForm() {
             name="contractId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract ID</FormLabel>
+                <FormLabel>Contract / Escrow ID</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly={!!escrow?.contractId} />
+                  <Input
+                    placeholder="CAZ6UQX7..."
+                    {...field}
+                    disabled={!!escrow?.contractId}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -95,7 +99,7 @@ export function StartDisputeForm() {
               <FormItem>
                 <FormLabel>Signer Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="GSIGN...XYZ" {...field} />
+                  <Input disabled placeholder="GSIGN...XYZ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

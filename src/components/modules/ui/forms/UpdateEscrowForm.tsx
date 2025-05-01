@@ -1,8 +1,10 @@
 "use client";
 
-import type React from "react";
+import React from "react";
+import { useForm, useFieldArray } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-import { useState } from "react";
 import { useApiContext } from "@/providers/api.provider";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,116 +13,95 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Trash } from "lucide-react";
 import { ResponseDisplay } from "@/components/response-display";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useEscrowContext } from "@/providers/escrow.provider";
+import { useWalletContext } from "@/providers/wallet.provider";
 
-type Milestone = {
-  description: string;
-  status: string;
-};
+// Zod schema
+const milestoneSchema = z.object({
+  description: z.string().min(1, "Required"),
+  status: z.string().min(1, "Required"),
+});
+
+const formSchema = z.object({
+  contractId: z.string().optional(),
+  signer: z.string().optional(),
+  escrow: z.object({
+    title: z.string(),
+    engagementId: z.string(),
+    description: z.string(),
+    approver: z.string(),
+    serviceProvider: z.string(),
+    platformAddress: z.string(),
+    amount: z.string(),
+    platformFee: z.string(),
+    milestones: z.array(milestoneSchema).min(1),
+    releaseSigner: z.string(),
+    disputeResolver: z.string(),
+    receiver: z.string(),
+    receiverMemo: z.number().optional(),
+    trustline: z.string().optional(),
+    trustlineDecimals: z.number().optional(),
+  }),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export function UpdateEscrowForm() {
   const { apiKey, baseUrl } = useApiContext();
-  const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { escrow } = useEscrowContext();
+  const { walletAddress } = useWalletContext();
+  const [response, setResponse] = React.useState<any>(null);
+  const [error, setError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
 
-  const [formData, setFormData] = useState({
-    signer: "",
-    contractId: "",
-    escrow: {
-      signer: "",
-      engagementId: "",
-      title: "",
-      description: "",
-      approver: "",
-      serviceProvider: "",
-      platformAddress: "",
-      amount: "",
-      platformFee: "",
-      milestones: [{ description: "", status: "pending" }] as Milestone[],
-      disputeFlag: false,
-      releaseFlag: false,
-      resolvedFlag: false,
-      releaseSigner: "",
-      disputeResolver: "",
-      receiver: "",
-      receiverMemo: "",
-      trustline: "",
-      trustlineDecimals: "",
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      contractId: escrow?.contractId || "",
+      signer: walletAddress || "",
+      escrow: {
+        title: escrow?.title || "",
+        engagementId: escrow?.engagementId || "",
+        description: escrow?.description || "",
+        approver: escrow?.approver || "",
+        serviceProvider: escrow?.serviceProvider || "",
+        platformAddress: escrow?.platformAddress || "",
+        amount: escrow?.amount || "",
+        platformFee: escrow?.platformFee || "",
+        milestones: escrow?.milestones?.length
+          ? escrow.milestones.map((m) => ({
+              ...m,
+              status: m.status || "pending",
+            }))
+          : [{ description: "", status: "pending" }],
+        releaseSigner: escrow?.releaseSigner || "",
+        disputeResolver: escrow?.disputeResolver || "",
+        receiver: escrow?.receiver || "",
+        receiverMemo: escrow?.receiverMemo || 0,
+      },
     },
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name.includes("escrow.")) {
-      const escrowField = name.replace("escrow.", "");
-      setFormData((prev) => ({
-        ...prev,
-        escrow: {
-          ...prev.escrow,
-          [escrowField]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "escrow.milestones",
+  });
 
-  const handleMilestoneChange = (
-    index: number,
-    field: string,
-    value: string
-  ) => {
-    const updatedMilestones = [...formData.escrow.milestones];
-    updatedMilestones[index] = {
-      ...updatedMilestones[index],
-      [field]: value,
-    };
-    setFormData((prev) => ({
-      ...prev,
-      escrow: {
-        ...prev.escrow,
-        milestones: updatedMilestones,
-      },
-    }));
-  };
-
-  const addMilestone = () => {
-    setFormData((prev) => ({
-      ...prev,
-      escrow: {
-        ...prev.escrow,
-        milestones: [
-          ...prev.escrow.milestones,
-          { description: "", status: "pending" },
-        ],
-      },
-    }));
-  };
-
-  const removeMilestone = (index: number) => {
-    if (formData.escrow.milestones.length > 1) {
-      const updatedMilestones = [...formData.escrow.milestones];
-      updatedMilestones.splice(index, 1);
-      setFormData((prev) => ({
-        ...prev,
-        escrow: {
-          ...prev.escrow,
-          milestones: updatedMilestones,
-        },
-      }));
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: FormValues) => {
     setLoading(true);
     setError(null);
     setResponse(null);
 
     try {
-      const response = await fetch(
+      const res = await fetch(
         `${baseUrl}/escrow/update-escrow-by-contract-id`,
         {
           method: "PUT",
@@ -128,17 +109,14 @@ export function UpdateEscrowForm() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${apiKey}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(data),
         }
       );
 
-      const data = await response.json();
+      const json = await res.json();
 
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to update escrow");
-      }
-
-      setResponse(data);
+      if (!res.ok) throw new Error(json.message || "Failed to update escrow");
+      setResponse(json);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
@@ -150,166 +128,273 @@ export function UpdateEscrowForm() {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="signer">Signer Address</Label>
-            <Input
-              id="signer"
-              name="signer"
-              placeholder="GSIGN...XYZ"
-              value={formData.signer}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="contractId">Contract ID</Label>
-            <Input
-              id="contractId"
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
               name="contractId"
-              placeholder="CAZ6UQX7..."
-              value={formData.contractId}
-              onChange={handleChange}
-              required
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Contract / Escrow ID</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="CAZ6UQX7..."
+                      {...field}
+                      disabled={!!escrow?.contractId}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="signer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Signer Address</FormLabel>
+                  <FormControl>
+                    <Input disabled placeholder="GSIGN...XYZ" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="escrow.engagementId">Engagement ID</Label>
-          <Input
-            id="escrow.engagementId"
-            name="escrow.engagementId"
-            placeholder="ENG12345"
-            value={formData.escrow.engagementId}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="escrow.title">Title</Label>
-          <Input
-            id="escrow.title"
+          <FormField
+            control={form.control}
             name="escrow.title"
-            placeholder="Escrow Title"
-            value={formData.escrow.title}
-            onChange={handleChange}
-            required
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Title</FormLabel>
+                <FormControl>
+                  <Input placeholder="Escrow Title" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="escrow.description">Description</Label>
-          <Textarea
-            id="escrow.description"
-            name="escrow.description"
-            placeholder="Escrow description"
-            value={formData.escrow.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="escrow.engagementId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Engagement ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="ENG12345" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="space-y-2">
-            <Label htmlFor="escrow.approver">Approver Address</Label>
-            <Input
-              id="escrow.approver"
+            <FormField
+              control={form.control}
+              name="escrow.receiverMemo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Receiver Memo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="0" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="escrow.amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount</FormLabel>
+                  <FormControl>
+                    <Input placeholder="1000" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="escrow.platformFee"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Platform Fee (%)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="5" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
               name="escrow.approver"
-              placeholder="GAPPROVER...XYZ"
-              value={formData.escrow.approver}
-              onChange={handleChange}
-              required
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Approver Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="escrow.serviceProvider">
-              Service Provider Address
-            </Label>
-            <Input
-              id="escrow.serviceProvider"
+            <FormField
+              control={form.control}
               name="escrow.serviceProvider"
-              placeholder="GSERVICE...XYZ"
-              value={formData.escrow.serviceProvider}
-              onChange={handleChange}
-              required
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Provider Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="escrow.platformAddress"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Platform Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="escrow.releaseSigner"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Release Signer Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="escrow.disputeResolver"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Dispute Resolver Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="escrow.receiver"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Receiver Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
           </div>
-        </div>
 
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <Label>Milestones</Label>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={addMilestone}
-            >
-              <Plus className="h-4 w-4 mr-2" /> Add Milestone
-            </Button>
+          <FormField
+            control={form.control}
+            name="escrow.description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Description</FormLabel>
+                <FormControl>
+                  <Textarea placeholder="Escrow description" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Milestones */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <FormLabel>Milestones</FormLabel>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => append({ description: "", status: "pending" })}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Milestone
+              </Button>
+            </div>
+
+            {fields.map((field, index) => (
+              <Card key={field.id}>
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-2">
+                    <div className="flex-1">
+                      <FormField
+                        control={form.control}
+                        name={`escrow.milestones.${index}.description`}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Milestone {index + 1}</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="Milestone description"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => remove(index)}
+                        className="mt-8"
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
 
-          {formData.escrow.milestones.map((milestone, index) => (
-            <Card key={index}>
-              <CardContent className="p-4">
-                <div className="flex items-start gap-2">
-                  <div className="flex-1 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`milestone-desc-${index}`}>
-                        Description
-                      </Label>
-                      <Textarea
-                        id={`milestone-desc-${index}`}
-                        value={milestone.description}
-                        onChange={(e) =>
-                          handleMilestoneChange(
-                            index,
-                            "description",
-                            e.target.value
-                          )
-                        }
-                        placeholder="Milestone description"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor={`milestone-status-${index}`}>
-                        Status
-                      </Label>
-                      <Input
-                        id={`milestone-status-${index}`}
-                        value={milestone.status}
-                        onChange={(e) =>
-                          handleMilestoneChange(index, "status", e.target.value)
-                        }
-                        placeholder="pending"
-                        required
-                      />
-                    </div>
-                  </div>
-                  {formData.escrow.milestones.length > 1 && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => removeMilestone(index)}
-                    >
-                      <Trash className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Updating..." : "Update Escrow"}
-        </Button>
-      </form>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Updating..." : "Update Escrow"}
+          </Button>
+        </form>
+      </Form>
 
       <ResponseDisplay response={response} error={error} />
     </div>

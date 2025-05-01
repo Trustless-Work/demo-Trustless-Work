@@ -94,9 +94,31 @@ export function ChangeMilestoneFlagForm() {
             name="contractId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract ID</FormLabel>
+                <FormLabel>Contract / Escrow ID</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly={!!escrow?.contractId} />
+                  <Input
+                    placeholder="CAZ6UQX7..."
+                    {...field}
+                    disabled={!!escrow?.contractId}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="approver"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Approver Address</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="GSERVICE..."
+                    {...field}
+                    disabled={!!escrow?.approver}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -107,14 +129,14 @@ export function ChangeMilestoneFlagForm() {
             control={form.control}
             name="milestoneIndex"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Milestone Index</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a milestone" />
                     </SelectTrigger>
                     <SelectContent>
@@ -141,23 +163,10 @@ export function ChangeMilestoneFlagForm() {
                 </div>
                 <FormControl>
                   <Switch
+                    disabled={true}
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="approver"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Approver Address</FormLabel>
-                <FormControl>
-                  <Input {...field} readOnly />
                 </FormControl>
                 <FormMessage />
               </FormItem>
