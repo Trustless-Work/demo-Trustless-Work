@@ -37,7 +37,7 @@ export const useInitializeEscrow = () => {
       releaseSigner: "",
       disputeResolver: "",
       receiver: "",
-      receiverMemo: undefined,
+      receiverMemo: 0,
     },
     mode: "onChange",
   });
