@@ -35,9 +35,9 @@ export function FundEscrowForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
-      signer: walletAddress || "",
+      contractId: escrow?.contractId || "",
       amount: escrow?.amount || "1000",
+      signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
@@ -80,9 +80,13 @@ export function FundEscrowForm() {
             name="contractId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract ID</FormLabel>
+                <FormLabel>Contract / Escrow ID</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly={!!escrow?.contractId} />
+                  <Input
+                    placeholder="CAZ6UQX7..."
+                    {...field}
+                    disabled={!!escrow?.contractId}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -96,7 +100,7 @@ export function FundEscrowForm() {
               <FormItem>
                 <FormLabel>Signer Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="GSIGN...XYZ" {...field} />
+                  <Input disabled placeholder="GSIGN...XYZ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

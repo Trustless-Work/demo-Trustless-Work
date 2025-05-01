@@ -26,7 +26,7 @@ import { useEscrowContext } from "@/providers/escrow.provider";
 const formSchema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
   milestoneIndex: z.string().min(1, "Milestone index is required"),
-  newStatus: z.enum(["pending", "completed", "approved"]),
+  newStatus: z.string().min(1, "New status is required"),
   serviceProvider: z.string().min(1, "Service provider address is required"),
 });
 
@@ -47,10 +47,10 @@ export function ChangeMilestoneStatusForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
+      contractId: escrow?.contractId || "",
       milestoneIndex: "",
-      newStatus: "completed",
-      serviceProvider: escrow?.serviceProvider || "GSERVICE123456789",
+      newStatus: "",
+      serviceProvider: escrow?.serviceProvider || "",
     },
   });
 
@@ -93,9 +93,31 @@ export function ChangeMilestoneStatusForm() {
             name="contractId"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract ID</FormLabel>
+                <FormLabel>Contract / Escrow ID</FormLabel>
                 <FormControl>
-                  <Input {...field} readOnly={!!escrow?.contractId} />
+                  <Input
+                    placeholder="CAZ6UQX7..."
+                    {...field}
+                    disabled={!!escrow?.contractId}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="serviceProvider"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Service Provider Address</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="GSERVICE..."
+                    {...field}
+                    disabled={!!escrow?.serviceProvider}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -106,14 +128,14 @@ export function ChangeMilestoneStatusForm() {
             control={form.control}
             name="milestoneIndex"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Milestone Index</FormLabel>
                 <FormControl>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="Select a milestone" />
                     </SelectTrigger>
                     <SelectContent>
@@ -137,33 +159,7 @@ export function ChangeMilestoneStatusForm() {
               <FormItem>
                 <FormLabel>New Status</FormLabel>
                 <FormControl>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="completed">Completed</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                      <SelectItem value="approved">Approved</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="serviceProvider"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Service Provider Address</FormLabel>
-                <FormControl>
-                  <Input {...field} readOnly />
+                  <Input placeholder="Completed" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -24,10 +24,6 @@ import { z } from "zod";
 const schema = z.object({
   contractId: z.string().min(1, "Contract ID is required"),
   signer: z.string().min(1, "Signer Address is required"),
-  description: z.string().min(1, "Description is required"),
-  amount: z.number().min(1, "Amount must be greater than 0"),
-  platformFee: z.number().min(0, "Platform Fee cannot be negative"),
-  receiverMemo: z.number().optional(),
 });
 
 export function GetEscrowForm() {
@@ -43,7 +39,7 @@ export function GetEscrowForm() {
     resolver: zodResolver(schema),
     defaultValues: {
       contractId: escrow?.contractId || "",
-      signer: walletAddress || "",
+      signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
@@ -86,13 +82,17 @@ export function GetEscrowForm() {
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <FormField
-          control={control}
+          control={form.control}
           name="contractId"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contract ID</FormLabel>
+              <FormLabel>Contract / Escrow ID</FormLabel>
               <FormControl>
-                <Input placeholder="CAZ6UQX7..." {...field} />
+                <Input
+                  placeholder="CAZ6UQX7..."
+                  {...field}
+                  disabled={!!escrow?.contractId}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -106,7 +106,7 @@ export function GetEscrowForm() {
             <FormItem>
               <FormLabel>Signer Address</FormLabel>
               <FormControl>
-                <Input placeholder="GSIGN...XYZ" {...field} />
+                <Input disabled placeholder="GSIGN...XYZ" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
