@@ -1,59 +1,33 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useMemo,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 import type { Escrow } from "@/@types/escrow.entity";
 
-interface EscrowContextType {
+interface EscrowContextProps {
   escrow: Escrow | null;
   setEscrow: (escrow: Escrow) => void;
-  clearEscrow: () => void;
-  hasEscrow: boolean;
 }
 
-const EscrowContext = createContext<EscrowContextType>({
-  escrow: null,
-  setEscrow: () => {},
-  clearEscrow: () => {},
-  hasEscrow: false,
-});
+const EscrowContext = createContext<EscrowContextProps | undefined>(undefined);
 
-export const useEscrow = () => useContext(EscrowContext);
-
-interface EscrowProviderProps {
-  children: ReactNode;
-}
-
-export function EscrowProvider({ children }: EscrowProviderProps) {
+export const EscrowProvider = ({ children }: { children: ReactNode }) => {
   const [escrow, setEscrowState] = useState<Escrow | null>(null);
 
-  const setEscrow = useCallback((newEscrow: Escrow) => {
+  const setEscrow = (newEscrow: Escrow) => {
     setEscrowState(newEscrow);
-  }, []);
-
-  const clearEscrow = useCallback(() => {
-    setEscrowState(null);
-  }, []);
-
-  const hasEscrow = useMemo(() => escrow !== null, [escrow]);
-
-  const value = useMemo(
-    () => ({
-      escrow,
-      setEscrow,
-      clearEscrow,
-      hasEscrow,
-    }),
-    [escrow, setEscrow, clearEscrow, hasEscrow]
-  );
+  };
 
   return (
-    <EscrowContext.Provider value={value}>{children}</EscrowContext.Provider>
+    <EscrowContext.Provider value={{ escrow, setEscrow }}>
+      {children}
+    </EscrowContext.Provider>
   );
-}
+};
+
+export const useEscrowContext = () => {
+  const context = useContext(EscrowContext);
+  if (!context) {
+    throw new Error("useEscrowContext must be used within EscrowProvider");
+  }
+  return context;
+};
