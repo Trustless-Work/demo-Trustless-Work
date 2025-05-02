@@ -36,14 +36,16 @@ export const useFundEscrowForm = () => {
         payload,
         endpoint: "/escrow/fund-escrow",
         method: "post",
+        returnEscrowDataIsRequired: false,
       });
 
       if (result.status === "SUCCESS") {
         const escrowUpdated: Escrow = {
           ...escrow!,
-          balance: (
-            Number(payload.amount) + Number(escrow!.balance)
-          ).toString(),
+          balance:
+            escrow?.balance && Number(escrow.balance) > 0
+              ? (Number(escrow.balance) + Number(payload.amount)).toString()
+              : payload.amount,
         };
 
         setEscrow(escrowUpdated);

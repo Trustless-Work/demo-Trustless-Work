@@ -12,6 +12,7 @@ interface EscrowServiceProps<T extends EscrowPayloadService> {
   endpoint: string;
   method: "post" | "put" | "get";
   requiresSignature?: boolean;
+  returnEscrowDataIsRequired?: boolean;
 }
 
 export const escrowService = async <T extends EscrowPayloadService>({
@@ -19,6 +20,7 @@ export const escrowService = async <T extends EscrowPayloadService>({
   endpoint,
   method,
   requiresSignature = true,
+  returnEscrowDataIsRequired = true,
 }: EscrowServiceProps<T>): Promise<EscrowRequestResponse> => {
   try {
     if (!requiresSignature) {
@@ -57,7 +59,7 @@ export const escrowService = async <T extends EscrowPayloadService>({
 
     const tx = await http.post("/helper/send-transaction", {
       signedXdr: signedTxXdr,
-      returnEscrowDataIsRequired: true,
+      returnEscrowDataIsRequired,
     });
 
     return tx.data;
