@@ -18,20 +18,46 @@ import { DistributeEarningsForm } from "../forms/DistributeEarningsForm";
 import { ResolveDisputeForm } from "../forms/ResolveDisputeForm";
 import { UpdateEscrowForm } from "../forms/UpdateEscrowForm";
 import { EscrowCreatedSection } from "../sections/EscrowCreatedSection";
+import { useEscrowContext } from "@/providers/escrow.provider";
+import { useTabsContext } from "@/providers/tabs.provider";
+import { Button } from "@/components/ui/button";
 
 export function EscrowEndpoints() {
-  const [activeTab, setActiveTab] = useState("get-escrow");
+  const [activeTabEscrow, setActiveTabEscrow] = useState("get-escrow");
+  const { resetEscrow } = useEscrowContext();
+  const { setActiveTab } = useTabsContext();
+  const { escrow } = useEscrowContext();
 
   return (
     <Card className="border shadow-sm">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-xl">Escrow Endpoints</CardTitle>
-        <CardDescription>
-          Manage escrow contracts, milestones, and funds
-        </CardDescription>
+      <CardHeader className="pb-3 flex justify-between gap-4">
+        <div className="flex gap-2 flex-col">
+          <CardTitle className="text-xl">Escrow Endpoints</CardTitle>
+          <CardDescription>
+            Manage escrow contracts, milestones, and funds
+          </CardDescription>
+        </div>
+
+        {escrow && (
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              resetEscrow();
+              setActiveTab("deploy");
+            }}
+            className="mb-4"
+          >
+            Reset Escrow
+          </Button>
+        )}
       </CardHeader>
       <CardContent className="p-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <Tabs
+          value={activeTabEscrow}
+          onValueChange={setActiveTabEscrow}
+          className="w-full"
+        >
           <TabsList className="w-full flex flex-wrap mb-4 gap-1">
             <TabsTrigger value="get-escrow" className="flex-1">
               Get Escrow
