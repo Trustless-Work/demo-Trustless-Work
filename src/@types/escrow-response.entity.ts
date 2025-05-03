@@ -8,7 +8,7 @@ export type EscrowRequestResponse = {
 };
 
 export type InitializeEscrowResponse = {
-  contract_id: string;
+  contractId: string;
   escrow: EscrowPayload;
   message: string;
   status: Status;

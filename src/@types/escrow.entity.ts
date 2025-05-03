@@ -1,38 +1,38 @@
-import type { CreatedAt, UpdatedAt } from "./date.entity";
 import { Trustline } from "./trustline.entity";
-
-export type MilestoneStatus = "completed" | "approved" | "pending";
 
 export type Milestone = {
   description: string;
-  status?: MilestoneStatus;
-  flag?: boolean;
+  status: string;
+  evidence: string;
+  approvedFlag: boolean;
+};
+
+export type Roles = {
+  approver: string;
+  serviceProvider: string;
+  platformAddress: string;
+  releaseSigner: string;
+  disputeResolver: string;
+  receiver: string;
+};
+
+export type Flags = {
+  disputeFlag: boolean;
+  releaseFlag: boolean;
+  resolvedFlag: boolean;
 };
 
 export interface Escrow {
-  title: string;
-  description: string;
-  createdAt: CreatedAt;
-  updatedAt: UpdatedAt;
-  contractId?: string;
-  balance?: string;
-  trustline?: Trustline;
-  milestones: Milestone[];
-  serviceProvider: string;
+  signer: string;
+  contractId: string;
   engagementId: string;
-  disputeResolver: string;
+  title: string;
+  roles: Roles;
+  description: string;
   amount: string;
-  platformAddress: string;
   platformFee: string;
-  approver: string;
-  releaseSigner: string;
-  issuer: string;
-  disputeFlag?: boolean;
-  releaseFlag?: boolean;
-  resolvedFlag?: boolean;
-  approverFunds?: string;
-  receiverFunds?: string;
-  receiver?: string;
-  receiverMemo?: number;
-  disputeStartedBy?: string;
+  milestones: Milestone[];
+  flags?: Flags;
+  trustline: Trustline;
+  receiverMemo: number;
 }
