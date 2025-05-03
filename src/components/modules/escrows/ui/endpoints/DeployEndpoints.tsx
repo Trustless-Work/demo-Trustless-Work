@@ -17,6 +17,7 @@ export function DeployEndpoints() {
     loading,
     response,
     error,
+    trustlinesOptions,
     loadTemplate,
     addMilestone,
     removeMilestone,
@@ -55,6 +56,7 @@ export function DeployEndpoints() {
           loading={loading}
           response={response}
           error={error}
+          trustlinesOptions={trustlinesOptions}
         />
       </CardContent>
     </Card>

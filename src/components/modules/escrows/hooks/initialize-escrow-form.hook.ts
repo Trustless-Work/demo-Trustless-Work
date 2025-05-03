@@ -3,48 +3,47 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
-import { Escrow, Milestone } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { escrowService } from "../services/escrow.service";
+import { trustlines } from "../constants/trustline.constant";
+import { Trustline } from "@/@types/trustline.entity";
+import { z } from "zod";
+import { Resolver } from "react-hook-form";
+import { getDefaultValues } from "../default-values/initialize-escrow.default-values";
+
+type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
 
 export const useInitializeEscrow = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const { walletAddress } = useWalletContext();
-  const formSchema = GetFormSchema();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();
+  const formSchema = GetFormSchema();
 
-  // Initialize the form
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      engagementId: "",
-      title: "",
-      description: "",
-      approver: "",
-      serviceProvider: "",
-      platformAddress: "",
-      amount: "",
-      platformFee: "",
-      milestones: [{ description: "" }],
-      releaseSigner: "",
-      disputeResolver: "",
-      receiver: "",
-      receiverMemo: 0,
-    },
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema) as Resolver<FormValues>,
+    defaultValues: getDefaultValues(walletAddress || ""),
     mode: "onChange",
   });
 
+  const trustlinesOptions = trustlines.map((trustline: Trustline) => ({
+    value: trustline.address,
+    label: trustline.name,
+  }));
+
   const addMilestone = () => {
     const currentMilestones = form.getValues("milestones");
-    form.setValue("milestones", [...currentMilestones, { description: "" }]);
+    form.setValue("milestones", [
+      ...currentMilestones,
+      { description: "", status: "pending", evidence: "", approvedFlag: false },
+    ]);
   };
 
   const removeMilestone = (index: number) => {
@@ -58,8 +57,6 @@ export const useInitializeEscrow = () => {
   };
 
   const loadTemplate = () => {
-    console.log("loadTemplate");
-
     form.setValue("title", "Sample TW Escrow");
     form.setValue(
       "description",
@@ -68,32 +65,48 @@ export const useInitializeEscrow = () => {
     form.setValue("engagementId", "ENG12345");
     form.setValue("amount", "50");
     form.setValue("platformFee", "5");
-    form.setValue("approver", walletAddress || "");
-    form.setValue("serviceProvider", walletAddress || "");
-    form.setValue("platformAddress", walletAddress || "");
-    form.setValue("releaseSigner", walletAddress || "");
-    form.setValue("disputeResolver", walletAddress || "");
-    form.setValue("receiver", walletAddress || "");
+    form.setValue("roles.approver", walletAddress || "");
+    form.setValue("roles.serviceProvider", walletAddress || "");
+    form.setValue("roles.platformAddress", walletAddress || "");
+    form.setValue("roles.releaseSigner", walletAddress || "");
+    form.setValue("roles.disputeResolver", walletAddress || "");
+    form.setValue("roles.receiver", walletAddress || "");
     form.setValue("receiverMemo", 90909090);
+    form.setValue(
+      "trustline.address",
+      trustlines.find((t) => t.name === "USDC")?.address || ""
+    );
     form.setValue("milestones", [
-      { description: "Initial milestone" },
-      { description: "Second milestone" },
-      { description: "Final milestone" },
+      {
+        description: "Initial milestone",
+        status: "pending",
+        evidence: "",
+        approvedFlag: false,
+      },
+      {
+        description: "Second milestone",
+        status: "pending",
+        evidence: "",
+        approvedFlag: false,
+      },
+      {
+        description: "Final milestone",
+        status: "pending",
+        evidence: "",
+        approvedFlag: false,
+      },
     ]);
   };
 
-  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: FormValues) => {
     setLoading(true);
     setError(null);
     setResponse(null);
+
     try {
       const finalPayload: InitializeEscrowPayload = {
         ...payload,
-        trustline: process.env.NEXT_PUBLIC_TRUSTLINE_ADDRESS || "",
-        signer: walletAddress || "",
-        trustlineDecimals: Number(
-          process.env.NEXT_PUBLIC_TRUSTLINE_DECIMALS || 0
-        ),
+        receiverMemo: payload.receiverMemo ?? 0,
       };
 
       const result = (await escrowService({
@@ -104,26 +117,37 @@ export const useInitializeEscrow = () => {
 
       if (result.status === "SUCCESS") {
         const escrow: Escrow = {
-          contractId: result.contract_id,
-          issuer: walletAddress || "",
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-          milestones: result.escrow.milestones.map((m: Milestone) => ({
-            ...m,
-            status: "pending",
-          })),
+          contractId: result.contractId,
+          signer: walletAddress || "",
+          engagementId: result.escrow.engagementId,
           title: result.escrow.title,
           description: result.escrow.description,
-          serviceProvider: result.escrow.serviceProvider,
-          engagementId: result.escrow.engagementId,
-          disputeResolver: result.escrow.disputeResolver,
           amount: result.escrow.amount,
-          platformAddress: result.escrow.platformAddress,
           platformFee: result.escrow.platformFee,
-          approver: result.escrow.approver,
-          releaseSigner: result.escrow.releaseSigner,
-          receiver: result.escrow.receiver,
-          receiverMemo: result.escrow.receiverMemo,
+          receiverMemo: result.escrow.receiverMemo ?? 0,
+          roles: {
+            approver: result.escrow.roles.approver,
+            serviceProvider: result.escrow.roles.serviceProvider,
+            platformAddress: result.escrow.roles.platformAddress,
+            releaseSigner: result.escrow.roles.releaseSigner,
+            disputeResolver: result.escrow.roles.disputeResolver,
+            receiver: result.escrow.roles.receiver,
+          },
+          flags: {
+            disputeFlag: false,
+            releaseFlag: false,
+            resolvedFlag: false,
+          },
+          trustline: {
+            address: result.escrow.trustline.address,
+            decimals: result.escrow.trustline.decimals,
+          },
+          milestones: result.escrow.milestones.map((m) => ({
+            description: m.description,
+            status: "pending",
+            evidence: "",
+            approvedFlag: false,
+          })),
         };
 
         setEscrow(escrow);
@@ -145,6 +169,7 @@ export const useInitializeEscrow = () => {
     loading,
     response,
     error,
+    trustlinesOptions,
     addMilestone,
     removeMilestone,
     loadTemplate,

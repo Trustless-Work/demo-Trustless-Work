@@ -17,6 +17,13 @@ import { ResponseDisplay } from "@/components/response-display";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { GetFormSchema } from "../../schemas/initialize-escrow-form.schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;
@@ -26,6 +33,7 @@ interface InitializeEscrowFormProps {
   onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
   addMilestone: () => void;
   removeMilestone: (index: number) => void;
+  trustlinesOptions: { value: string; label: string }[];
 }
 
 export const InitializeEscrowForm = ({
@@ -33,6 +41,7 @@ export const InitializeEscrowForm = ({
   loading,
   response,
   error,
+  trustlinesOptions,
   onSubmit,
   addMilestone,
   removeMilestone,
@@ -76,19 +85,15 @@ export const InitializeEscrowForm = ({
                 name="receiverMemo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="flex items-center">
-                      Receiver Memo (opcional)
-                    </FormLabel>
+                    <FormLabel>Receiver Memo</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
-                        placeholder="Receiver Memo"
-                        value={field.value ?? ""}
-                        onChange={(e) =>
-                          field.onChange(
-                            e.target.value === "" ? 0 : Number(e.target.value)
-                          )
-                        }
+                        min="0"
+                        placeholder="0"
+                        {...field}
+                        value={field.value}
+                        onChange={(e) => field.onChange(Number(e.target.value))}
                       />
                     </FormControl>
                     <FormMessage />
@@ -131,7 +136,7 @@ export const InitializeEscrowForm = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="approver"
+              name="roles.approver"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Approver Address</FormLabel>
@@ -144,7 +149,7 @@ export const InitializeEscrowForm = ({
             />
             <FormField
               control={form.control}
-              name="serviceProvider"
+              name="roles.serviceProvider"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Service Provider Address</FormLabel>
@@ -158,7 +163,7 @@ export const InitializeEscrowForm = ({
 
             <FormField
               control={form.control}
-              name="platformAddress"
+              name="roles.platformAddress"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Platform Address</FormLabel>
@@ -172,7 +177,7 @@ export const InitializeEscrowForm = ({
 
             <FormField
               control={form.control}
-              name="releaseSigner"
+              name="roles.releaseSigner"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Release Signer Address</FormLabel>
@@ -186,7 +191,7 @@ export const InitializeEscrowForm = ({
 
             <FormField
               control={form.control}
-              name="disputeResolver"
+              name="roles.disputeResolver"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dispute Resolver Address</FormLabel>
@@ -200,12 +205,47 @@ export const InitializeEscrowForm = ({
 
             <FormField
               control={form.control}
-              name="receiver"
+              name="roles.receiver"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Receiver Address</FormLabel>
                   <FormControl>
                     <Input placeholder="GCU2QK..." {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="trustline.address"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Trustline</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        const selectedOption = trustlinesOptions.find(
+                          (opt) => opt.value === value
+                        );
+                        if (selectedOption) {
+                          field.onChange(selectedOption.value);
+                        }
+                      }}
+                      value={field.value || ""}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a trustline" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {trustlinesOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
