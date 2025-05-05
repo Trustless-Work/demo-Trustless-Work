@@ -15,10 +15,12 @@ import { Trustline } from "@/@types/trustline.entity";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
 import { getDefaultValues } from "../default-values/initialize-escrow.default-values";
+import { steps } from "../constants/initialize-steps.constant";
 
 type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
 
 export const useInitializeEscrow = () => {
+  const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -116,43 +118,9 @@ export const useInitializeEscrow = () => {
       })) as InitializeEscrowResponse;
 
       if (result.status === "SUCCESS") {
-        const escrow: Escrow = {
-          contractId: result.contractId,
-          signer: walletAddress || "",
-          engagementId: result.escrow.engagementId,
-          title: result.escrow.title,
-          description: result.escrow.description,
-          amount: result.escrow.amount,
-          platformFee: result.escrow.platformFee,
-          receiverMemo: result.escrow.receiverMemo ?? 0,
-          roles: {
-            approver: result.escrow.roles.approver,
-            serviceProvider: result.escrow.roles.serviceProvider,
-            platformAddress: result.escrow.roles.platformAddress,
-            releaseSigner: result.escrow.roles.releaseSigner,
-            disputeResolver: result.escrow.roles.disputeResolver,
-            receiver: result.escrow.roles.receiver,
-          },
-          flags: {
-            disputeFlag: false,
-            releaseFlag: false,
-            resolvedFlag: false,
-          },
-          trustline: {
-            address: result.escrow.trustline.address,
-            decimals: result.escrow.trustline.decimals,
-          },
-          milestones: result.escrow.milestones.map((m) => ({
-            description: m.description,
-            status: "pending",
-            evidence: "",
-            approvedFlag: false,
-          })),
-        };
-
+        const escrow = createEscrowFromResponse(result, walletAddress || "");
         setEscrow(escrow);
         setActiveTab("escrow");
-
         toast.info("Escrow Created");
       }
     } catch (err) {
@@ -164,15 +132,85 @@ export const useInitializeEscrow = () => {
     }
   };
 
+  const nextStep = async () => {
+    const fields = getStepFields(currentStep);
+    const isValid = await form.trigger(fields);
+
+    if (isValid) {
+      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+    }
+  };
+
+  const prevStep = () => {
+    setCurrentStep((prev) => Math.max(prev - 1, 0));
+  };
+
+  const getStepFields = (
+    step: number
+  ): (keyof z.infer<ReturnType<typeof GetFormSchema>>)[] => {
+    switch (step) {
+      case 0:
+        return ["title", "engagementId", "description"];
+      case 1:
+        return ["amount", "platformFee", "trustline", "receiverMemo"];
+      case 2:
+        return ["roles"];
+      case 3:
+        return ["milestones"];
+      default:
+        return [];
+    }
+  };
+
+  const createEscrowFromResponse = (
+    result: InitializeEscrowResponse,
+    walletAddress: string
+  ): Escrow => ({
+    contractId: result.contractId,
+    signer: walletAddress || "",
+    engagementId: result.escrow.engagementId,
+    title: result.escrow.title,
+    description: result.escrow.description,
+    amount: result.escrow.amount,
+    platformFee: result.escrow.platformFee,
+    receiverMemo: result.escrow.receiverMemo ?? 0,
+    roles: {
+      approver: result.escrow.roles.approver,
+      serviceProvider: result.escrow.roles.serviceProvider,
+      platformAddress: result.escrow.roles.platformAddress,
+      releaseSigner: result.escrow.roles.releaseSigner,
+      disputeResolver: result.escrow.roles.disputeResolver,
+      receiver: result.escrow.roles.receiver,
+    },
+    flags: {
+      disputeFlag: false,
+      releaseFlag: false,
+      resolvedFlag: false,
+    },
+    trustline: {
+      address: result.escrow.trustline.address,
+      decimals: result.escrow.trustline.decimals,
+    },
+    milestones: result.escrow.milestones.map((m) => ({
+      description: m.description,
+      status: "pending",
+      evidence: "",
+      approvedFlag: false,
+    })),
+  });
+
   return {
     form,
     loading,
     response,
     error,
     trustlinesOptions,
+    currentStep,
     addMilestone,
     removeMilestone,
     loadTemplate,
     onSubmit,
+    nextStep,
+    prevStep,
   };
 };
