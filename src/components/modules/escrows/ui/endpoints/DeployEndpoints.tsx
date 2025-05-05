@@ -18,10 +18,13 @@ export function DeployEndpoints() {
     response,
     error,
     trustlinesOptions,
-    loadTemplate,
+    currentStep,
     addMilestone,
     removeMilestone,
+    loadTemplate,
     onSubmit,
+    nextStep,
+    prevStep,
   } = useInitializeEscrow();
 
   const handleLoadTemplate = () => {
@@ -56,7 +59,13 @@ export function DeployEndpoints() {
           loading={loading}
           response={response}
           error={error}
-          trustlinesOptions={trustlinesOptions}
+          trustlinesOptions={trustlinesOptions.map((option) => ({
+            value: option.value,
+            label: option.label || option.value,
+          }))}
+          currentStep={currentStep}
+          nextStep={nextStep}
+          prevStep={prevStep}
         />
       </CardContent>
     </Card>

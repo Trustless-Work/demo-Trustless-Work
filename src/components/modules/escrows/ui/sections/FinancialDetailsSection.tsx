@@ -39,7 +39,7 @@ export const FinancialDetailsSection = ({
           <div>
             <p className="font-medium">Platform Fee</p>
             <p className="text-muted-foreground text-xs">
-              {escrow?.platformFee}%
+              {escrow?.platformFee ? Number(escrow.platformFee) / 100 : 0}%
             </p>
           </div>
         </div>

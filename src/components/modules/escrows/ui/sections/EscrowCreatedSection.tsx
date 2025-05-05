@@ -16,7 +16,8 @@ export const EscrowCreatedSection = () => {
   const totalMilestones = escrow?.milestones.length || 0;
   const completedMilestones =
     escrow?.milestones.filter(
-      (m) => m.status === "approved" || m.status === "completed" || m.flag
+      (m) =>
+        m.status === "approved" || m.status === "completed" || m.approvedFlag
     ).length || 0;
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
@@ -50,37 +51,37 @@ export const EscrowCreatedSection = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <EntityCard
               name="Service Provider"
-              entity={escrow?.serviceProvider || ""}
+              entity={escrow?.roles.serviceProvider || ""}
               icon={<User size={20} />}
             />
 
             <EntityCard
               name="Approver"
-              entity={escrow?.approver || ""}
+              entity={escrow?.roles.approver || ""}
               icon={<User size={20} />}
             />
 
             <EntityCard
               name="Receiver"
-              entity={escrow?.receiver || ""}
+              entity={escrow?.roles.receiver || ""}
               icon={<User size={20} />}
             />
 
             <EntityCard
               name="Platform"
-              entity={escrow?.platformAddress || ""}
+              entity={escrow?.roles.platformAddress || ""}
               icon={<User size={20} />}
             />
 
             <EntityCard
               name="Dispute Resolver"
-              entity={escrow?.disputeResolver || ""}
+              entity={escrow?.roles.disputeResolver || ""}
               icon={<User size={20} />}
             />
 
             <EntityCard
               name="Release Signer"
-              entity={escrow?.releaseSigner || ""}
+              entity={escrow?.roles.releaseSigner || ""}
               icon={<User size={20} />}
             />
           </div>
