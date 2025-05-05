@@ -31,6 +31,7 @@ export interface Escrow {
   description: string;
   amount: string;
   platformFee: string;
+  balance?: string;
   milestones: Milestone[];
   flags?: Flags;
   trustline: Trustline;
