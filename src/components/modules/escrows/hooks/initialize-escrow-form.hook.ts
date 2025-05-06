@@ -16,6 +16,7 @@ import { z } from "zod";
 import { Resolver } from "react-hook-form";
 import { getDefaultValues } from "../default-values/initialize-escrow.default-values";
 import { steps } from "../constants/initialize-steps.constant";
+import { buildEscrowFromResponse } from "../helpers/create-escrow-from-response.helper";
 
 type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
 
@@ -23,7 +24,6 @@ export const useInitializeEscrow = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();
@@ -102,7 +102,6 @@ export const useInitializeEscrow = () => {
 
   const onSubmit = async (payload: FormValues) => {
     setLoading(true);
-    setError(null);
     setResponse(null);
 
     try {
@@ -118,7 +117,7 @@ export const useInitializeEscrow = () => {
       })) as InitializeEscrowResponse;
 
       if (result.status === "SUCCESS") {
-        const escrow = createEscrowFromResponse(result, walletAddress || "");
+        const escrow = buildEscrowFromResponse(result, walletAddress || "");
         setEscrow(escrow);
         setActiveTab("escrow");
         toast.info("Escrow Created");
@@ -162,48 +161,10 @@ export const useInitializeEscrow = () => {
     }
   };
 
-  const createEscrowFromResponse = (
-    result: InitializeEscrowResponse,
-    walletAddress: string
-  ): Escrow => ({
-    contractId: result.contractId,
-    signer: walletAddress || "",
-    engagementId: result.escrow.engagementId,
-    title: result.escrow.title,
-    description: result.escrow.description,
-    amount: result.escrow.amount,
-    platformFee: result.escrow.platformFee,
-    receiverMemo: result.escrow.receiverMemo ?? 0,
-    roles: {
-      approver: result.escrow.roles.approver,
-      serviceProvider: result.escrow.roles.serviceProvider,
-      platformAddress: result.escrow.roles.platformAddress,
-      releaseSigner: result.escrow.roles.releaseSigner,
-      disputeResolver: result.escrow.roles.disputeResolver,
-      receiver: result.escrow.roles.receiver,
-    },
-    flags: {
-      disputeFlag: false,
-      releaseFlag: false,
-      resolvedFlag: false,
-    },
-    trustline: {
-      address: result.escrow.trustline.address,
-      decimals: result.escrow.trustline.decimals,
-    },
-    milestones: result.escrow.milestones.map((m) => ({
-      description: m.description,
-      status: "pending",
-      evidence: "",
-      approvedFlag: false,
-    })),
-  });
-
   return {
     form,
     loading,
     response,
-    error,
     trustlinesOptions,
     currentStep,
     addMilestone,

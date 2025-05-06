@@ -8,10 +8,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { GetEscrowPayload } from "@/@types/escrow-payload.entity";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
+import { Escrow } from "@/@types/escrow.entity";
 
 export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();
-  const { escrow } = useEscrowContext();
+  const { escrow, setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
@@ -29,15 +30,16 @@ export const useGetEscrowForm = () => {
     setError(null);
     setResponse(null);
     try {
-      const result = await escrowService({
+      const result = (await escrowService({
         payload,
         endpoint: "/escrow/get-escrow-by-contract-id",
         method: "get",
         requiresSignature: false,
-      });
+      })) as Escrow;
 
-      toast.info("Escrow Received");
+      setEscrow({ ...result, contractId: payload.contractId });
       setResponse(result);
+      toast.info("Escrow Received");
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"

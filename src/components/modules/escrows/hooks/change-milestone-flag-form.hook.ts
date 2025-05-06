@@ -4,12 +4,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formSchema } from "../schemas/change-milestone-flag-form.schema";
+import { escrowService } from "../services/escrow.service";
+import { toast } from "sonner";
+import { Escrow, Milestone } from "@/@types/escrow.entity";
 
 export const useChangeMilestoneFlagForm = () => {
   const { escrow } = useEscrowContext();
+  const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
 
   // Default milestones if escrow is undefined
   const milestones = escrow?.milestones || [
@@ -23,33 +26,42 @@ export const useChangeMilestoneFlagForm = () => {
       contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
       milestoneIndex: "",
       newFlag: true,
-      approver: escrow?.approver || "GAPPROVER123456789",
+      approver: escrow?.roles.approver || "GAPPROVER123456789",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
     setLoading(true);
-    setError(null);
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/change-milestone-flag", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const result = await escrowService({
+        payload,
+        endpoint: "/escrow/change-milestone-approved-flag",
+        method: "post",
+        returnEscrowDataIsRequired: false,
       });
 
-      const result = await response.json();
+      if (result.status === "SUCCESS") {
+        const escrowUpdated: Escrow = {
+          ...escrow!,
+          milestones: escrow!.milestones.map((milestone: Milestone, index) =>
+            index === Number(payload.milestoneIndex)
+              ? { ...milestone, approvedFlag: payload.newFlag }
+              : milestone
+          ),
+        };
 
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to change milestone flag");
+        setEscrow(escrowUpdated);
+
+        toast.info(
+          `Milestone index - ${payload.milestoneIndex} has been approved`
+        );
+        setResponse(result);
+        form.reset();
       }
-
-      setResponse(result);
     } catch (err) {
-      setError(
+      toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     } finally {
@@ -57,5 +69,5 @@ export const useChangeMilestoneFlagForm = () => {
     }
   };
 
-  return { form, milestones, loading, response, error, onSubmit };
+  return { form, milestones, loading, response, onSubmit };
 };

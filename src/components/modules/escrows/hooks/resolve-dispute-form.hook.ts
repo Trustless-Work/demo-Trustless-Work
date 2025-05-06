@@ -4,46 +4,58 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { formSchema } from "../schemas/resolve-dispute-form.schema";
+import { escrowService } from "../services/escrow.service";
+import { Escrow } from "@/@types/escrow.entity";
+import { toast } from "sonner";
 
 export const useResolveDisputeForm = () => {
   const { escrow } = useEscrowContext();
+  const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "",
-      disputeResolver: escrow?.disputeResolver || "",
+      disputeResolver: escrow?.roles.disputeResolver || "",
       approverFunds: "0",
-      serviceProviderFunds: "0",
+      receiverFunds: "0",
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
     setLoading(true);
-    setError(null);
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/resolve-dispute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const result = await escrowService({
+        payload,
+        endpoint: "/escrow/resolving-disputes",
+        method: "post",
+        returnEscrowDataIsRequired: false,
       });
 
-      const result = await response.json();
+      if (result.status === "SUCCESS") {
+        const escrowUpdated: Escrow = {
+          ...escrow!,
+          flags: {
+            resolvedFlag: true,
+          },
+          balance: (
+            Number(escrow?.balance) -
+            Number(payload.approverFunds) -
+            Number(payload.receiverFunds)
+          ).toString(),
+        };
 
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to resolve dispute");
+        setEscrow(escrowUpdated);
+
+        toast.info("Dispute Resolved");
+        setResponse(result);
       }
-
-      setResponse(result);
     } catch (err) {
-      setError(
+      toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"
       );
     } finally {
@@ -51,5 +63,5 @@ export const useResolveDisputeForm = () => {
     }
   };
 
-  return { form, loading, response, error, onSubmit };
+  return { form, loading, response, onSubmit };
 };

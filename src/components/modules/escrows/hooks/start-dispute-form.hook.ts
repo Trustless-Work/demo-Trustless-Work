@@ -5,9 +5,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schemas/start-dispute-form.schema";
+import { escrowService } from "../services/escrow.service";
+import { Escrow } from "@/@types/escrow.entity";
+import { toast } from "sonner";
 
 export const useStartDisputeForm = () => {
   const { escrow } = useEscrowContext();
+  const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>(null);
@@ -21,27 +25,32 @@ export const useStartDisputeForm = () => {
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError(null);
     setResponse(null);
 
     try {
-      const response = await fetch("/api/escrow/start-dispute", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+      const result = await escrowService({
+        payload,
+        endpoint: "/escrow/change-dispute-flag",
+        method: "post",
+        returnEscrowDataIsRequired: false,
       });
 
-      const result = await response.json();
+      if (result.status === "SUCCESS") {
+        const escrowUpdated: Escrow = {
+          ...escrow!,
+          flags: {
+            disputeFlag: true,
+          },
+        };
 
-      if (!response.ok) {
-        throw new Error(result.message || "Failed to start dispute");
+        setEscrow(escrowUpdated);
+
+        toast.info("Dispute Started");
+        setResponse(result);
       }
-
-      setResponse(result);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "An unknown error occurred"
