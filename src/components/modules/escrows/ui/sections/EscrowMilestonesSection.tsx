@@ -15,7 +15,7 @@ export const EscrowMilestonesSection = ({
         <div
           key={index}
           className={`border rounded-lg p-4 transition-all ${
-            milestone.status === "approved" || milestone.flag
+            milestone.status === "approved" || milestone.approvedFlag
               ? "border-green-200 bg-green-50"
               : "hover:border-primary"
           }`}
@@ -24,7 +24,7 @@ export const EscrowMilestonesSection = ({
             <div className="flex gap-3">
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full uppercase ${
-                  milestone.status === "approved" || milestone.flag
+                  milestone.status === "approved" || milestone.approvedFlag
                     ? "bg-green-100"
                     : "bg-muted"
                 }`}
@@ -38,37 +38,42 @@ export const EscrowMilestonesSection = ({
                 </p>
               </div>
             </div>
-            <div className="flex gap-2">
-              {milestone.status && (
-                <Badge
-                  variant={
-                    milestone.status === "approved" ? "default" : "secondary"
-                  }
-                  className={
-                    milestone.status === "approved"
-                      ? "bg-green-100 text-green-800 hover:bg-green-200 uppercase"
-                      : "uppercase"
-                  }
-                >
-                  {milestone.status === "approved" ? (
-                    <>
-                      <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
-                    </>
-                  ) : (
-                    milestone.status
-                  )}
-                </Badge>
-              )}
-              {milestone.flag && !milestone.status && (
-                <Badge
-                  variant="outline"
-                  className="border-green-200 text-green-800 uppercase"
-                >
-                  <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
-                </Badge>
-              )}
+            <div className="flex justify-start flex-col gap-2">
+              <>
+                {milestone.status && (
+                  <Badge
+                    variant={
+                      milestone.status === "approved" ? "default" : "secondary"
+                    }
+                    className={
+                      milestone.status === "approved"
+                        ? "bg-green-100 text-green-800 hover:bg-green-200 uppercase"
+                        : "uppercase"
+                    }
+                  >
+                    {milestone.status === "approved" ? (
+                      <>
+                        <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
+                      </>
+                    ) : (
+                      milestone.status
+                    )}
+                  </Badge>
+                )}
+                {milestone.approvedFlag && !milestone.status && (
+                  <Badge
+                    variant="outline"
+                    className="border-green-200 text-green-800 uppercase"
+                  >
+                    <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
+                  </Badge>
+                )}
+              </>
             </div>
           </div>
+          <p className="text-muted-foreground text-sm mt-4 truncate">
+            <span className="font-medium">Evidence:</span> {milestone.evidence}
+          </p>
         </div>
       ))}
     </div>

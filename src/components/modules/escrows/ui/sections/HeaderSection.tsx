@@ -2,6 +2,7 @@ import { Escrow } from "@/@types/escrow.entity";
 import { Badge } from "@/components/ui/badge";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import {
+  AlertCircle,
   CheckCircle2,
   Clock,
   ExternalLink,
@@ -23,7 +24,7 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
           <CardTitle>{escrow?.title}</CardTitle>
         </div>
 
-        <div className="flex gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <Link
             href={`https://viewer.trustlesswork.com/${escrow?.contractId}`}
             target="_blank"
@@ -45,18 +46,24 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
           <Badge
             variant="outline"
             className={
-              escrow?.releaseFlag || escrow?.resolvedFlag
+              escrow?.flags?.releaseFlag || escrow?.flags?.resolvedFlag
                 ? "bg-green-100 text-green-800 hover:bg-green-200"
+                : escrow?.flags?.disputeFlag
+                ? "bg-destructive text-white hover:bg-destructive/90"
                 : ""
             }
           >
-            {escrow?.releaseFlag ? (
+            {escrow?.flags?.releaseFlag ? (
               <>
                 <CheckCircle2 className="mr-1 h-3 w-3" /> Released
               </>
-            ) : escrow?.resolvedFlag ? (
+            ) : escrow?.flags?.resolvedFlag ? (
               <>
                 <Handshake className="mr-1 h-3 w-3" /> Resolved
+              </>
+            ) : escrow?.flags?.disputeFlag ? (
+              <>
+                <AlertCircle className="mr-1 h-3 w-3" /> Dispute
               </>
             ) : (
               <>
