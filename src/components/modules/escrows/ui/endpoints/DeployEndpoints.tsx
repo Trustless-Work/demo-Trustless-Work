@@ -16,7 +16,6 @@ export function DeployEndpoints() {
     form,
     loading,
     response,
-    error,
     trustlinesOptions,
     currentStep,
     addMilestone,
@@ -58,7 +57,6 @@ export function DeployEndpoints() {
           removeMilestone={removeMilestone}
           loading={loading}
           response={response}
-          error={error}
           trustlinesOptions={trustlinesOptions.map((option) => ({
             value: option.value,
             label: option.label || option.value,

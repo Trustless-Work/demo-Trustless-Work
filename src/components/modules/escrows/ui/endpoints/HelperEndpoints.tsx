@@ -30,7 +30,10 @@ export function HelperEndpoints() {
             </TabsTrigger>
           </TabsList>
           <div className="mt-2 pt-4 border-t">
-            <TabsContent value="get-multiple-escrow-balance" className="mt-0">
+            <TabsContent
+              value="get-multiple-escrow-balance"
+              className="flex justify-center mt-0"
+            >
               <GetMultipleEscrowBalanceForm />
             </TabsContent>
           </div>

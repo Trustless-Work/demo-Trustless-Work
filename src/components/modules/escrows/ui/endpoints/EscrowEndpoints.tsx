@@ -58,7 +58,7 @@ export function EscrowEndpoints() {
           onValueChange={setActiveTabEscrow}
           className="w-full"
         >
-          <TabsList className="w-full flex flex-wrap mb-4 gap-1">
+          <TabsList className="w-full flex flex-wrap mb-32 md:mb-4 gap-1">
             <TabsTrigger value="get-escrow" className="flex-1">
               Get Escrow
             </TabsTrigger>
@@ -84,8 +84,8 @@ export function EscrowEndpoints() {
               Update Escrow
             </TabsTrigger>
           </TabsList>
-          <div className="flex gap-10 w-full">
-            <div className="w-1/3">
+          <div className="flex flex-col md:flex-row gap-10 w-full">
+            <div className="w-full md:w-3/4">
               <div className="mt-2 pt-4 border-t">
                 <TabsContent value="get-escrow" className="mt-0">
                   <GetEscrowForm />
