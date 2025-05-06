@@ -23,7 +23,9 @@ type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
 export const useInitializeEscrow = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<InitializeEscrowResponse | null>(
+    null
+  );
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();

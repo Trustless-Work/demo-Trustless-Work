@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,7 +17,7 @@ export const useUpdateEscrowForm = () => {
   const { escrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<UpdateEscrowResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const formSchema = GetFormSchema();
 

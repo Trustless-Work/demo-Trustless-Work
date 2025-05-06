@@ -7,12 +7,13 @@ import { formSchema } from "../schemas/change-milestone-flag-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
 import { Escrow, Milestone } from "@/@types/escrow.entity";
+import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
 
 export const useChangeMilestoneFlagForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
 
   // Default milestones if escrow is undefined
   const milestones = escrow?.milestones || [
@@ -35,12 +36,12 @@ export const useChangeMilestoneFlagForm = () => {
     setResponse(null);
 
     try {
-      const result = await escrowService({
+      const result = (await escrowService({
         payload,
         endpoint: "/escrow/change-milestone-approved-flag",
         method: "post",
         returnEscrowDataIsRequired: false,
-      });
+      })) as EscrowRequestResponse;
 
       if (result.status === "SUCCESS") {
         const escrowUpdated: Escrow = {

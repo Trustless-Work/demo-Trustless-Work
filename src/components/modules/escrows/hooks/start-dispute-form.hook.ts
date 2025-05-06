@@ -8,13 +8,14 @@ import { formSchema } from "../schemas/start-dispute-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
+import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
 
 export const useStartDisputeForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -31,12 +32,12 @@ export const useStartDisputeForm = () => {
     setResponse(null);
 
     try {
-      const result = await escrowService({
+      const result = (await escrowService({
         payload,
         endpoint: "/escrow/change-dispute-flag",
         method: "post",
         returnEscrowDataIsRequired: false,
-      });
+      })) as EscrowRequestResponse;
 
       if (result.status === "SUCCESS") {
         const escrowUpdated: Escrow = {

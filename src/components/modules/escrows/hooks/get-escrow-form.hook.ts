@@ -14,7 +14,7 @@ export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();
   const { escrow, setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<Escrow | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({

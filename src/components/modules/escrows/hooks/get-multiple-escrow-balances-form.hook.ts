@@ -7,13 +7,14 @@ import { formSchema } from "../schemas/get-multiple-escrow-balances-form.schema"
 import { toast } from "sonner";
 import { escrowService } from "../services/escrow.service";
 import { GetBalanceParams } from "@/@types/escrow-payload.entity";
+import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
 
 type FormData = z.infer<typeof formSchema>;
 
 export const useGetMultipleEscrowBalancesForm = () => {
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -38,13 +39,13 @@ export const useGetMultipleEscrowBalancesForm = () => {
     };
 
     try {
-      const result = await escrowService({
+      const result = (await escrowService({
         payload: transformedData,
         endpoint: "/helper/get-multiple-escrow-balance",
         method: "get",
         requiresSignature: false,
         returnEscrowDataIsRequired: false,
-      });
+      })) as EscrowRequestResponse;
 
       toast.info("Escrow Balances Received");
       setResponse(result);

@@ -13,7 +13,7 @@ export const useChangeMilestoneStatusForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
 
   const milestones = escrow?.milestones || [
     { description: "Initial setup", status: "pending" },

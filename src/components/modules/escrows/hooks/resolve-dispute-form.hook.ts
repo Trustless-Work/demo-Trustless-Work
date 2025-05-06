@@ -7,12 +7,13 @@ import { formSchema } from "../schemas/resolve-dispute-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
+import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
 
 export const useResolveDisputeForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>(null);
+  const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -29,12 +30,12 @@ export const useResolveDisputeForm = () => {
     setResponse(null);
 
     try {
-      const result = await escrowService({
+      const result = (await escrowService({
         payload,
         endpoint: "/escrow/resolving-disputes",
         method: "post",
         returnEscrowDataIsRequired: false,
-      });
+      })) as EscrowRequestResponse;
 
       if (result.status === "SUCCESS") {
         const escrowUpdated: Escrow = {

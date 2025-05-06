@@ -6,9 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, Copy } from "lucide-react";
 import { useUtils } from "@/hooks/utils.hook";
+import { Escrow } from "@/@types/escrow.entity";
+import {
+  EscrowRequestResponse,
+  UpdateEscrowResponse,
+} from "@/@types/escrow-response.entity";
 
 interface ResponseDisplayProps {
-  response: any;
+  response: UpdateEscrowResponse | EscrowRequestResponse | Escrow | null;
 }
 
 export function ResponseDisplay({ response }: ResponseDisplayProps) {
