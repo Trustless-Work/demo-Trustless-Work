@@ -14,6 +14,8 @@ export type InitializeEscrowResponse = {
   status: Status;
 };
 
+export type UpdateEscrowResponse = InitializeEscrowResponse;
+
 export type EscrowResponse = {
   message: string;
   status: Status;

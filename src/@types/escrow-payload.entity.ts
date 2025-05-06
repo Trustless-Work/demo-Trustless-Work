@@ -32,7 +32,7 @@ export type ResolveDisputePayload = {
   contractId: string;
   disputeResolver?: string;
   approverFunds: string;
-  serviceProviderFunds: string;
+  receiverFunds: string;
 };
 
 export type FundEscrowPayload = {
@@ -65,6 +65,7 @@ export type GetBalanceParams = {
 };
 
 export type EscrowPayloadService =
+  | Escrow
   | InitializeEscrowPayload
   | GetEscrowPayload
   | ChangeMilestoneStatusPayload
@@ -73,4 +74,5 @@ export type EscrowPayloadService =
   | ResolveDisputePayload
   | FundEscrowPayload
   | DistributeEscrowEarningsEscrowPayload
-  | EditEscrowPayload;
+  | EditEscrowPayload
+  | GetBalanceParams;

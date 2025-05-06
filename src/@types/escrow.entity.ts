@@ -17,9 +17,9 @@ export type Roles = {
 };
 
 export type Flags = {
-  disputeFlag: boolean;
-  releaseFlag: boolean;
-  resolvedFlag: boolean;
+  disputeFlag?: boolean;
+  releaseFlag?: boolean;
+  resolvedFlag?: boolean;
 };
 
 export interface Escrow {
