@@ -10,25 +10,13 @@ import { useUtils } from "@/hooks/utils.hook";
 
 interface ResponseDisplayProps {
   response: any;
-  error: string | null;
 }
 
-export function ResponseDisplay({ response, error }: ResponseDisplayProps) {
+export function ResponseDisplay({ response }: ResponseDisplayProps) {
   const [activeTab, setActiveTab] = useState("formatted");
   const { copyToClipboard, copied } = useUtils();
 
-  // No need to render if there's no response or error
-  if (!response && !error) return null;
-
-  if (error) {
-    return (
-      <Alert variant="destructive" className="mt-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
-    );
-  }
+  if (!response) return null;
 
   const responseString = JSON.stringify(response, null, 2);
 
