@@ -9,11 +9,17 @@ import { useUtils } from "@/hooks/utils.hook";
 import { Escrow } from "@/@types/escrow.entity";
 import {
   EscrowRequestResponse,
+  InitializeEscrowResponse,
   UpdateEscrowResponse,
 } from "@/@types/escrow-response.entity";
 
 interface ResponseDisplayProps {
-  response: UpdateEscrowResponse | EscrowRequestResponse | Escrow | null;
+  response:
+    | InitializeEscrowResponse
+    | UpdateEscrowResponse
+    | EscrowRequestResponse
+    | Escrow
+    | null;
 }
 
 export function ResponseDisplay({ response }: ResponseDisplayProps) {

@@ -282,7 +282,7 @@ export function UpdateEscrowForm() {
           <FormField
             control={form.control}
             name="escrow.milestones"
-            render={({ field }) => (
+            render={() => (
               <FormItem>
                 <FormLabel>Milestones</FormLabel>
                 <FormControl>

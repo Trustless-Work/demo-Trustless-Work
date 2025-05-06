@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
-import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";

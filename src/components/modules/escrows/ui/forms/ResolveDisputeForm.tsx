@@ -15,7 +15,7 @@ import { useResolveDisputeForm } from "../../hooks/resolve-dispute-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 
 export function ResolveDisputeForm() {
-  const { form, loading, response, error, onSubmit } = useResolveDisputeForm();
+  const { form, loading, response, onSubmit } = useResolveDisputeForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -89,7 +89,7 @@ export function ResolveDisputeForm() {
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

@@ -27,11 +27,12 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { steps } from "../../constants/initialize-steps.constant";
+import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
 
 interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;
   loading?: boolean;
-  response?: any;
+  response: InitializeEscrowResponse | null;
   trustlinesOptions: { value: string; label: string }[];
   currentStep: number;
   onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
