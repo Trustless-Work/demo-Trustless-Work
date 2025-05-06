@@ -6,6 +6,7 @@ import { WalletError } from "@/@types/errors.entity";
 import { kit } from "@/config/wallet-kit";
 import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
 import { EscrowPayloadService } from "@/@types/escrow-payload.entity";
+import { Escrow } from "@/@types/escrow.entity";
 
 interface EscrowServiceProps<T extends EscrowPayloadService> {
   payload: T;
@@ -21,7 +22,7 @@ export const escrowService = async <T extends EscrowPayloadService>({
   method,
   requiresSignature = true,
   returnEscrowDataIsRequired = true,
-}: EscrowServiceProps<T>): Promise<EscrowRequestResponse> => {
+}: EscrowServiceProps<T>): Promise<EscrowRequestResponse | Escrow> => {
   try {
     if (!requiresSignature) {
       if (method === "get") {
@@ -30,24 +31,13 @@ export const escrowService = async <T extends EscrowPayloadService>({
         });
         return data;
       }
-
-      const { data } = await http[method]<EscrowRequestResponse>(
-        endpoint,
-        payload
-      );
-      return data;
     }
 
     const { address } = await kit.getAddress();
-
-    let response;
-    if (method === "get") {
-      response = await http.get<EscrowRequestResponse>(endpoint, {
-        params: payload,
-      });
-    } else {
-      response = await http[method]<EscrowRequestResponse>(endpoint, payload);
-    }
+    const response = await http[method]<EscrowRequestResponse>(
+      endpoint,
+      payload
+    );
 
     const { unsignedTransaction } = response.data;
 
