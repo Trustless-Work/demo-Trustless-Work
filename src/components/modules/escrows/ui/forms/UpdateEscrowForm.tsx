@@ -16,10 +16,19 @@ import {
 } from "@/components/ui/form";
 import { useUpdateEscrowForm } from "../../hooks/update-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useInitializeEscrow } from "../../hooks/initialize-escrow-form.hook";
 
 export function UpdateEscrowForm() {
-  const { form, loading, response, error, fields, append, remove, onSubmit } =
+  const { form, loading, response, fields, append, remove, onSubmit } =
     useUpdateEscrowForm();
+  const { trustlinesOptions } = useInitializeEscrow();
   const { escrow } = useEscrowContext();
 
   return (
@@ -60,20 +69,56 @@ export function UpdateEscrowForm() {
             />
           </div>
 
-          <FormField
-            control={form.control}
-            name="escrow.title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl>
-                  <Input placeholder="Escrow Title" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="escrow.title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Escrow Title" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
+            <FormField
+              control={form.control}
+              name="escrow.trustline.address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Trustline</FormLabel>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        const selectedOption = trustlinesOptions.find(
+                          (opt) => opt.value === value
+                        );
+                        if (selectedOption) {
+                          field.onChange(selectedOption.value);
+                        }
+                      }}
+                      value={field.value || ""}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a trustline" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {trustlinesOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
@@ -137,7 +182,7 @@ export function UpdateEscrowForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <FormField
               control={form.control}
-              name="escrow.approver"
+              name="escrow.roles.approver"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Approver Address</FormLabel>
@@ -150,7 +195,7 @@ export function UpdateEscrowForm() {
             />
             <FormField
               control={form.control}
-              name="escrow.serviceProvider"
+              name="escrow.roles.serviceProvider"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Service Provider Address</FormLabel>
@@ -164,7 +209,7 @@ export function UpdateEscrowForm() {
 
             <FormField
               control={form.control}
-              name="escrow.platformAddress"
+              name="escrow.roles.platformAddress"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Platform Address</FormLabel>
@@ -178,7 +223,7 @@ export function UpdateEscrowForm() {
 
             <FormField
               control={form.control}
-              name="escrow.releaseSigner"
+              name="escrow.roles.releaseSigner"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Release Signer Address</FormLabel>
@@ -192,7 +237,7 @@ export function UpdateEscrowForm() {
 
             <FormField
               control={form.control}
-              name="escrow.disputeResolver"
+              name="escrow.roles.disputeResolver"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Dispute Resolver Address</FormLabel>
@@ -206,7 +251,7 @@ export function UpdateEscrowForm() {
 
             <FormField
               control={form.control}
-              name="escrow.receiver"
+              name="escrow.roles.receiver"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Receiver Address</FormLabel>
@@ -234,57 +279,76 @@ export function UpdateEscrowForm() {
           />
 
           {/* Milestones */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <FormLabel>Milestones</FormLabel>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => append({ description: "", status: "pending" })}
-              >
-                <Plus className="h-4 w-4 mr-2" /> Add Milestone
-              </Button>
-            </div>
-
-            {fields.map((field, index) => (
-              <Card key={field.id}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-2">
-                    <div className="flex-1">
-                      <FormField
-                        control={form.control}
-                        name={`escrow.milestones.${index}.description`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Milestone {index + 1}</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="Milestone description"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    {fields.length > 1 && (
+          <FormField
+            control={form.control}
+            name="escrow.milestones"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Milestones</FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Milestones</FormLabel>
                       <Button
                         type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => remove(index)}
-                        className="mt-8"
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          append({
+                            description: "",
+                            status: "pending",
+                            evidence: "",
+                            approvedFlag: false,
+                          })
+                        }
                       >
-                        <Trash className="h-4 w-4" />
+                        <Plus className="h-4 w-4 mr-2" /> Add Milestone
                       </Button>
-                    )}
+                    </div>
+
+                    {fields.map((field, index) => (
+                      <Card key={field.id}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-2">
+                            <div className="flex-1">
+                              <FormField
+                                control={form.control}
+                                name={`escrow.milestones.${index}.description`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Milestone {index + 1}</FormLabel>
+                                    <FormControl>
+                                      <Textarea
+                                        placeholder="Milestone description"
+                                        {...field}
+                                      />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+                            </div>
+                            {fields.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => remove(index)}
+                                className="mt-8"
+                              >
+                                <Trash className="h-4 w-4" />
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Updating..." : "Update Escrow"}
@@ -292,7 +356,7 @@ export function UpdateEscrowForm() {
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

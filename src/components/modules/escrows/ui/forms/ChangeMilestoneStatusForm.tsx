@@ -22,7 +22,7 @@ import { useChangeMilestoneStatusForm } from "../../hooks/change-milestone-statu
 import { useEscrowContext } from "@/providers/escrow.provider";
 
 export function ChangeMilestoneStatusForm() {
-  const { form, milestones, loading, response, error, onSubmit } =
+  const { form, milestones, loading, response, onSubmit } =
     useChangeMilestoneStatusForm();
   const { escrow } = useEscrowContext();
 
@@ -58,7 +58,7 @@ export function ChangeMilestoneStatusForm() {
                   <Input
                     placeholder="GSERVICE..."
                     {...field}
-                    disabled={!!escrow?.serviceProvider}
+                    disabled={!!escrow?.roles.serviceProvider}
                   />
                 </FormControl>
                 <FormMessage />
@@ -108,13 +108,30 @@ export function ChangeMilestoneStatusForm() {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="evidence"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Evidence (optional)</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="https://example.com/evidence"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Updating..." : "Change Milestone Status"}
           </Button>
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

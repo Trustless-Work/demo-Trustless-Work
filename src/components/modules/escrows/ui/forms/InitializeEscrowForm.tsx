@@ -32,7 +32,6 @@ interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;
   loading?: boolean;
   response?: any;
-  error?: string | null;
   trustlinesOptions: { value: string; label: string }[];
   currentStep: number;
   onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
@@ -46,7 +45,6 @@ export const InitializeEscrowForm = ({
   form,
   loading,
   response,
-  error,
   trustlinesOptions,
   currentStep,
   onSubmit,
@@ -59,7 +57,7 @@ export const InitializeEscrowForm = ({
     const currentStepData = steps[currentStep];
 
     return (
-      <Card className="w-3/4">
+      <Card className="w-full md:w-3/4">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">
             {currentStepData.title}
@@ -429,7 +427,7 @@ export const InitializeEscrowForm = ({
         </div>
       </div>
 
-      <ResponseDisplay response={response} error={error || null} />
+      <ResponseDisplay response={response} />
     </div>
   );
 };

@@ -16,11 +16,11 @@ import {
 import { useGetMultipleEscrowBalancesForm } from "../../hooks/get-multiple-escrow-balances-form.hook";
 
 export function GetMultipleEscrowBalanceForm() {
-  const { form, loading, response, error, fields, append, remove, onSubmit } =
+  const { form, loading, response, fields, append, remove, onSubmit } =
     useGetMultipleEscrowBalancesForm();
 
   return (
-    <div className="space-y-6">
+    <div className="w-full md:w-3/4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Signer Address */}
@@ -89,7 +89,7 @@ export function GetMultipleEscrowBalanceForm() {
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

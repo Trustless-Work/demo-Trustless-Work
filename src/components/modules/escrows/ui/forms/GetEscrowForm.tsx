@@ -14,7 +14,7 @@ import {
 import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 export function GetEscrowForm() {
-  const { form, loading, response, error, onSubmit } = useGetEscrowForm();
+  const { form, loading, response, onSubmit } = useGetEscrowForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -27,11 +27,7 @@ export function GetEscrowForm() {
             <FormItem>
               <FormLabel>Contract / Escrow ID</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="CAZ6UQX7..."
-                  {...field}
-                  disabled={!!escrow?.contractId}
-                />
+                <Input placeholder="CAZ6UQX7..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -57,7 +53,7 @@ export function GetEscrowForm() {
         </Button>
       </form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </Form>
   );
 }

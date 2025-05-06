@@ -15,7 +15,7 @@ import { useFundEscrowForm } from "../../hooks/fund-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 
 export function FundEscrowForm() {
-  const { form, loading, response, error, onSubmit } = useFundEscrowForm();
+  const { form, loading, response, onSubmit } = useFundEscrowForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -78,7 +78,7 @@ export function FundEscrowForm() {
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

@@ -15,7 +15,7 @@ import { useDistributeEscrowEarningsForm } from "../../hooks/distribute-escrow-e
 import { useEscrowContext } from "@/providers/escrow.provider";
 
 export function DistributeEarningsForm() {
-  const { form, loading, response, error, onSubmit } =
+  const { form, loading, response, onSubmit } =
     useDistributeEscrowEarningsForm();
   const { escrow } = useEscrowContext();
 
@@ -75,7 +75,7 @@ export function DistributeEarningsForm() {
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

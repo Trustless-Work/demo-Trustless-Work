@@ -23,7 +23,7 @@ import { useChangeMilestoneFlagForm } from "../../hooks/change-milestone-flag-fo
 import { useEscrowContext } from "@/providers/escrow.provider";
 
 export function ChangeMilestoneFlagForm() {
-  const { form, milestones, loading, response, error, onSubmit } =
+  const { form, milestones, loading, response, onSubmit } =
     useChangeMilestoneFlagForm();
   const { escrow } = useEscrowContext();
 
@@ -59,7 +59,7 @@ export function ChangeMilestoneFlagForm() {
                   <Input
                     placeholder="GSERVICE..."
                     {...field}
-                    disabled={!!escrow?.approver}
+                    disabled={!!escrow?.roles.approver}
                   />
                 </FormControl>
                 <FormMessage />
@@ -121,7 +121,7 @@ export function ChangeMilestoneFlagForm() {
         </form>
       </Form>
 
-      <ResponseDisplay response={response} error={error} />
+      <ResponseDisplay response={response} />
     </div>
   );
 }

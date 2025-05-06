@@ -70,10 +70,10 @@ export function ResolveDisputeForm() {
             />
             <FormField
               control={form.control}
-              name="serviceProviderFunds"
+              name="receiverFunds"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Service Provider Funds</FormLabel>
+                  <FormLabel>Receiver Funds</FormLabel>
                   <FormControl>
                     <Input placeholder="700" {...field} />
                   </FormControl>
