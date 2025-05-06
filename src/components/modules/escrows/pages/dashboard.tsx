@@ -16,21 +16,12 @@ export function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage escrow contracts and interact with the Stellar blockchain
-            using the <span className="font-bold">Trustless Work API.</span>
-          </p>
-        </div>
-      </div>
-
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle>API Endpoints</CardTitle>
+          <CardTitle className="text-2xl font-bold">Dashboard</CardTitle>
           <CardDescription>
-            Access and test various TW API endpoints.
+            Manage escrow contracts and interact with the Stellar blockchain
+            using the <span className="font-bold">Trustless Work API.</span>
           </CardDescription>
         </CardHeader>
         <CardContent className="p-0">
