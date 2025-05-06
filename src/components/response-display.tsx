@@ -1,57 +1,38 @@
-"use client"
+"use client";
 
-import { useState, useCallback, useRef } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { AlertCircle, CheckCircle, Copy } from "lucide-react"
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CheckCircle, Copy } from "lucide-react";
+import { useUtils } from "@/hooks/utils.hook";
+import { Escrow } from "@/@types/escrow.entity";
+import {
+  EscrowRequestResponse,
+  InitializeEscrowResponse,
+  UpdateEscrowResponse,
+} from "@/@types/escrow-response.entity";
 
 interface ResponseDisplayProps {
-  response: any
-  error: string | null
+  response:
+    | InitializeEscrowResponse
+    | UpdateEscrowResponse
+    | EscrowRequestResponse
+    | Escrow
+    | null;
 }
 
-export function ResponseDisplay({ response, error }: ResponseDisplayProps) {
-  const [copied, setCopied] = useState(false)
-  const [activeTab, setActiveTab] = useState("formatted")
-  const copiedTimeoutRef = useRef<number | null>(null)
+export function ResponseDisplay({ response }: ResponseDisplayProps) {
+  const [activeTab, setActiveTab] = useState("formatted");
+  const { copyToClipboard, copied } = useUtils();
 
-  // Define copyToClipboard before any conditional returns
-  const copyToClipboard = useCallback((text: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(true)
+  if (!response) return null;
 
-    // Clear any existing timeout
-    if (copiedTimeoutRef.current) {
-      clearTimeout(copiedTimeoutRef.current)
-    }
-
-    // Set a new timeout
-    copiedTimeoutRef.current = window.setTimeout(() => {
-      setCopied(false)
-      copiedTimeoutRef.current = null
-    }, 2000)
-  }, [])
-
-  // No need to render if there's no response or error
-  if (!response && !error) return null
-
-  if (error) {
-    return (
-      <Alert variant="destructive" className="mt-6">
-        <AlertCircle className="h-4 w-4" />
-        <AlertTitle>Error</AlertTitle>
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
-    )
-  }
-
-  const responseString = JSON.stringify(response, null, 2)
+  const responseString = JSON.stringify(response, null, 2);
 
   return (
     <Card className="mt-6 border shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between pb-2 bg-muted/50">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
         <CardTitle className="text-lg">Response</CardTitle>
         <Button
           variant="outline"
@@ -88,7 +69,9 @@ export function ResponseDisplay({ response, error }: ResponseDisplayProps) {
           </TabsList>
           <div className="p-4">
             <TabsContent value="formatted" className="mt-0">
-              <pre className="bg-muted p-4 rounded-md overflow-auto max-h-96 text-xs">{responseString}</pre>
+              <pre className="bg-muted p-4 rounded-md overflow-auto max-h-96 text-xs">
+                {responseString}
+              </pre>
             </TabsContent>
             <TabsContent value="raw" className="mt-0">
               <div className="bg-muted p-4 rounded-md overflow-auto max-h-96 text-xs break-all">
@@ -99,5 +82,5 @@ export function ResponseDisplay({ response, error }: ResponseDisplayProps) {
         </Tabs>
       </CardContent>
     </Card>
-  )
+  );
 }

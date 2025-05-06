@@ -1,33 +1,39 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { ThemeProvider } from "@/components/theme-provider"
-import { ApiProvider } from "@/lib/hooks/use-api"
-import { EscrowProvider } from "@/lib/hooks/use-escrow"
+import type React from "react";
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { GlobalProvider } from "@/providers/global.provider";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { Toaster } from "sonner";
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Trustless Work API",
-  description: "Interface for Trustless Work API",
-    generator: 'v0.dev'
-}
+  title: "Trustless Work Demo",
+  description: "Demo for Trustless Work API",
+  generator: "v0.dev",
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <ApiProvider>
-            <EscrowProvider>{children}</EscrowProvider>
-          </ApiProvider>
-        </ThemeProvider>
+        <GlobalProvider>
+          <Toaster />
+          <div className="min-h-screen">
+            <div className="flex-1 space-y-4 px-4 h-full">
+              <Header />
+              {children}
+              <Footer />
+            </div>
+          </div>
+        </GlobalProvider>
       </body>
     </html>
-  )
+  );
 }

@@ -1,46 +1,78 @@
-import type { Escrow, MilestoneStatus } from "./escrow.entity"
+import type { Escrow } from "./escrow.entity";
 
-// Escrow's Payload
-export type EscrowPayload = Omit<Escrow, "user" | "createdAt" | "updatedAt" | "id">
+// Payload base
+export type EscrowPayload = Escrow;
+
+export type InitializeEscrowPayload = Omit<
+  EscrowPayload,
+  "signer" | "contractId"
+> & {};
 
 export type ChangeMilestoneStatusPayload = {
-  contractId?: string
-  milestoneIndex: string
-  newStatus: MilestoneStatus
-  serviceProvider?: string
-}
+  contractId?: string;
+  milestoneIndex: string;
+  newStatus: string;
+  serviceProvider?: string;
+};
 
-export type ChangeMilestoneFlagPayload = Omit<ChangeMilestoneStatusPayload, "serviceProvider" | "newStatus"> & {
-  approver?: string
-  newFlag: boolean
-}
+export type ChangeMilestoneFlagPayload = Omit<
+  ChangeMilestoneStatusPayload,
+  "serviceProvider" | "newStatus"
+> & {
+  approver?: string;
+  newFlag: boolean;
+};
 
-export type StartDisputePayload = Pick<Escrow, "contractId"> & {
-  signer: string
-}
+export type StartDisputePayload = {
+  contractId: string;
+  signer: string;
+};
 
-export type ResolveDisputePayload = Pick<Escrow, "contractId"> &
-  Partial<Pick<Escrow, "disputeResolver">> & {
-    approverFunds: string
-    serviceProviderFunds: string
-  }
+export type ResolveDisputePayload = {
+  contractId: string;
+  disputeResolver?: string;
+  approverFunds: string;
+  receiverFunds: string;
+};
 
-export type FundEscrowPayload = Pick<Escrow, "amount" | "contractId"> & {
-  signer: string
-}
+export type FundEscrowPayload = {
+  amount: string;
+  contractId: string;
+  signer: string;
+};
 
-export type DistributeEscrowEarningsEscrowPayload = Pick<Escrow, "contractId"> &
-  Partial<Pick<Escrow, "serviceProvider" | "releaseSigner">> & {
-    signer: string
-  }
+export type GetEscrowPayload = {
+  contractId: string;
+  signer: string;
+};
 
-export type EditMilestonesPayload = {
-  contractId: string
-  escrow: EscrowPayload
-  signer: string
-}
+export type DistributeEscrowEarningsEscrowPayload = {
+  contractId: string;
+  serviceProvider?: string;
+  releaseSigner?: string;
+  signer: string;
+};
+
+export type EditEscrowPayload = {
+  contractId: string;
+  escrow: EscrowPayload;
+  signer: string;
+};
 
 export type GetBalanceParams = {
-  signer: string
-  addresses: string[]
-}
+  signer: string;
+  addresses: string[];
+};
+
+export type EscrowPayloadService =
+  | Escrow
+  | InitializeEscrowPayload
+  | GetEscrowPayload
+  | ChangeMilestoneStatusPayload
+  | ChangeMilestoneFlagPayload
+  | StartDisputePayload
+  | ResolveDisputePayload
+  | FundEscrowPayload
+  | DistributeEscrowEarningsEscrowPayload
+  | EditEscrowPayload
+  | GetBalanceParams;
