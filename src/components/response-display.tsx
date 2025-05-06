@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AlertCircle, CheckCircle, Copy } from "lucide-react";
+import { CheckCircle, Copy } from "lucide-react";
 import { useUtils } from "@/hooks/utils.hook";
 
 interface ResponseDisplayProps {

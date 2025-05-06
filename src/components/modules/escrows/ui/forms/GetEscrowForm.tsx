@@ -12,10 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
-import { useEscrowContext } from "@/providers/escrow.provider";
+
 export function GetEscrowForm() {
   const { form, loading, response, onSubmit } = useGetEscrowForm();
-  const { escrow } = useEscrowContext();
 
   return (
     <Form {...form}>
