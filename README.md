@@ -2,7 +2,7 @@
 
 # Trustless Work _DEMO_ | [API Documentation](https://docs.trustlesswork.com/trustless-work)
 
-POC of a decentralized application (dApp) to enhance trust in agency-client relationships using blockchain. It enables trustless payments via smart contracts, securing funds in escrow until milestones are approved by clients. Stablecoins like USDC are used to ensure stability and ease of use.
+A minimal dApp example to demonstrate how to interact with the Trustless Work API, deploy escrows, and submit signed transactions to the Stellar network.
 
 ---
 
