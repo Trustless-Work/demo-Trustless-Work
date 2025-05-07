@@ -15,10 +15,3 @@ export type InitializeEscrowResponse = {
 };
 
 export type UpdateEscrowResponse = InitializeEscrowResponse;
-
-export type EscrowResponse = {
-  message: string;
-  status: Status;
-};
-
-export type SendTransactionResponse = InitializeEscrowResponse & EscrowResponse;
