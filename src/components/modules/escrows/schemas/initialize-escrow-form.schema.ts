@@ -5,9 +5,6 @@ export const GetFormSchema = () => {
   const { isValidWallet } = useValidData();
 
   return z.object({
-    signer: z.string().min(1, {
-      message: "Signer is required.",
-    }),
     engagementId: z.string().min(1, {
       message: "Engagement is required.",
     }),

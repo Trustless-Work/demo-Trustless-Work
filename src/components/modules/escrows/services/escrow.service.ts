@@ -7,11 +7,12 @@ import { kit } from "@/config/wallet-kit";
 import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
 import { EscrowPayloadService } from "@/@types/escrow-payload.entity";
 import { Escrow } from "@/@types/escrow.entity";
+import { HttpMethod } from "@/@types/http.entity";
 
 interface EscrowServiceProps<T extends EscrowPayloadService> {
   payload: T;
   endpoint: string;
-  method: "post" | "put" | "get";
+  method: HttpMethod;
   requiresSignature?: boolean;
   returnEscrowDataIsRequired?: boolean;
 }

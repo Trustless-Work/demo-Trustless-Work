@@ -32,7 +32,7 @@ export const useInitializeEscrow = () => {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as Resolver<FormValues>,
-    defaultValues: getDefaultValues(walletAddress || ""),
+    defaultValues: getDefaultValues(),
     mode: "onChange",
   });
 

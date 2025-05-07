@@ -3,8 +3,7 @@ import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
 
 type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
 
-export const getDefaultValues = (walletAddress: string): FormValues => ({
-  signer: walletAddress || "",
+export const getDefaultValues = (): FormValues => ({
   engagementId: "",
   title: "",
   description: "",
