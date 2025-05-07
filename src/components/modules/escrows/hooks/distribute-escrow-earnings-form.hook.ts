@@ -9,6 +9,7 @@ import { escrowService } from "../services/escrow.service";
 import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
 import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
+import { DistributeEscrowEarningsEscrowPayload } from "@/@types/escrow-payload.entity";
 
 export const useDistributeEscrowEarningsForm = () => {
   const { escrow } = useEscrowContext();
@@ -26,7 +27,7 @@ export const useDistributeEscrowEarningsForm = () => {
     },
   });
 
-  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: DistributeEscrowEarningsEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 

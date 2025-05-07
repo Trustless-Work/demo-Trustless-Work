@@ -29,13 +29,13 @@ export const useGetMultipleEscrowBalancesForm = () => {
     name: "addresses",
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (payload: FormData) => {
     setLoading(true);
     setResponse(null);
 
     const transformedData: GetBalanceParams = {
-      addresses: data.addresses.map((a) => a.value),
-      signer: data.signer,
+      addresses: payload.addresses.map((a) => a.value),
+      signer: payload.signer,
     };
 
     try {

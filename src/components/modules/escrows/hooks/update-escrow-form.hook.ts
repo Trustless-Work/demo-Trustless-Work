@@ -12,6 +12,7 @@ import { Escrow } from "@/@types/escrow.entity";
 import { GetFormSchema } from "../schemas/update-escrow-form.schema";
 import { getDefaultValues } from "../default-values/update-escrow.default-value";
 import { UpdateEscrowResponse } from "@/@types/escrow-response.entity";
+import { UpdateEscrowPayload } from "@/@types/escrow-payload.entity";
 
 export const useUpdateEscrowForm = () => {
   const { escrow } = useEscrowContext();
@@ -34,7 +35,7 @@ export const useUpdateEscrowForm = () => {
     name: "escrow.milestones",
   });
 
-  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: UpdateEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -47,7 +48,6 @@ export const useUpdateEscrowForm = () => {
       })) as UpdateEscrowResponse;
 
       if (result.status === "SUCCESS") {
-        // todo: use buildEscrowFromResponse
         const escrowUpdated = {
           ...escrow,
           ...payload.escrow,

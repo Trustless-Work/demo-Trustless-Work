@@ -23,8 +23,8 @@ export type Flags = {
 };
 
 export interface Escrow {
-  signer: string;
-  contractId: string;
+  signer?: string;
+  contractId?: string;
   engagementId: string;
   title: string;
   roles: Roles;

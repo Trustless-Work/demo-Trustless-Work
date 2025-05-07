@@ -8,6 +8,7 @@ import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
 import { Escrow, Milestone } from "@/@types/escrow.entity";
 import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
+import { ChangeMilestoneFlagPayload } from "@/@types/escrow-payload.entity";
 
 export const useChangeMilestoneFlagForm = () => {
   const { escrow } = useEscrowContext();
@@ -31,7 +32,7 @@ export const useChangeMilestoneFlagForm = () => {
     },
   });
 
-  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: ChangeMilestoneFlagPayload) => {
     setLoading(true);
     setResponse(null);
 

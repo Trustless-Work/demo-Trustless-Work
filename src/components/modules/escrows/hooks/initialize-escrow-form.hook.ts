@@ -101,7 +101,7 @@ export const useInitializeEscrow = () => {
     ]);
   };
 
-  const onSubmit = async (payload: FormValues) => {
+  const onSubmit = async (payload: InitializeEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 

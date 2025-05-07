@@ -12,6 +12,7 @@ export type ChangeMilestoneStatusPayload = {
   contractId?: string;
   milestoneIndex: string;
   newStatus: string;
+  evidence?: string;
   serviceProvider?: string;
 };
 
@@ -53,7 +54,7 @@ export type DistributeEscrowEarningsEscrowPayload = {
   signer: string;
 };
 
-export type EditEscrowPayload = {
+export type UpdateEscrowPayload = {
   contractId: string;
   escrow: EscrowPayload;
   signer: string;
@@ -74,5 +75,5 @@ export type EscrowPayloadService =
   | ResolveDisputePayload
   | FundEscrowPayload
   | DistributeEscrowEarningsEscrowPayload
-  | EditEscrowPayload
+  | UpdateEscrowPayload
   | GetBalanceParams;

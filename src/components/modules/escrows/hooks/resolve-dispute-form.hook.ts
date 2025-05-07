@@ -8,6 +8,7 @@ import { escrowService } from "../services/escrow.service";
 import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
 import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
+import { ResolveDisputePayload } from "@/@types/escrow-payload.entity";
 
 export const useResolveDisputeForm = () => {
   const { escrow } = useEscrowContext();
@@ -25,7 +26,7 @@ export const useResolveDisputeForm = () => {
     },
   });
 
-  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
+  const onSubmit = async (payload: ResolveDisputePayload) => {
     setLoading(true);
     setResponse(null);
 
