@@ -16,7 +16,7 @@ export const EscrowMilestonesSection = ({
           key={index}
           className={`border rounded-lg p-4 transition-all ${
             milestone.status === "approved" || milestone.approvedFlag
-              ? "border-green-200 bg-green-50"
+              ? "border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-900/20"
               : "hover:border-primary"
           }`}
         >
@@ -25,7 +25,7 @@ export const EscrowMilestonesSection = ({
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full uppercase ${
                   milestone.status === "approved" || milestone.approvedFlag
-                    ? "bg-green-100"
+                    ? "bg-green-100 dark:bg-green-900/50"
                     : "bg-muted"
                 }`}
               >
@@ -47,7 +47,7 @@ export const EscrowMilestonesSection = ({
                     }
                     className={
                       milestone.status === "approved"
-                        ? "bg-green-100 text-green-800 hover:bg-green-200 uppercase"
+                        ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-900/70 uppercase"
                         : "uppercase"
                     }
                   >
@@ -63,7 +63,7 @@ export const EscrowMilestonesSection = ({
                 {milestone.approvedFlag && !milestone.status && (
                   <Badge
                     variant="outline"
-                    className="border-green-200 text-green-800 uppercase"
+                    className="border-green-200 dark:border-green-900 text-green-800 dark:text-green-200 uppercase"
                   >
                     <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
                   </Badge>
@@ -71,9 +71,12 @@ export const EscrowMilestonesSection = ({
               </>
             </div>
           </div>
-          <p className="text-muted-foreground text-sm mt-4 truncate">
-            <span className="font-medium">Evidence:</span> {milestone.evidence}
-          </p>
+
+          {milestone.evidence && (
+            <p className="text-muted-foreground text-sm mt-4 truncate">
+              <span className="font-medium">Evidence:</span> {milestone.evidence}
+            </p>
+          )}
         </div>
       ))}
     </div>

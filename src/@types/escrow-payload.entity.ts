@@ -4,8 +4,7 @@ import type { Escrow } from "./escrow.entity";
 export type EscrowPayload = Escrow;
 
 export type InitializeEscrowPayload = Omit<
-  EscrowPayload,
-  "signer" | "contractId"
+  EscrowPayload, "contractId"
 > & {};
 
 export type ChangeMilestoneStatusPayload = {

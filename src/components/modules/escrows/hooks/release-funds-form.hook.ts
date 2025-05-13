@@ -45,6 +45,7 @@ export const useReleaseFundsForm = () => {
           flags: {
             releaseFlag: true,
           },
+          balance: "0",
         };
 
         setEscrow(escrowUpdated);

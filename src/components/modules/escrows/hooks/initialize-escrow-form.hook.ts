@@ -109,6 +109,7 @@ export const useInitializeEscrow = () => {
       const finalPayload: InitializeEscrowPayload = {
         ...payload,
         receiverMemo: payload.receiverMemo ?? 0,
+        signer: walletAddress || "",
       };
 
       const result = (await escrowService({
