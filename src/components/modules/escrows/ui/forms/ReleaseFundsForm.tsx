@@ -11,12 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/response-display";
-import { useDistributeEscrowEarningsForm } from "../../hooks/distribute-escrow-earnings-form.hook";
+import { useReleaseFundsForm } from "../../hooks/release-funds-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 
-export function DistributeEarningsForm() {
-  const { form, loading, response, onSubmit } =
-    useDistributeEscrowEarningsForm();
+export function ReleaseFundsForm() {
+  const { form, loading, response, onSubmit } = useReleaseFundsForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -70,7 +69,7 @@ export function DistributeEarningsForm() {
           />
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Distributing..." : "Distribute Earnings"}
+            {loading ? "Releasing..." : "Release Funds"}
           </Button>
         </form>
       </Form>

@@ -14,7 +14,7 @@ import { GetEscrowForm } from "../forms/GetEscrowForm";
 import { FundEscrowForm } from "../forms/FundEscrowForm";
 import { ChangeMilestoneStatusForm } from "../forms/ChangeMilestoneStatusForm";
 import { ChangeMilestoneFlagForm } from "../forms/ChangeMilestoneFlagForm";
-import { DistributeEarningsForm } from "../forms/DistributeEarningsForm";
+import { ReleaseFundsForm } from "../forms/ReleaseFundsForm";
 import { ResolveDisputeForm } from "../forms/ResolveDisputeForm";
 import { UpdateEscrowForm } from "../forms/UpdateEscrowForm";
 import { EscrowCreatedSection } from "../sections/EscrowCreatedSection";
@@ -77,8 +77,8 @@ export function EscrowEndpoints() {
             <TabsTrigger value="resolve-dispute" className="flex-1">
               Resolve Dispute
             </TabsTrigger>
-            <TabsTrigger value="distribute-earnings" className="flex-1">
-              Distribute Funds
+            <TabsTrigger value="release-funds" className="flex-1">
+              Release Funds
             </TabsTrigger>
             <TabsTrigger value="update-escrow" className="flex-1">
               Update Escrow
@@ -105,8 +105,8 @@ export function EscrowEndpoints() {
                 <TabsContent value="resolve-dispute" className="mt-0">
                   <ResolveDisputeForm />
                 </TabsContent>
-                <TabsContent value="distribute-earnings" className="mt-0">
-                  <DistributeEarningsForm />
+                <TabsContent value="release-funds" className="mt-0">
+                  <ReleaseFundsForm />
                 </TabsContent>
                 <TabsContent value="update-escrow" className="mt-0">
                   <UpdateEscrowForm />

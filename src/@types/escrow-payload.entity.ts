@@ -47,7 +47,7 @@ export type GetEscrowPayload = {
   signer: string;
 };
 
-export type DistributeEscrowEarningsEscrowPayload = {
+export type ReleaseFundsEscrowPayload = {
   contractId: string;
   serviceProvider?: string;
   releaseSigner?: string;
@@ -74,6 +74,6 @@ export type EscrowPayloadService =
   | StartDisputePayload
   | ResolveDisputePayload
   | FundEscrowPayload
-  | DistributeEscrowEarningsEscrowPayload
+  | ReleaseFundsEscrowPayload
   | UpdateEscrowPayload
   | GetBalanceParams;

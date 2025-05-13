@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { formSchema } from "../schemas/distribute-escrow-earnings-form.schema";
+import { formSchema } from "../schemas/release-funds-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { Escrow } from "@/@types/escrow.entity";
 import { toast } from "sonner";
 import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { DistributeEscrowEarningsEscrowPayload } from "@/@types/escrow-payload.entity";
+import { ReleaseFundsEscrowPayload } from "@/@types/escrow-payload.entity";
 
-export const useDistributeEscrowEarningsForm = () => {
+export const useReleaseFundsForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
@@ -27,14 +27,14 @@ export const useDistributeEscrowEarningsForm = () => {
     },
   });
 
-  const onSubmit = async (payload: DistributeEscrowEarningsEscrowPayload) => {
+  const onSubmit = async (payload: ReleaseFundsEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 
     try {
       const result = (await escrowService({
         payload,
-        endpoint: "/escrow/distribute-escrow-earnings",
+        endpoint: "/escrow/release-funds",
         method: "post",
         returnEscrowDataIsRequired: false,
       })) as EscrowRequestResponse;
