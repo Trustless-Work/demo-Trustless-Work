@@ -39,7 +39,7 @@ export const useGetMultipleEscrowBalancesForm = () => {
     };
 
     try {
-      const result = (await escrowService({
+      const result = (await escrowService.execute({
         payload: transformedData,
         endpoint: "/helper/get-multiple-escrow-balance",
         method: "get",

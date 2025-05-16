@@ -37,7 +37,7 @@ export const useChangeMilestoneStatusForm = () => {
     setResponse(null);
 
     try {
-      const result = (await escrowService({
+      const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/change-milestone-status",
         method: "post",

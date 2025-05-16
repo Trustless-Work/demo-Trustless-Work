@@ -32,7 +32,7 @@ export const useReleaseFundsForm = () => {
     setResponse(null);
 
     try {
-      const result = (await escrowService({
+      const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/release-funds",
         method: "post",

@@ -112,7 +112,7 @@ export const useInitializeEscrow = () => {
         signer: walletAddress || "",
       };
 
-      const result = (await escrowService({
+      const result = (await escrowService.execute({
         payload: finalPayload,
         endpoint: "/deployer/invoke-deployer-contract",
         method: "post",

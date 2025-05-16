@@ -31,7 +31,7 @@ export const useResolveDisputeForm = () => {
     setResponse(null);
 
     try {
-      const result = (await escrowService({
+      const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/resolving-disputes",
         method: "post",

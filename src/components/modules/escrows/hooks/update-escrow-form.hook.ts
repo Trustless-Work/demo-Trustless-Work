@@ -40,7 +40,7 @@ export const useUpdateEscrowForm = () => {
     setResponse(null);
 
     try {
-      const result = (await escrowService({
+      const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/update-escrow-by-contract-id",
         method: "put",
