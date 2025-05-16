@@ -5,10 +5,10 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GetEscrowPayload } from "@/@types/escrow-payload.entity";
+import { GetEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 
 export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();

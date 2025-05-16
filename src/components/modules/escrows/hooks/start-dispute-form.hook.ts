@@ -6,10 +6,10 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schemas/start-dispute-form.schema";
 import { escrowService } from "../services/escrow.service";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { toast } from "sonner";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { StartDisputePayload } from "@/@types/escrow-payload.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { StartDisputePayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useStartDisputeForm = () => {
   const { escrow } = useEscrowContext();

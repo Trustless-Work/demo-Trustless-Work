@@ -6,9 +6,9 @@ import { useEscrowContext } from "@/providers/escrow.provider";
 import { formSchema } from "../schemas/change-milestone-status-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
-import { Escrow, Milestone } from "@/@types/escrow.entity";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { ChangeMilestoneStatusPayload } from "@/@types/escrow-payload.entity";
+import { Escrow, Milestone } from "@/@types/escrows/escrow.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { ChangeMilestoneStatusPayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useChangeMilestoneStatusForm = () => {
   const { escrow } = useEscrowContext();

@@ -1,8 +1,8 @@
 import {
   InitializeEscrowResponse,
   UpdateEscrowResponse,
-} from "@/@types/escrow-response.entity";
-import { Escrow } from "@/@types/escrow.entity";
+} from "@/@types/escrows/escrow-response.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 
 export const buildEscrowFromResponse = (
   result: InitializeEscrowResponse | UpdateEscrowResponse,

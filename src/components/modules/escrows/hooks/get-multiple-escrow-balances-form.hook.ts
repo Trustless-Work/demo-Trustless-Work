@@ -6,8 +6,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../schemas/get-multiple-escrow-balances-form.schema";
 import { toast } from "sonner";
 import { escrowService } from "../services/escrow.service";
-import { GetBalanceParams } from "@/@types/escrow-payload.entity";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
+import { GetBalanceParams } from "@/@types/escrows/escrow-payload.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
 
 type FormData = z.infer<typeof formSchema>;
 

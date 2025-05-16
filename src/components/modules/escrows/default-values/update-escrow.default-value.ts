@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { GetFormSchema } from "../schemas/update-escrow-form.schema";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 
 type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
 

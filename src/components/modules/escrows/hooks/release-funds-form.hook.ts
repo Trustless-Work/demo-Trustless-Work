@@ -6,10 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formSchema } from "../schemas/release-funds-form.schema";
 import { escrowService } from "../services/escrow.service";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { toast } from "sonner";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { ReleaseFundsEscrowPayload } from "@/@types/escrow-payload.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { ReleaseFundsEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useReleaseFundsForm = () => {
   const { escrow } = useEscrowContext();

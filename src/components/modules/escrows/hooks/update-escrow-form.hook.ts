@@ -8,11 +8,11 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { toast } from "sonner";
 import { escrowService } from "../services/escrow.service";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { GetFormSchema } from "../schemas/update-escrow-form.schema";
 import { getDefaultValues } from "../default-values/update-escrow.default-value";
-import { UpdateEscrowResponse } from "@/@types/escrow-response.entity";
-import { UpdateEscrowPayload } from "@/@types/escrow-payload.entity";
+import { UpdateEscrowResponse } from "@/@types/escrows/escrow-response.entity";
+import { UpdateEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useUpdateEscrowForm = () => {
   const { escrow } = useEscrowContext();

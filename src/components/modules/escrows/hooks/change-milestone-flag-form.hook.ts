@@ -6,9 +6,9 @@ import { z } from "zod";
 import { formSchema } from "../schemas/change-milestone-flag-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
-import { Escrow, Milestone } from "@/@types/escrow.entity";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { ChangeMilestoneFlagPayload } from "@/@types/escrow-payload.entity";
+import { Escrow, Milestone } from "@/@types/escrows/escrow.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { ChangeMilestoneFlagPayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useChangeMilestoneFlagForm = () => {
   const { escrow } = useEscrowContext();

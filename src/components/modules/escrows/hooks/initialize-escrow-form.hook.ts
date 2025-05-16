@@ -1,4 +1,4 @@
-import { InitializeEscrowPayload } from "@/@types/escrow-payload.entity";
+import { InitializeEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
+import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { escrowService } from "../services/escrow.service";
 import { trustlines } from "../constants/trustline.constant";

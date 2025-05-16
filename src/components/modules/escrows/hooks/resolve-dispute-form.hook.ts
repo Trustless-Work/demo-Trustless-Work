@@ -5,10 +5,10 @@ import { z } from "zod";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { formSchema } from "../schemas/resolve-dispute-form.schema";
 import { escrowService } from "../services/escrow.service";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { toast } from "sonner";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { ResolveDisputePayload } from "@/@types/escrow-payload.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { ResolveDisputePayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useResolveDisputeForm = () => {
   const { escrow } = useEscrowContext();

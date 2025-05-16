@@ -7,9 +7,9 @@ import { z } from "zod";
 import { formSchema } from "../schemas/fund-escrow-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
-import { Escrow } from "@/@types/escrow.entity";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { FundEscrowPayload } from "@/@types/escrow-payload.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { FundEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useFundEscrowForm = () => {
   const { escrow } = useEscrowContext();

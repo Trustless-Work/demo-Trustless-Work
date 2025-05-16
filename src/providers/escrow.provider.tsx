@@ -1,7 +1,7 @@
 "use client";
 
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { createContext, useContext, useState, ReactNode } from "react";
-import type { Escrow } from "@/@types/escrow.entity";
 
 interface EscrowContextProps {
   escrow: Escrow | null;

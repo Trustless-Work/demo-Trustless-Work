@@ -4,9 +4,9 @@ import { signTransaction } from "../../auth/lib/stellar-wallet-kit";
 import { handleError } from "@/errors/utils/handle-errors";
 import { WalletError } from "@/@types/errors.entity";
 import { kit } from "@/config/wallet-kit";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { EscrowPayloadService } from "@/@types/escrow-payload.entity";
-import { Escrow } from "@/@types/escrow.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { EscrowPayloadService } from "@/@types/escrows/escrow-payload.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { HttpMethod } from "@/@types/http.entity";
 
 // Interface defining the required properties for escrow service operations
