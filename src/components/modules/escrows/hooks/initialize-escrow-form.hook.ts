@@ -13,7 +13,6 @@ import { trustlines } from "../constants/trustline.constant";
 import { Trustline } from "@/@types/trustline.entity";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
-import { getDefaultValues } from "../default-values/initialize-escrow.default-values";
 import { steps } from "../constants/initialize-steps.constant";
 import { buildEscrowFromResponse } from "../helpers/create-escrow-from-response.helper";
 
@@ -32,7 +31,34 @@ export const useInitializeEscrow = () => {
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as Resolver<FormValues>,
-    defaultValues: getDefaultValues(),
+    defaultValues: {
+      engagementId: "",
+      title: "",
+      description: "",
+      amount: "",
+      platformFee: "",
+      receiverMemo: 0,
+      roles: {
+        approver: "",
+        serviceProvider: "",
+        platformAddress: "",
+        releaseSigner: "",
+        disputeResolver: "",
+        receiver: "",
+      },
+      trustline: {
+        address: "",
+        decimals: 10000000,
+      },
+      milestones: [
+        {
+          description: "",
+          status: "pending",
+          evidence: "",
+          approvedFlag: false,
+        },
+      ],
+    },
     mode: "onChange",
   });
 

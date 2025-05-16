@@ -3,6 +3,11 @@
 import { Escrow } from "@/@types/escrows/escrow.entity";
 import { createContext, useContext, useState, ReactNode } from "react";
 
+/**
+ *
+ * Escrow Context
+ *
+ */
 interface EscrowContextProps {
   escrow: Escrow | null;
   setEscrow: (escrow: Escrow) => void;
@@ -11,13 +16,29 @@ interface EscrowContextProps {
 
 const EscrowContext = createContext<EscrowContextProps | undefined>(undefined);
 
+/**
+ * Escrow Provider
+ *
+ * @Note:
+ * - We're using useContext to provide the unique escrow in the whole project. But in your case, you
+ *   can use Redux or Zustand to store the escrow.
+ *
+ */
 export const EscrowProvider = ({ children }: { children: ReactNode }) => {
   const [escrow, setEscrowState] = useState<Escrow | null>(null);
 
+  /**
+   * Set Escrow
+   *
+   * @param newEscrow - New escrow
+   */
   const setEscrow = (newEscrow: Escrow) => {
     setEscrowState(newEscrow);
   };
 
+  /**
+   * Reset Escrow
+   */
   const resetEscrow = () => {
     setEscrowState(null);
   };

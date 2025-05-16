@@ -1,3 +1,8 @@
+/**
+ *
+ * The allows the user to interact with some tokens, in this case, we're using USDC and EURC. But you can add more trustlines.
+ *
+ */
 export const trustlines = [
   {
     name: "USDC",

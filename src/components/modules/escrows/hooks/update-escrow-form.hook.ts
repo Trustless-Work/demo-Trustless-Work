@@ -8,9 +8,7 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { toast } from "sonner";
 import { escrowService } from "../services/escrow.service";
-import { Escrow } from "@/@types/escrows/escrow.entity";
 import { GetFormSchema } from "../schemas/update-escrow-form.schema";
-import { getDefaultValues } from "../default-values/update-escrow.default-value";
 import { UpdateEscrowResponse } from "@/@types/escrows/escrow-response.entity";
 import { UpdateEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 
@@ -24,10 +22,38 @@ export const useUpdateEscrowForm = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema) as any,
-    defaultValues: getDefaultValues(
-      walletAddress || "",
-      (escrow as Escrow) || ({} as Escrow)
-    ),
+    defaultValues: {
+      signer: walletAddress || "",
+      contractId: escrow?.contractId || "",
+      escrow: {
+        title: escrow?.title || "",
+        engagementId: escrow?.engagementId || "",
+        description: escrow?.description || "",
+        amount: escrow?.amount.toString() || "",
+        platformFee: (Number(escrow?.platformFee) / 100).toString() || "",
+        receiverMemo: escrow?.receiverMemo || 0,
+        roles: {
+          approver: escrow?.roles.approver || "",
+          serviceProvider: escrow?.roles.serviceProvider || "",
+          platformAddress: escrow?.roles.platformAddress || "",
+          releaseSigner: escrow?.roles.releaseSigner || "",
+          disputeResolver: escrow?.roles.disputeResolver || "",
+          receiver: escrow?.roles.receiver || "",
+        },
+        trustline: {
+          address: escrow?.trustline.address || "",
+          decimals: escrow?.trustline.decimals || 10000000,
+        },
+        milestones: escrow?.milestones || [
+          {
+            description: "",
+            status: "pending",
+            evidence: "",
+            approvedFlag: false,
+          },
+        ],
+      },
+    },
   });
 
   const { fields, append, remove } = useFieldArray({
