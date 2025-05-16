@@ -1,7 +1,7 @@
 import { Status } from "../http.entity";
 import type { EscrowPayload } from "./escrow-payload.entity";
 
-// Escrow's Response
+// Escrow's Response like fund, release, change, etc ...
 export type EscrowRequestResponse = {
   status: Status;
   unsignedTransaction?: string;
