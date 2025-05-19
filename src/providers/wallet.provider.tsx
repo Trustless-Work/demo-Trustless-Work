@@ -21,7 +21,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [walletName, setWalletName] = useState<string | null>(null);
 
-  // Cargar desde localStorage al montar
+  // Load or set wallet info from localStorage
   useEffect(() => {
     const storedAddress = localStorage.getItem("walletAddress");
     const storedName = localStorage.getItem("walletName");
@@ -30,6 +30,12 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     if (storedName) setWalletName(storedName);
   }, []);
 
+  /**
+   * Set wallet info
+   *
+   * @param address - Wallet address
+   * @param name - Wallet name
+   */
   const setWalletInfo = (address: string, name: string) => {
     setWalletAddress(address);
     setWalletName(name);
@@ -37,6 +43,9 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("walletName", name);
   };
 
+  /**
+   * Clear wallet info
+   */
   const clearWalletInfo = () => {
     setWalletAddress(null);
     setWalletName(null);
