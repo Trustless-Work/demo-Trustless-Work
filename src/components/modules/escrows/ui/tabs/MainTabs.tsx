@@ -17,15 +17,9 @@ export const MainTabs = () => {
       className="w-full"
     >
       <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="deploy" className="">
-          Deploy
-        </TabsTrigger>
-        <TabsTrigger value="escrow" className="">
-          Escrows
-        </TabsTrigger>
-        <TabsTrigger value="helper" className="">
-          Helpers
-        </TabsTrigger>
+        <TabsTrigger value="deploy">Deploy</TabsTrigger>
+        <TabsTrigger value="escrow">Escrows</TabsTrigger>
+        <TabsTrigger value="helper">Helpers</TabsTrigger>
       </TabsList>
       <div className="p-6">
         <TabsContent value="deploy" className="mt-0">
