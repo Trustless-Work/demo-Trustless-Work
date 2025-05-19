@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash } from "lucide-react";
-import { ResponseDisplay } from "@/components/response-display";
 import {
   Form,
   FormField,
@@ -14,6 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useGetMultipleEscrowBalancesForm } from "../../hooks/get-multiple-escrow-balances-form.hook";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function GetMultipleEscrowBalanceForm() {
   const { form, loading, response, fields, append, remove, onSubmit } =

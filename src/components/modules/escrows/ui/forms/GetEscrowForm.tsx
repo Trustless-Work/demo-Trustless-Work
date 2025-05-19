@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ResponseDisplay } from "@/components/response-display";
 import {
   Form,
   FormField,
@@ -12,6 +11,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function GetEscrowForm() {
   const { form, loading, response, onSubmit } = useGetEscrowForm();

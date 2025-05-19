@@ -14,7 +14,6 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResponseDisplay } from "@/components/response-display";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { GetFormSchema } from "../../schemas/initialize-escrow-form.schema";
@@ -27,7 +26,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { steps } from "../../constants/initialize-steps.constant";
-import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
+import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;

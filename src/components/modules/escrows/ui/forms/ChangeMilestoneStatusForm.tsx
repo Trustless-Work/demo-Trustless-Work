@@ -17,9 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ResponseDisplay } from "@/components/response-display";
 import { useChangeMilestoneStatusForm } from "../../hooks/change-milestone-status-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function ChangeMilestoneStatusForm() {
   const { form, milestones, loading, response, onSubmit } =

@@ -10,9 +10,10 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { ResponseDisplay } from "@/components/response-display";
+
 import { useFundEscrowForm } from "../../hooks/fund-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function FundEscrowForm() {
   const { form, loading, response, onSubmit } = useFundEscrowForm();

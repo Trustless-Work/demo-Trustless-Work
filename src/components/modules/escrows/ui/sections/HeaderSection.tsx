@@ -1,4 +1,4 @@
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { Badge } from "@/components/ui/badge";
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import {
