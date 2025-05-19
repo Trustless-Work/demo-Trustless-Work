@@ -1,2 +1,2 @@
-export type CreatedAt = string
-export type UpdatedAt = string
+export type CreatedAt = string;
+export type UpdatedAt = string;

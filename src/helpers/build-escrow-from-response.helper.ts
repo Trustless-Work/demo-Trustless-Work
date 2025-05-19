@@ -10,7 +10,7 @@ import { Escrow } from "@/@types/escrows/escrow.entity";
  */
 export const buildEscrowFromResponse = (
   result: InitializeEscrowResponse | UpdateEscrowResponse,
-  walletAddress: string
+  walletAddress: string,
 ): Escrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",

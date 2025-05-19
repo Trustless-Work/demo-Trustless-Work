@@ -43,7 +43,7 @@ export class EscrowService {
    */
   private async handleGetRequest<T extends EscrowPayloadService>(
     endpoint: string,
-    payload: T
+    payload: T,
   ): Promise<EscrowRequestResponse> {
     const { data } = await http.get<EscrowRequestResponse>(endpoint, {
       params: payload,
@@ -64,7 +64,7 @@ export class EscrowService {
    */
   private async signTransactionWithWallet(
     unsignedTransaction: string,
-    address: string
+    address: string,
   ): Promise<string> {
     // Sign the transaction using the Stellar Wallet Kit
     return await signTransaction({ unsignedTransaction, address });
@@ -75,7 +75,7 @@ export class EscrowService {
    */
   private async sendSignedTransaction(
     signedXdr: string,
-    returnEscrowDataIsRequired: boolean
+    returnEscrowDataIsRequired: boolean,
   ): Promise<EscrowRequestResponse> {
     const tx = await http.post("/helper/send-transaction", {
       signedXdr,
@@ -121,7 +121,7 @@ export class EscrowService {
       const address = await this.getWalletAddress();
       const response = await http[method]<EscrowRequestResponse>(
         endpoint,
-        payload
+        payload,
       );
 
       const { unsignedTransaction } = response.data;
@@ -134,13 +134,13 @@ export class EscrowService {
       // Sign and send transaction
       const signedTxXdr = await this.signTransactionWithWallet(
         unsignedTransaction,
-        address
+        address,
       );
 
       // Send the signed transaction to the network
       return await this.sendSignedTransaction(
         signedTxXdr,
-        returnEscrowDataIsRequired
+        returnEscrowDataIsRequired,
       );
     } catch (error: unknown) {
       const mappedError = handleError(error as AxiosError | WalletError);

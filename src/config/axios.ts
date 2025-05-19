@@ -10,8 +10,8 @@ const ENV =
   process.env.NEXT_PUBLIC_ENV === "PROD"
     ? process.env.NEXT_PUBLIC_API_URL_PROD
     : process.env.NEXT_PUBLIC_ENV === "DEV"
-    ? process.env.NEXT_PUBLIC_API_URL_DEV
-    : process.env.NEXT_PUBLIC_API_URL_LOCAL;
+      ? process.env.NEXT_PUBLIC_API_URL_DEV
+      : process.env.NEXT_PUBLIC_API_URL_LOCAL;
 
 /**
  *

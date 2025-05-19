@@ -71,21 +71,21 @@ export const useChangeMilestoneStatusForm = () => {
                   status: payload.newStatus,
                   evidence: payload.evidence || "",
                 }
-              : milestone
+              : milestone,
           ),
         };
 
         setEscrow(escrowUpdated);
 
         toast.info(
-          `Milestone index - ${payload.milestoneIndex} updated to ${payload.newStatus}`
+          `Milestone index - ${payload.milestoneIndex} updated to ${payload.newStatus}`,
         );
         setResponse(result);
         form.reset();
       }
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

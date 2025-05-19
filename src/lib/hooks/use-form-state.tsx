@@ -21,7 +21,7 @@ export function useFormState<T extends Record<string, any>>(initialState: T) {
       const { name, value } = e.target;
       setFormData((prev) => ({ ...prev, [name]: value }));
     },
-    []
+    [],
   );
 
   // Handle select change

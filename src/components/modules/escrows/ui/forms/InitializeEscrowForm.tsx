@@ -154,7 +154,7 @@ export const InitializeEscrowForm = ({
                           <Select
                             onValueChange={(value) => {
                               const selectedOption = trustlinesOptions.find(
-                                (opt) => opt.value === value
+                                (opt) => opt.value === value,
                               );
                               if (selectedOption) {
                                 field.onChange(selectedOption.value);
@@ -365,7 +365,7 @@ export const InitializeEscrowForm = ({
             key={step.id}
             className={cn(
               "flex items-center",
-              index !== steps.length - 1 ? "flex-1" : ""
+              index !== steps.length - 1 ? "flex-1" : "",
             )}
           >
             <div
@@ -373,7 +373,7 @@ export const InitializeEscrowForm = ({
                 "flex items-center justify-center w-8 h-8 rounded-full transition-colors",
                 index <= currentStep
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
+                  : "bg-muted",
               )}
             >
               {index + 1}
@@ -382,7 +382,7 @@ export const InitializeEscrowForm = ({
               <div
                 className={cn(
                   "flex-1 h-1 mx-2 transition-colors",
-                  index < currentStep ? "bg-primary" : "bg-muted"
+                  index < currentStep ? "bg-primary" : "bg-muted",
                 )}
               />
             )}

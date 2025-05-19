@@ -94,7 +94,7 @@ export function UpdateEscrowForm() {
                     <Select
                       onValueChange={(value) => {
                         const selectedOption = trustlinesOptions.find(
-                          (opt) => opt.value === value
+                          (opt) => opt.value === value,
                         );
                         if (selectedOption) {
                           field.onChange(selectedOption.value);

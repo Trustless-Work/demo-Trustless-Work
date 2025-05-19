@@ -67,21 +67,21 @@ export const useChangeMilestoneFlagForm = () => {
           milestones: escrow!.milestones.map((milestone: Milestone, index) =>
             index === Number(payload.milestoneIndex)
               ? { ...milestone, approvedFlag: payload.newFlag }
-              : milestone
+              : milestone,
           ),
         };
 
         setEscrow(escrowUpdated);
 
         toast.info(
-          `Milestone index - ${payload.milestoneIndex} has been approved`
+          `Milestone index - ${payload.milestoneIndex} has been approved`,
         );
         setResponse(result);
         form.reset();
       }
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);
