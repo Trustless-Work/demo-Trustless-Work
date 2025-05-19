@@ -8,11 +8,12 @@ import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
 import { EscrowPayloadService } from "@/@types/escrows/escrow-payload.entity";
 import { Escrow } from "@/@types/escrows/escrow.entity";
 import { HttpMethod } from "@/@types/http.entity";
+import { EscrowEndpoints } from "@/@types/escrows/escrow-endpoints.entity";
 
 // Interface defining the required properties for escrow service operations
 interface EscrowServiceProps<T extends EscrowPayloadService> {
   payload: T;
-  endpoint: string;
+  endpoint: EscrowEndpoints;
   method: HttpMethod;
   requiresSignature?: boolean;
   returnEscrowDataIsRequired?: boolean;
