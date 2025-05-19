@@ -64,7 +64,7 @@ Follow the steps below to get started with this project:
 1. Install dependencies.
 2. Format code.
 3. Set enviroment variables.
-5. Run the project!
+4. Run the project!
 
 ## Steps
 

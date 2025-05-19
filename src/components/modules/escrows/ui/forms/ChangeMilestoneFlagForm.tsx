@@ -18,9 +18,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ResponseDisplay } from "@/components/response-display";
 import { useChangeMilestoneFlagForm } from "../../hooks/change-milestone-flag-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function ChangeMilestoneFlagForm() {
   const { form, milestones, loading, response, onSubmit } =

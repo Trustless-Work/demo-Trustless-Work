@@ -5,10 +5,10 @@ import { z } from "zod";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { formSchema } from "../schemas/resolve-dispute-form.schema";
 import { escrowService } from "../services/escrow.service";
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { toast } from "sonner";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { ResolveDisputePayload } from "@/@types/escrow-payload.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { ResolveDisputePayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useResolveDisputeForm = () => {
   const { escrow } = useEscrowContext();
@@ -31,13 +31,30 @@ export const useResolveDisputeForm = () => {
     setResponse(null);
 
     try {
-      const result = (await escrowService({
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - The result will be an EscrowRequestResponse
+       */
+      const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/resolving-disputes",
         method: "post",
         returnEscrowDataIsRequired: false,
       })) as EscrowRequestResponse;
 
+      /**
+       * @Responses:
+       * result.status === "SUCCESS"
+       * - Escrow updated successfully
+       * - Set the escrow in the context
+       * - Show a success toast
+       *
+       * result.status !== "SUCCESS"
+       * - Show an error toast
+       */
       if (result.status === "SUCCESS") {
         const escrowUpdated: Escrow = {
           ...escrow!,
@@ -58,7 +75,7 @@ export const useResolveDisputeForm = () => {
       }
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

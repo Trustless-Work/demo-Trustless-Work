@@ -1,4 +1,4 @@
-import { Dashboard } from "@/components/modules/escrows/pages/dashboard";
+import { Dashboard } from "@/components/modules/escrows/ui/pages/dashboard";
 
 export default function Home() {
   return (

@@ -3,10 +3,10 @@ import type { Escrow } from "./escrow.entity";
 // Payload base
 export type EscrowPayload = Escrow;
 
-export type InitializeEscrowPayload = Omit<
-  EscrowPayload, "contractId"
-> & {};
+// Initialize Escrow Payload
+export type InitializeEscrowPayload = Omit<EscrowPayload, "contractId"> & {};
 
+// Change Milestone Status Payload
 export type ChangeMilestoneStatusPayload = {
   contractId?: string;
   milestoneIndex: string;
@@ -15,6 +15,7 @@ export type ChangeMilestoneStatusPayload = {
   serviceProvider?: string;
 };
 
+// Change Milestone Flag Payload
 export type ChangeMilestoneFlagPayload = Omit<
   ChangeMilestoneStatusPayload,
   "serviceProvider" | "newStatus"
@@ -23,11 +24,13 @@ export type ChangeMilestoneFlagPayload = Omit<
   newFlag: boolean;
 };
 
+// Start Dispute Payload
 export type StartDisputePayload = {
   contractId: string;
   signer: string;
 };
 
+// Resolve Dispute Payload
 export type ResolveDisputePayload = {
   contractId: string;
   disputeResolver?: string;
@@ -35,17 +38,20 @@ export type ResolveDisputePayload = {
   receiverFunds: string;
 };
 
+// Fund Escrow Payload
 export type FundEscrowPayload = {
   amount: string;
   contractId: string;
   signer: string;
 };
 
+// Get Escrow Payload
 export type GetEscrowPayload = {
   contractId: string;
   signer: string;
 };
 
+// Release Funds Escrow Payload
 export type ReleaseFundsEscrowPayload = {
   contractId: string;
   serviceProvider?: string;
@@ -53,17 +59,20 @@ export type ReleaseFundsEscrowPayload = {
   signer: string;
 };
 
+// Update Escrow Payload
 export type UpdateEscrowPayload = {
   contractId: string;
   escrow: EscrowPayload;
   signer: string;
 };
 
+// Get Balance Params
 export type GetBalanceParams = {
   signer: string;
   addresses: string[];
 };
 
+// Escrow Payload Service
 export type EscrowPayloadService =
   | Escrow
   | InitializeEscrowPayload

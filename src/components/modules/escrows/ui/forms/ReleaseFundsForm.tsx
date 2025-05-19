@@ -10,9 +10,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ResponseDisplay } from "@/components/response-display";
 import { useReleaseFundsForm } from "../../hooks/release-funds-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function ReleaseFundsForm() {
   const { form, loading, response, onSubmit } = useReleaseFundsForm();

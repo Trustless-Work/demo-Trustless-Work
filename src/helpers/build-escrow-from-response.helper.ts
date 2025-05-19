@@ -1,12 +1,16 @@
 import {
   InitializeEscrowResponse,
   UpdateEscrowResponse,
-} from "@/@types/escrow-response.entity";
-import { Escrow } from "@/@types/escrow.entity";
+} from "@/@types/escrows/escrow-response.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 
+/**
+ * Builds an Escrow object from an InitializeEscrowResponse, this structure is
+ * used to create a new escrow based on the Escrow's entity
+ */
 export const buildEscrowFromResponse = (
   result: InitializeEscrowResponse | UpdateEscrowResponse,
-  walletAddress: string
+  walletAddress: string,
 ): Escrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",

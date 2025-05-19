@@ -1,38 +1,63 @@
-import { InitializeEscrowPayload } from "@/@types/escrow-payload.entity";
+import { InitializeEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
+import { formSchema } from "../schemas/initialize-escrow-form.schema";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
+import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { escrowService } from "../services/escrow.service";
 import { trustlines } from "../constants/trustline.constant";
 import { Trustline } from "@/@types/trustline.entity";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
-import { getDefaultValues } from "../default-values/initialize-escrow.default-values";
 import { steps } from "../constants/initialize-steps.constant";
-import { buildEscrowFromResponse } from "../helpers/create-escrow-from-response.helper";
+import { buildEscrowFromResponse } from "../../../../helpers/build-escrow-from-response.helper";
 
-type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
+type FormValues = z.infer<typeof formSchema>;
 
 export const useInitializeEscrow = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<InitializeEscrowResponse | null>(
-    null
+    null,
   );
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();
-  const formSchema = GetFormSchema();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as Resolver<FormValues>,
-    defaultValues: getDefaultValues(),
+    defaultValues: {
+      engagementId: "",
+      title: "",
+      description: "",
+      amount: "",
+      platformFee: "",
+      receiverMemo: 0,
+      roles: {
+        approver: "",
+        serviceProvider: "",
+        platformAddress: "",
+        releaseSigner: "",
+        disputeResolver: "",
+        receiver: "",
+      },
+      trustline: {
+        address: "",
+        decimals: 10000000,
+      },
+      milestones: [
+        {
+          description: "",
+          status: "pending",
+          evidence: "",
+          approvedFlag: false,
+        },
+      ],
+    },
     mode: "onChange",
   });
 
@@ -54,7 +79,7 @@ export const useInitializeEscrow = () => {
     if (currentMilestones.length > 1) {
       form.setValue(
         "milestones",
-        currentMilestones.filter((_, i) => i !== index)
+        currentMilestones.filter((_, i) => i !== index),
       );
     }
   };
@@ -63,7 +88,7 @@ export const useInitializeEscrow = () => {
     form.setValue("title", "Sample TW Escrow");
     form.setValue(
       "description",
-      "This is a sample TW escrow for testing purposes"
+      "This is a sample TW escrow for testing purposes",
     );
     form.setValue("engagementId", "ENG12345");
     form.setValue("amount", "50");
@@ -77,7 +102,7 @@ export const useInitializeEscrow = () => {
     form.setValue("receiverMemo", 90909090);
     form.setValue(
       "trustline.address",
-      trustlines.find((t) => t.name === "USDC")?.address || ""
+      trustlines.find((t) => t.name === "USDC")?.address || "",
     );
     form.setValue("milestones", [
       {
@@ -106,18 +131,37 @@ export const useInitializeEscrow = () => {
     setResponse(null);
 
     try {
+      // This is the final payload that will be sent to the API
       const finalPayload: InitializeEscrowPayload = {
         ...payload,
         receiverMemo: payload.receiverMemo ?? 0,
         signer: walletAddress || "",
       };
 
-      const result = (await escrowService({
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - The result will be an InitializeEscrowResponse
+       */
+      const result = (await escrowService.execute({
         payload: finalPayload,
         endpoint: "/deployer/invoke-deployer-contract",
         method: "post",
       })) as InitializeEscrowResponse;
 
+      /**
+       * @Responses:
+       * result.status === "SUCCESS"
+       * - Escrow created successfully
+       * - Set the escrow in the context
+       * - Set the active tab to "escrow"
+       * - Show a success toast
+       *
+       * result.status !== "SUCCESS"
+       * - Show an error toast
+       */
       if (result.status === "SUCCESS") {
         const escrow = buildEscrowFromResponse(result, walletAddress || "");
         setEscrow(escrow);
@@ -126,7 +170,7 @@ export const useInitializeEscrow = () => {
       }
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);
@@ -147,8 +191,8 @@ export const useInitializeEscrow = () => {
   };
 
   const getStepFields = (
-    step: number
-  ): (keyof z.infer<ReturnType<typeof GetFormSchema>>)[] => {
+    step: number,
+  ): (keyof z.infer<typeof formSchema>)[] => {
     switch (step) {
       case 0:
         return ["title", "engagementId", "description"];

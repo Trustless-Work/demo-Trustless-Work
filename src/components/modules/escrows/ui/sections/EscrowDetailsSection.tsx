@@ -1,4 +1,4 @@
-import { Escrow } from "@/@types/escrow.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
 import { FileText, Info, Shield } from "lucide-react";
 
 interface EscrowDetailsSectionProps {

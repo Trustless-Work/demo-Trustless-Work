@@ -6,6 +6,13 @@ interface signTransactionProps {
   address: string;
 }
 
+/**
+ * Sign a transaction
+ *
+ * @Flow:
+ * 1. Sign the unsigned transaction
+ * 2. Return the signed transaction
+ */
 export const signTransaction = async ({
   unsignedTransaction,
   address,

@@ -7,9 +7,9 @@ import { z } from "zod";
 import { formSchema } from "../schemas/fund-escrow-form.schema";
 import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
-import { Escrow } from "@/@types/escrow.entity";
-import { EscrowRequestResponse } from "@/@types/escrow-response.entity";
-import { FundEscrowPayload } from "@/@types/escrow-payload.entity";
+import { Escrow } from "@/@types/escrows/escrow.entity";
+import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import { FundEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 
 export const useFundEscrowForm = () => {
   const { escrow } = useEscrowContext();
@@ -34,14 +34,32 @@ export const useFundEscrowForm = () => {
     setResponse(null);
 
     try {
-      const result = (await escrowService({
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - The result will be an EscrowRequestResponse
+       */
+      const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/fund-escrow",
         method: "post",
         returnEscrowDataIsRequired: false,
       })) as EscrowRequestResponse;
 
+      /**
+       * @Responses:
+       * result.status === "SUCCESS"
+       * - Escrow funded successfully
+       * - Set the escrow in the context
+       * - Show a success toast
+       *
+       * result.status !== "SUCCESS"
+       * - Show an error toast
+       */
       if (result.status === "SUCCESS") {
+        // Validate balance in order to avoid negative balances in the escrow context
         const escrowUpdated: Escrow = {
           ...escrow!,
           balance:
@@ -57,7 +75,7 @@ export const useFundEscrowForm = () => {
       }
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred"
+        err instanceof Error ? err.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

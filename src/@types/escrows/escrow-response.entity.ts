@@ -1,12 +1,13 @@
-import type { Status } from "./http.entity";
+import { Status } from "../http.entity";
 import type { EscrowPayload } from "./escrow-payload.entity";
 
-// Escrow's Response
+// Escrow's Response like fund, release, change, etc ...
 export type EscrowRequestResponse = {
   status: Status;
   unsignedTransaction?: string;
 };
 
+// Initialize Escrow Response
 export type InitializeEscrowResponse = {
   contractId: string;
   escrow: EscrowPayload;
@@ -14,4 +15,5 @@ export type InitializeEscrowResponse = {
   status: Status;
 };
 
+// Update Escrow Response
 export type UpdateEscrowResponse = InitializeEscrowResponse;

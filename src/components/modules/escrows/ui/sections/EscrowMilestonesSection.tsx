@@ -1,4 +1,4 @@
-import { Escrow, Milestone } from "@/@types/escrow.entity";
+import { Escrow, Milestone } from "@/@types/escrows/escrow.entity";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from "lucide-react";
 
@@ -74,7 +74,8 @@ export const EscrowMilestonesSection = ({
 
           {milestone.evidence && (
             <p className="text-muted-foreground text-sm mt-4 truncate">
-              <span className="font-medium">Evidence:</span> {milestone.evidence}
+              <span className="font-medium">Evidence:</span>{" "}
+              {milestone.evidence}
             </p>
           )}
         </div>

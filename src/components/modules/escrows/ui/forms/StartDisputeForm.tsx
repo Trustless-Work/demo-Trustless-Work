@@ -10,9 +10,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ResponseDisplay } from "@/components/response-display";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useStartDisputeForm } from "../../hooks/start-dispute-form.hook";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function StartDisputeForm() {
   const { form, loading, response, onSubmit } = useStartDisputeForm();

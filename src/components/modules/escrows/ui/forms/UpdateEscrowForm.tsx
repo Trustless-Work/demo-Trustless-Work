@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Trash } from "lucide-react";
-import { ResponseDisplay } from "@/components/response-display";
+import { ResponseDisplay } from "@/components/utils/response-display";
 import {
   Form,
   FormControl,
@@ -94,7 +94,7 @@ export function UpdateEscrowForm() {
                     <Select
                       onValueChange={(value) => {
                         const selectedOption = trustlinesOptions.find(
-                          (opt) => opt.value === value
+                          (opt) => opt.value === value,
                         );
                         if (selectedOption) {
                           field.onChange(selectedOption.value);

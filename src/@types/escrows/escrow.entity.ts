@@ -1,5 +1,6 @@
-import { Trustline } from "./trustline.entity";
+import { Trustline } from "../trustline.entity";
 
+// Milestone
 export type Milestone = {
   description: string;
   status: string;
@@ -7,6 +8,7 @@ export type Milestone = {
   approvedFlag: boolean;
 };
 
+// Roles
 export type Roles = {
   approver: string;
   serviceProvider: string;
@@ -16,12 +18,14 @@ export type Roles = {
   receiver: string;
 };
 
+// Flags
 export type Flags = {
   disputeFlag?: boolean;
   releaseFlag?: boolean;
   resolvedFlag?: boolean;
 };
 
+// Escrow
 export interface Escrow {
   signer?: string;
   contractId?: string;

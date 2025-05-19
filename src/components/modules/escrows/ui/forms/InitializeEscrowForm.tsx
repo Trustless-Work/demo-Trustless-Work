@@ -14,10 +14,9 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ResponseDisplay } from "@/components/response-display";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { GetFormSchema } from "../../schemas/initialize-escrow-form.schema";
+import { formSchema } from "../../schemas/initialize-escrow-form.schema";
 import {
   Select,
   SelectContent,
@@ -27,15 +26,16 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { steps } from "../../constants/initialize-steps.constant";
-import { InitializeEscrowResponse } from "@/@types/escrow-response.entity";
+import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 interface InitializeEscrowFormProps {
-  form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;
+  form: UseFormReturn<z.infer<typeof formSchema>>;
   loading?: boolean;
   response: InitializeEscrowResponse | null;
   trustlinesOptions: { value: string; label: string }[];
   currentStep: number;
-  onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
+  onSubmit: (data: z.infer<typeof formSchema>) => Promise<void>;
   addMilestone: () => void;
   removeMilestone: (index: number) => void;
   nextStep: () => void;
@@ -154,7 +154,7 @@ export const InitializeEscrowForm = ({
                           <Select
                             onValueChange={(value) => {
                               const selectedOption = trustlinesOptions.find(
-                                (opt) => opt.value === value
+                                (opt) => opt.value === value,
                               );
                               if (selectedOption) {
                                 field.onChange(selectedOption.value);
@@ -365,7 +365,7 @@ export const InitializeEscrowForm = ({
             key={step.id}
             className={cn(
               "flex items-center",
-              index !== steps.length - 1 ? "flex-1" : ""
+              index !== steps.length - 1 ? "flex-1" : "",
             )}
           >
             <div
@@ -373,7 +373,7 @@ export const InitializeEscrowForm = ({
                 "flex items-center justify-center w-8 h-8 rounded-full transition-colors",
                 index <= currentStep
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
+                  : "bg-muted",
               )}
             >
               {index + 1}
@@ -382,7 +382,7 @@ export const InitializeEscrowForm = ({
               <div
                 className={cn(
                   "flex-1 h-1 mx-2 transition-colors",
-                  index < currentStep ? "bg-primary" : "bg-muted"
+                  index < currentStep ? "bg-primary" : "bg-muted",
                 )}
               />
             )}
