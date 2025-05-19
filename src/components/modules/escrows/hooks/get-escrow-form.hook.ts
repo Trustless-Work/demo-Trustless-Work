@@ -30,16 +30,35 @@ export const useGetEscrowForm = () => {
     setError(null);
     setResponse(null);
     try {
-      const result = (await escrowService.execute({
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - The result will be an Escrow
+       */
+      const escrow = (await escrowService.execute({
         payload,
         endpoint: "/escrow/get-escrow-by-contract-id",
         method: "get",
         requiresSignature: false,
       })) as Escrow;
 
-      setEscrow({ ...result, contractId: payload.contractId });
-      setResponse(result);
-      toast.info("Escrow Received");
+      /**
+       * @Responses:
+       * escrow !== null
+       * - Escrow received successfully
+       * - Set the escrow in the context
+       * - Show a success toast
+       *
+       * escrow === null
+       * - Show an error toast
+       */
+      if (escrow) {
+        setEscrow({ ...escrow, contractId: payload.contractId });
+        setResponse(escrow);
+        toast.info("Escrow Received");
+      }
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"

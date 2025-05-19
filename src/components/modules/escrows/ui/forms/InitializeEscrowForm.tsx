@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { GetFormSchema } from "../../schemas/initialize-escrow-form.schema";
+import { formSchema } from "../../schemas/initialize-escrow-form.schema";
 import {
   Select,
   SelectContent,
@@ -30,12 +30,12 @@ import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entit
 import { ResponseDisplay } from "@/components/utils/response-display";
 
 interface InitializeEscrowFormProps {
-  form: UseFormReturn<z.infer<ReturnType<typeof GetFormSchema>>>;
+  form: UseFormReturn<z.infer<typeof formSchema>>;
   loading?: boolean;
   response: InitializeEscrowResponse | null;
   trustlinesOptions: { value: string; label: string }[];
   currentStep: number;
-  onSubmit: (data: z.infer<ReturnType<typeof GetFormSchema>>) => Promise<void>;
+  onSubmit: (data: z.infer<typeof formSchema>) => Promise<void>;
   addMilestone: () => void;
   removeMilestone: (index: number) => void;
   nextStep: () => void;

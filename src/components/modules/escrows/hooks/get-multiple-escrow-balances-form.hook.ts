@@ -33,13 +33,22 @@ export const useGetMultipleEscrowBalancesForm = () => {
     setLoading(true);
     setResponse(null);
 
+    // Transform the payload to the correct format
     const transformedData: GetBalanceParams = {
       addresses: payload.addresses.map((a) => a.value),
       signer: payload.signer,
     };
 
     try {
-      const result = (await escrowService.execute({
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - We need to specify that the requiresSignature is false
+       * - The result will be an EscrowRequestResponse
+       */
+      const balances = (await escrowService.execute({
         payload: transformedData,
         endpoint: "/helper/get-multiple-escrow-balance",
         method: "get",
@@ -47,8 +56,20 @@ export const useGetMultipleEscrowBalancesForm = () => {
         returnEscrowDataIsRequired: false,
       })) as EscrowRequestResponse;
 
-      toast.info("Escrow Balances Received");
-      setResponse(result);
+      /**
+       * @Responses:
+       * balances !== null
+       * - Escrow balances received successfully
+       * - Set the response
+       * - Show a success toast
+       *
+       * balances === null
+       * - Show an error toast
+       */
+      if (balances) {
+        setResponse(balances);
+        toast.info("Escrow Balances Received");
+      }
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "An unknown error occurred"

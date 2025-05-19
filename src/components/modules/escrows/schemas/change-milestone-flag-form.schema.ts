@@ -1,4 +1,4 @@
-import { isValidWallet } from "@/helpers/valid-data.helper";
+import { isValidWallet } from "@/helpers/is-valid-wallet.helper";
 import { z } from "zod";
 
 export const formSchema = z.object({

@@ -37,6 +37,13 @@ export const useChangeMilestoneFlagForm = () => {
     setResponse(null);
 
     try {
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - The result will be an EscrowRequestResponse
+       */
       const result = (await escrowService.execute({
         payload,
         endpoint: "/escrow/change-milestone-approved-flag",
@@ -44,6 +51,16 @@ export const useChangeMilestoneFlagForm = () => {
         returnEscrowDataIsRequired: false,
       })) as EscrowRequestResponse;
 
+      /**
+       * @Responses:
+       * result.status === "SUCCESS"
+       * - Escrow updated successfully
+       * - Set the escrow in the context
+       * - Show a success toast
+       *
+       * result.status !== "SUCCESS"
+       * - Show an error toast
+       */
       if (result.status === "SUCCESS") {
         const escrowUpdated: Escrow = {
           ...escrow!,

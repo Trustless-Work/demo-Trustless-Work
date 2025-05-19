@@ -14,7 +14,7 @@ import { Trustline } from "@/@types/trustline.entity";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
 import { steps } from "../constants/initialize-steps.constant";
-import { buildEscrowFromResponse } from "../helpers/create-escrow-from-response.helper";
+import { buildEscrowFromResponse } from "../../../../helpers/build-escrow-from-response.helper";
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -131,18 +131,37 @@ export const useInitializeEscrow = () => {
     setResponse(null);
 
     try {
+      // This is the final payload that will be sent to the API
       const finalPayload: InitializeEscrowPayload = {
         ...payload,
         receiverMemo: payload.receiverMemo ?? 0,
         signer: walletAddress || "",
       };
 
+      /**
+       * API call by using the escrow service
+       * @Note:
+       * - We need to specify the endpoint and the method
+       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - The result will be an InitializeEscrowResponse
+       */
       const result = (await escrowService.execute({
         payload: finalPayload,
         endpoint: "/deployer/invoke-deployer-contract",
         method: "post",
       })) as InitializeEscrowResponse;
 
+      /**
+       * @Responses:
+       * result.status === "SUCCESS"
+       * - Escrow created successfully
+       * - Set the escrow in the context
+       * - Set the active tab to "escrow"
+       * - Show a success toast
+       *
+       * result.status !== "SUCCESS"
+       * - Show an error toast
+       */
       if (result.status === "SUCCESS") {
         const escrow = buildEscrowFromResponse(result, walletAddress || "");
         setEscrow(escrow);
