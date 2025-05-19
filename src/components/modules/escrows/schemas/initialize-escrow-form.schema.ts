@@ -1,9 +1,7 @@
-import { useValidData } from "@/hooks/valid-data.hook";
+import { isValidWallet } from "@/helpers/valid-data.helper";
 import { z } from "zod";
 
 export const GetFormSchema = () => {
-  const { isValidWallet } = useValidData();
-
   return z.object({
     engagementId: z.string().min(1, {
       message: "Engagement is required.",

@@ -1,6 +1,6 @@
 import http from "@/config/axios";
 import { AxiosError } from "axios";
-import { signTransaction } from "../../auth/lib/stellar-wallet-kit";
+import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { WalletError } from "@/@types/errors.entity";
 import { kit } from "@/config/wallet-kit";
