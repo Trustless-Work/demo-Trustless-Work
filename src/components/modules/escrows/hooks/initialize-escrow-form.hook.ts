@@ -3,7 +3,7 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GetFormSchema } from "../schemas/initialize-escrow-form.schema";
+import { formSchema } from "../schemas/initialize-escrow-form.schema";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
@@ -16,7 +16,7 @@ import { Resolver } from "react-hook-form";
 import { steps } from "../constants/initialize-steps.constant";
 import { buildEscrowFromResponse } from "../helpers/create-escrow-from-response.helper";
 
-type FormValues = z.infer<ReturnType<typeof GetFormSchema>>;
+type FormValues = z.infer<typeof formSchema>;
 
 export const useInitializeEscrow = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -27,7 +27,6 @@ export const useInitializeEscrow = () => {
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();
-  const formSchema = GetFormSchema();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as Resolver<FormValues>,
@@ -174,7 +173,7 @@ export const useInitializeEscrow = () => {
 
   const getStepFields = (
     step: number
-  ): (keyof z.infer<ReturnType<typeof GetFormSchema>>)[] => {
+  ): (keyof z.infer<typeof formSchema>)[] => {
     switch (step) {
       case 0:
         return ["title", "engagementId", "description"];

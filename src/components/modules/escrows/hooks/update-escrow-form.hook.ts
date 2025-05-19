@@ -8,7 +8,7 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { toast } from "sonner";
 import { escrowService } from "../services/escrow.service";
-import { GetFormSchema } from "../schemas/update-escrow-form.schema";
+import { formSchema } from "../schemas/update-escrow-form.schema";
 import { UpdateEscrowResponse } from "@/@types/escrows/escrow-response.entity";
 import { UpdateEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 
@@ -18,7 +18,6 @@ export const useUpdateEscrowForm = () => {
   const { setEscrow } = useEscrowContext();
   const [response, setResponse] = useState<UpdateEscrowResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const formSchema = GetFormSchema();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema) as any,
