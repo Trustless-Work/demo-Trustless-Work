@@ -21,7 +21,7 @@ export const useStartDisputeForm = () => {
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
-  const { startDispute, error } = useStartDispute();
+  const { startDispute } = useStartDispute();
   const { sendTransaction } = useSendTransaction();
 
   const form = useForm<z.infer<typeof formSchema>>({
