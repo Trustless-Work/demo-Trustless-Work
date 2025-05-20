@@ -15,5 +15,10 @@ export type InitializeEscrowResponse = {
   status: Status;
 };
 
+export type GetBalancesResponse = {
+  address: string;
+  balance: number;
+};
+
 // Update Escrow Response
 export type UpdateEscrowResponse = InitializeEscrowResponse;
