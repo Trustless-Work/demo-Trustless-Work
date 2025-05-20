@@ -5,16 +5,25 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../schemas/get-multiple-escrow-balances-form.schema";
 import { toast } from "sonner";
-import { escrowService } from "../services/escrow.service";
 import { GetBalanceParams } from "@/@types/escrows/escrow-payload.entity";
-import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
+import {
+  EscrowRequestResponse,
+  GetBalancesResponse,
+} from "@/@types/escrows/escrow-response.entity";
+import { handleError } from "@/errors/utils/handle-errors";
+import { AxiosError } from "axios";
+import { WalletError } from "@/@types/errors.entity";
+import { useGetMultipleEscrowBalances } from "@trustless-work/hooks";
 
 type FormData = z.infer<typeof formSchema>;
 
 export const useGetMultipleEscrowBalancesForm = () => {
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
+  const [response, setResponse] = useState<
+    EscrowRequestResponse | GetBalancesResponse[] | null
+  >(null);
+  const { getMultipleBalances, balances } = useGetMultipleEscrowBalances();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -41,20 +50,16 @@ export const useGetMultipleEscrowBalancesForm = () => {
 
     try {
       /**
-       * API call by using the escrow service
+       * API call by using the trustless work hooks
        * @Note:
-       * - We need to specify the endpoint and the method
-       * - We need to specify that the returnEscrowDataIsRequired is false
-       * - We need to specify that the requiresSignature is false
-       * - The result will be an EscrowRequestResponse
+       * - We need to pass the payload to the getMultipleBalances function
+       * - The result will be multiple escrow balances
        */
-      const balances = (await escrowService.execute({
-        payload: transformedData,
-        endpoint: "/helper/get-multiple-escrow-balance",
-        method: "get",
-        requiresSignature: false,
-        returnEscrowDataIsRequired: false,
-      })) as EscrowRequestResponse;
+      await getMultipleBalances(transformedData);
+
+      if (!balances) {
+        throw new Error("Escrow not found");
+      }
 
       /**
        * @Responses:
@@ -68,11 +73,14 @@ export const useGetMultipleEscrowBalancesForm = () => {
        */
       if (balances) {
         setResponse(balances);
-        toast.info("Escrow Balances Received");
+        toast.success("Escrow Balances Received");
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      const mappedError = handleError(error as AxiosError | WalletError);
+      console.error("Error:", mappedError.message);
+
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred",
+        mappedError ? mappedError.message : "An unknown error occurred"
       );
     } finally {
       setLoading(false);

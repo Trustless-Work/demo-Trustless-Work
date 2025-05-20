@@ -5,11 +5,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formSchema } from "../schemas/fund-escrow-form.schema";
-import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
 import { Escrow } from "@/@types/escrows/escrow.entity";
 import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
 import { FundEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
+import { useFundEscrow, useSendTransaction } from "@trustless-work/hooks";
+import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { handleError } from "@/errors/utils/handle-errors";
+import { AxiosError } from "axios";
+import { WalletError } from "@/@types/errors.entity";
 
 export const useFundEscrowForm = () => {
   const { escrow } = useEscrowContext();
@@ -18,6 +22,8 @@ export const useFundEscrowForm = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { fundEscrow } = useFundEscrow();
+  const { sendTransaction } = useSendTransaction();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,30 +41,54 @@ export const useFundEscrowForm = () => {
 
     try {
       /**
-       * API call by using the escrow service
+       * API call by using the trustless work hooks
        * @Note:
-       * - We need to specify the endpoint and the method
-       * - We need to specify that the returnEscrowDataIsRequired is false
-       * - The result will be an EscrowRequestResponse
+       * - We need to pass the payload to the fundEscrow function
+       * - The result will be an unsigned transaction
        */
-      const result = (await escrowService.execute({
-        payload,
-        endpoint: "/escrow/fund-escrow",
-        method: "post",
+      const { unsignedTransaction } = await fundEscrow(payload);
+
+      if (!unsignedTransaction) {
+        throw new Error(
+          "Unsigned transaction is missing from fundEscrow response."
+        );
+      }
+
+      /**
+       * @Note:
+       * - We need to sign the transaction using your private key
+       * - The result will be a signed transaction
+       */
+      const signedXdr = await signTransaction({
+        unsignedTransaction,
+        address: walletAddress || "",
+      });
+
+      if (!signedXdr) {
+        throw new Error("Signed transaction is missing.");
+      }
+
+      /**
+       * @Note:
+       * - We need to send the signed transaction to the API
+       * - The data will be an SendTransactionResponse
+       */
+      const data = await sendTransaction({
+        signedXdr,
         returnEscrowDataIsRequired: false,
-      })) as EscrowRequestResponse;
+      });
 
       /**
        * @Responses:
-       * result.status === "SUCCESS"
+       * data.status === "SUCCESS"
        * - Escrow funded successfully
        * - Set the escrow in the context
        * - Show a success toast
        *
-       * result.status !== "SUCCESS"
+       * data.status !== "SUCCESS"
        * - Show an error toast
        */
-      if (result.status === "SUCCESS") {
+      if (data.status === "SUCCESS") {
         // Validate balance in order to avoid negative balances in the escrow context
         const escrowUpdated: Escrow = {
           ...escrow!,
@@ -70,12 +100,15 @@ export const useFundEscrowForm = () => {
 
         setEscrow(escrowUpdated);
 
-        toast.info("Escrow Funded");
-        setResponse(result);
+        toast.success("Escrow Funded");
+        setResponse(data);
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      const mappedError = handleError(error as AxiosError | WalletError);
+      console.error("Error:", mappedError.message);
+
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred",
+        mappedError ? mappedError.message : "An unknown error occurred"
       );
     } finally {
       setLoading(false);

@@ -6,9 +6,12 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { GetEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
-import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
 import { Escrow } from "@/@types/escrows/escrow.entity";
+import { useGetEscrow } from "@trustless-work/hooks";
+import { handleError } from "@/errors/utils/handle-errors";
+import { AxiosError } from "axios";
+import { WalletError } from "@/@types/errors.entity";
 
 export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();
@@ -16,6 +19,7 @@ export const useGetEscrowForm = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<Escrow | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { getEscrow, escrow: currentEscrow } = useGetEscrow();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -29,20 +33,19 @@ export const useGetEscrowForm = () => {
     setLoading(true);
     setError(null);
     setResponse(null);
+
     try {
       /**
-       * API call by using the escrow service
+       * API call by using the trustless work hooks
        * @Note:
-       * - We need to specify the endpoint and the method
-       * - We need to specify that the returnEscrowDataIsRequired is false
+       * - We need to pass the payload to the getEscrow function
        * - The result will be an Escrow
        */
-      const escrow = (await escrowService.execute({
-        payload,
-        endpoint: "/escrow/get-escrow-by-contract-id",
-        method: "get",
-        requiresSignature: false,
-      })) as Escrow;
+      await getEscrow(payload);
+
+      if (!currentEscrow) {
+        throw new Error("Escrow not found");
+      }
 
       /**
        * @Responses:
@@ -54,14 +57,17 @@ export const useGetEscrowForm = () => {
        * escrow === null
        * - Show an error toast
        */
-      if (escrow) {
-        setEscrow({ ...escrow, contractId: payload.contractId });
-        setResponse(escrow);
-        toast.info("Escrow Received");
+      if (currentEscrow) {
+        setEscrow({ ...currentEscrow, contractId: payload.contractId });
+        setResponse(currentEscrow);
+        toast.success("Escrow Received");
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      const mappedError = handleError(error as AxiosError | WalletError);
+      console.error("Error:", mappedError.message);
+
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred",
+        mappedError ? mappedError.message : "An unknown error occurred"
       );
     } finally {
       setLoading(false);
