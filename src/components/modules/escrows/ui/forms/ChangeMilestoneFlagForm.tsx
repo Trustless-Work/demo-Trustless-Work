@@ -21,6 +21,7 @@ import {
 import { useChangeMilestoneFlagForm } from "../../hooks/change-milestone-flag-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
+import { Milestone } from "@trustless-work/escrow/types";
 
 export function ChangeMilestoneFlagForm() {
   const { form, milestones, loading, response, onSubmit } =
@@ -82,7 +83,7 @@ export function ChangeMilestoneFlagForm() {
                       <SelectValue placeholder="Select a milestone" />
                     </SelectTrigger>
                     <SelectContent>
-                      {milestones.map((_, index) => (
+                      {milestones.map((_: Milestone, index: number) => (
                         <SelectItem key={index} value={index.toString()}>
                           Milestone {index + 1}
                         </SelectItem>

@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, Copy } from "lucide-react";
 import { useUtils } from "@/hooks/utils.hook";
-import { Escrow } from "@/@types/escrows/escrow.entity";
 import {
+  Escrow,
   EscrowRequestResponse,
   InitializeEscrowResponse,
   UpdateEscrowResponse,
-} from "@/@types/escrows/escrow-response.entity";
+} from "@trustless-work/escrow/types";
 
 interface ResponseDisplayProps {
   response:

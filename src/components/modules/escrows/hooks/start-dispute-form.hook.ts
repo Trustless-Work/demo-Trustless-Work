@@ -5,15 +5,20 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { formSchema } from "../schemas/start-dispute-form.schema";
-import { Escrow } from "@/@types/escrows/escrow.entity";
 import { toast } from "sonner";
-import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
-import { StartDisputePayload } from "@/@types/escrows/escrow-payload.entity";
-import { useSendTransaction, useStartDispute } from "@trustless-work/hooks";
 import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
+import {
+  Escrow,
+  EscrowRequestResponse,
+  StartDisputePayload,
+} from "@trustless-work/escrow/types";
+import {
+  useSendTransaction,
+  useStartDispute,
+} from "@trustless-work/escrow/hooks";
 
 export const useStartDisputeForm = () => {
   const { escrow } = useEscrowContext();
@@ -82,12 +87,12 @@ export const useStartDisputeForm = () => {
        * - Set the escrow in the context
        * - Show a success toast
        *
-       * data.status !== "SUCCESS"
+       * data.status == "ERROR"
        * - Show an error toast
        */
-      if (data.status === "SUCCESS") {
+      if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: Escrow = {
-          ...escrow!,
+          ...escrow,
           flags: {
             disputeFlag: true,
           },

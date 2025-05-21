@@ -5,15 +5,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../schemas/get-multiple-escrow-balances-form.schema";
 import { toast } from "sonner";
-import { GetBalanceParams } from "@/@types/escrows/escrow-payload.entity";
-import {
-  EscrowRequestResponse,
-  GetBalancesResponse,
-} from "@/@types/escrows/escrow-response.entity";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { useGetMultipleEscrowBalances } from "@trustless-work/hooks";
+import {
+  EscrowRequestResponse,
+  GetBalanceParams,
+} from "@trustless-work/escrow/types";
+import { GetBalancesResponse } from "@/@types/escrows/escrow-response.entity";
+import { useGetMultipleEscrowBalances } from "@trustless-work/escrow/hooks";
 
 type FormData = z.infer<typeof formSchema>;
 

@@ -4,7 +4,7 @@ import { ThemeProvider } from "@/providers/theme.provider";
 import { EscrowProvider } from "./escrow.provider";
 import { WalletProvider } from "./wallet.provider";
 import { TabsProvider } from "./tabs.provider";
-import { TrustlessWorkProvider } from "@trustless-work/hooks";
+import { TrustlessWorkProvider } from "@trustless-work/escrow";
 
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   return (

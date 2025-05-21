@@ -5,18 +5,21 @@ import { z } from "zod";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { formSchema } from "../schemas/change-milestone-status-form.schema";
 import { toast } from "sonner";
-import { Escrow, Milestone } from "@/@types/escrows/escrow.entity";
-import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
-import { ChangeMilestoneStatusPayload } from "@/@types/escrows/escrow-payload.entity";
 import { useWalletContext } from "@/providers/wallet.provider";
-import {
-  useChangeMilestoneStatus,
-  useSendTransaction,
-} from "@trustless-work/hooks";
 import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
+import {
+  useChangeMilestoneStatus,
+  useSendTransaction,
+} from "@trustless-work/escrow/hooks";
+import {
+  ChangeMilestoneStatusPayload,
+  Escrow,
+  EscrowRequestResponse,
+  Milestone,
+} from "@trustless-work/escrow/types";
 
 export const useChangeMilestoneStatusForm = () => {
   const { escrow } = useEscrowContext();
@@ -93,12 +96,12 @@ export const useChangeMilestoneStatusForm = () => {
        * - Set the escrow in the context
        * - Show a success toast
        *
-       * data.status !== "SUCCESS"
+       * data.status == "ERROR"
        * - Show an error toast
        */
-      if (data.status === "SUCCESS") {
+      if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: Escrow = {
-          ...escrow!,
+          ...escrow,
           milestones: escrow!.milestones.map((milestone: Milestone, index) =>
             index === Number(payload.milestoneIndex)
               ? {

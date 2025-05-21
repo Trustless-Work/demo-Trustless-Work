@@ -1,6 +1,6 @@
 "use client";
 
-import { Escrow } from "@/@types/escrows/escrow.entity";
+import { Escrow } from "@trustless-work/escrow/types";
 import { createContext, useContext, useState, ReactNode } from "react";
 
 /**

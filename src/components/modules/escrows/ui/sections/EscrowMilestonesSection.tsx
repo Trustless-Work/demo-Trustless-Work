@@ -1,5 +1,6 @@
-import { Escrow, Milestone } from "@/@types/escrows/escrow.entity";
 import { Badge } from "@/components/ui/badge";
+import { Milestone } from "@trustless-work/escrow/types";
+import { Escrow } from "@trustless-work/escrow/types";
 import { CheckCircle2 } from "lucide-react";
 
 interface EscrowMilestonesSectionProps {

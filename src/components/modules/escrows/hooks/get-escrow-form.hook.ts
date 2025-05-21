@@ -5,13 +5,12 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GetEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 import { toast } from "sonner";
-import { Escrow } from "@/@types/escrows/escrow.entity";
-import { useGetEscrow } from "@trustless-work/hooks";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
+import { Escrow, GetEscrowPayload } from "@trustless-work/escrow/types";
+import { useGetEscrow } from "@trustless-work/escrow/hooks";
 
 export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();

@@ -1,4 +1,3 @@
-import { InitializeEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -6,22 +5,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formSchema } from "../schemas/initialize-escrow-form.schema";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { trustlines } from "../constants/trustline.constant";
-import { Trustline } from "@/@types/trustline.entity";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
 import { steps } from "../constants/initialize-steps.constant";
 import { buildEscrowFromResponse } from "../../../../helpers/build-escrow-from-response.helper";
-import {
-  useInitializeEscrow as useInitializeEscrowHook,
-  useSendTransaction,
-} from "@trustless-work/hooks";
 import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
+import {
+  useInitializeEscrow as useInitializeEscrowHook,
+  useSendTransaction,
+} from "@trustless-work/escrow/hooks";
+import {
+  InitializeEscrowPayload,
+  InitializeEscrowResponse,
+  Trustline,
+} from "@trustless-work/escrow/types";
 
 type FormValues = z.infer<typeof formSchema>;
 
@@ -71,10 +73,12 @@ export const useInitializeEscrow = () => {
     mode: "onChange",
   });
 
-  const trustlinesOptions = trustlines.map((trustline: Trustline) => ({
-    value: trustline.address,
-    label: trustline.name,
-  }));
+  const trustlinesOptions = trustlines.map(
+    (trustline: Trustline & { name?: string }) => ({
+      value: trustline.address,
+      label: trustline.name,
+    })
+  );
 
   const addMilestone = () => {
     const currentMilestones = form.getValues("milestones");
@@ -194,7 +198,7 @@ export const useInitializeEscrow = () => {
        * - Set the active tab to "escrow"
        * - Show a success toast
        *
-       * data.status !== "SUCCESS"
+       * data.status == "ERROR"
        * - Show an error toast
        */
       if (data && data.status === "SUCCESS") {

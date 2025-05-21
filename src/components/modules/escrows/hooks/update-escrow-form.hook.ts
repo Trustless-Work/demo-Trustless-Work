@@ -8,13 +8,19 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { toast } from "sonner";
 import { formSchema } from "../schemas/update-escrow-form.schema";
-import { UpdateEscrowResponse } from "@/@types/escrows/escrow-response.entity";
-import { UpdateEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { useSendTransaction, useUpdateEscrow } from "@trustless-work/hooks";
 import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import {
+  Escrow,
+  UpdateEscrowPayload,
+  UpdateEscrowResponse,
+} from "@trustless-work/escrow/types";
+import {
+  useSendTransaction,
+  useUpdateEscrow,
+} from "@trustless-work/escrow/hooks";
 
 export const useUpdateEscrowForm = () => {
   const { escrow } = useEscrowContext();
@@ -116,11 +122,11 @@ export const useUpdateEscrowForm = () => {
        * - Set the escrow in the context
        * - Show a success toast
        *
-       * data.status !== "SUCCESS"
+       * data.status == "ERROR"
        * - Show an error toast
        */
-      if (data.status === "SUCCESS") {
-        const escrowUpdated = {
+      if (data.status === "SUCCESS" && escrow) {
+        const escrowUpdated: Escrow = {
           ...escrow,
           ...payload.escrow,
           signer: payload.signer,

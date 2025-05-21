@@ -1,6 +1,6 @@
-import { Escrow } from "@/@types/escrows/escrow.entity";
 import { Badge } from "@/components/ui/badge";
 import { CardDescription, CardTitle } from "@/components/ui/card";
+import { Escrow } from "@trustless-work/escrow/types";
 import {
   AlertCircle,
   CheckCircle2,
@@ -49,8 +49,8 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
               escrow?.flags?.releaseFlag || escrow?.flags?.resolvedFlag
                 ? "bg-green-100 text-green-800 hover:bg-green-200"
                 : escrow?.flags?.disputeFlag
-                  ? "bg-destructive text-white hover:bg-destructive/90"
-                  : ""
+                ? "bg-destructive text-white hover:bg-destructive/90"
+                : ""
             }
           >
             {escrow?.flags?.releaseFlag ? (
