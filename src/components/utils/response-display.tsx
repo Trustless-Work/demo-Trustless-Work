@@ -9,6 +9,7 @@ import { useUtils } from "@/hooks/utils.hook";
 import {
   Escrow,
   EscrowRequestResponse,
+  GetEscrowBalancesResponse,
   InitializeEscrowResponse,
   UpdateEscrowResponse,
 } from "@trustless-work/escrow/types";
@@ -18,6 +19,7 @@ interface ResponseDisplayProps {
     | InitializeEscrowResponse
     | UpdateEscrowResponse
     | EscrowRequestResponse
+    | GetEscrowBalancesResponse[]
     | Escrow
     | null;
 }

@@ -20,7 +20,6 @@ import {
 import { useChangeMilestoneStatusForm } from "../../hooks/change-milestone-status-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
-import { Milestone } from "@trustless-work/escrow/types";
 
 export function ChangeMilestoneStatusForm() {
   const { form, milestones, loading, response, onSubmit } =
@@ -82,7 +81,7 @@ export function ChangeMilestoneStatusForm() {
                       <SelectValue placeholder="Select a milestone" />
                     </SelectTrigger>
                     <SelectContent>
-                      {milestones.map((_: Milestone, index: number) => (
+                      {milestones.map((_, index) => (
                         <SelectItem key={index} value={index.toString()}>
                           Milestone {index + 1}
                         </SelectItem>

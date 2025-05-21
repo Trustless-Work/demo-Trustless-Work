@@ -12,7 +12,7 @@ import {
   EscrowRequestResponse,
   GetBalanceParams,
 } from "@trustless-work/escrow/types";
-import { GetBalancesResponse } from "@/@types/escrows/escrow-response.entity";
+import { GetEscrowBalancesResponse } from "@trustless-work/escrow/types";
 import { useGetMultipleEscrowBalances } from "@trustless-work/escrow/hooks";
 
 type FormData = z.infer<typeof formSchema>;
@@ -21,7 +21,7 @@ export const useGetMultipleEscrowBalancesForm = () => {
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<
-    EscrowRequestResponse | GetBalancesResponse[] | null
+    EscrowRequestResponse | GetEscrowBalancesResponse[] | null
   >(null);
   const { getMultipleBalances, balances } = useGetMultipleEscrowBalances();
 
