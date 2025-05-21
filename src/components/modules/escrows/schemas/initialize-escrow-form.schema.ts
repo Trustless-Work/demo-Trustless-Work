@@ -2,6 +2,9 @@ import { isValidWallet } from "@/helpers/is-valid-wallet.helper";
 import { z } from "zod";
 
 export const formSchema = z.object({
+  signer: z.string().min(1, {
+    message: "Signer is required.",
+  }),
   engagementId: z.string().min(1, {
     message: "Engagement is required.",
   }),
@@ -85,7 +88,7 @@ export const formSchema = z.object({
         status: z.string().default("pending"),
         evidence: z.string().default(""),
         approvedFlag: z.boolean().default(false),
-      }),
+      })
     )
     .min(1, { message: "At least one milestone is required." }),
 });
