@@ -43,6 +43,7 @@ export const useInitializeEscrow = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema) as Resolver<FormValues>,
     defaultValues: {
+      signer: walletAddress || "",
       engagementId: "",
       title: "",
       description: "",
