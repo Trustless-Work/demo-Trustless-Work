@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { Escrow, GetEscrowPayload } from "@trustless-work/escrow/types";
+import { Escrow, GetEscrowParams } from "@trustless-work/escrow/types";
 import { useGetEscrow } from "@trustless-work/escrow/hooks";
 
 export const useGetEscrowForm = () => {
@@ -28,7 +28,7 @@ export const useGetEscrowForm = () => {
     },
   });
 
-  const onSubmit = async (payload: GetEscrowPayload) => {
+  const onSubmit = async (payload: GetEscrowParams) => {
     setLoading(true);
     setError(null);
     setResponse(null);
