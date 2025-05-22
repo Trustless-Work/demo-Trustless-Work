@@ -22,8 +22,7 @@ import {
 } from "@trustless-work/escrow/types";
 
 export const useChangeMilestoneFlagForm = () => {
-  const { escrow } = useEscrowContext();
-  const { setEscrow } = useEscrowContext();
+  const { escrow, setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const { walletAddress } = useWalletContext();
