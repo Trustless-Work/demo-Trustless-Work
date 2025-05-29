@@ -11,22 +11,23 @@ import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  useChangeMilestoneApprovedFlag,
+  useApproveMilestone,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
 import {
-  ChangeMilestoneApprovedFlagPayload,
+  ApproveMilestonePayload,
   Escrow,
   EscrowRequestResponse,
-  Milestone,
+  SingleReleaseMilestone,
+  MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
 
-export const useChangeMilestoneFlagForm = () => {
+export const useApproveMilestoneForm = () => {
   const { escrow, setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const { walletAddress } = useWalletContext();
-  const { changeMilestoneApprovedFlag } = useChangeMilestoneApprovedFlag();
+  const { approveMilestone } = useApproveMilestone();
   const { sendTransaction } = useSendTransaction();
 
   // Default milestones if escrow is undefined
@@ -45,7 +46,7 @@ export const useChangeMilestoneFlagForm = () => {
     },
   });
 
-  const onSubmit = async (payload: ChangeMilestoneApprovedFlagPayload) => {
+  const onSubmit = async (payload: ApproveMilestonePayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -53,11 +54,16 @@ export const useChangeMilestoneFlagForm = () => {
       /**
        * API call by using the trustless work hooks
        * @Note:
-       * - We need to pass the payload to the changeMilestoneApprovedFlag function
+       * - We need to pass the payload to the approveMilestone function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await changeMilestoneApprovedFlag(
-        payload
+      const { unsignedTransaction } = await approveMilestone(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
       );
 
       if (!unsignedTransaction) {
@@ -85,10 +91,7 @@ export const useChangeMilestoneFlagForm = () => {
        * - We need to send the signed transaction to the API
        * - The data will be an SendTransactionResponse
        */
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: false,
-      });
+      const data = await sendTransaction(signedXdr);
 
       /**
        * @Responses:
@@ -103,10 +106,17 @@ export const useChangeMilestoneFlagForm = () => {
       if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: Escrow = {
           ...escrow,
-          milestones: escrow!.milestones.map((milestone: Milestone, index) =>
-            index === Number(payload.milestoneIndex)
-              ? { ...milestone, approvedFlag: payload.newFlag }
-              : milestone
+          milestones: escrow!.milestones.map(
+            (
+              milestone: SingleReleaseMilestone | MultiReleaseMilestone,
+              index
+            ) =>
+              index === Number(payload.milestoneIndex)
+                ? {
+                    ...milestone,
+                    flags: { ...milestone.flags, approved: payload.newFlag },
+                  }
+                : milestone
           ),
         };
 

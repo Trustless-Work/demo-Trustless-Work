@@ -67,7 +67,7 @@ export const useInitializeEscrow = () => {
           description: "",
           status: "pending",
           evidence: "",
-          approvedFlag: false,
+          approved: false,
         },
       ],
     },
@@ -85,7 +85,7 @@ export const useInitializeEscrow = () => {
     const currentMilestones = form.getValues("milestones");
     form.setValue("milestones", [
       ...currentMilestones,
-      { description: "", status: "pending", evidence: "", approvedFlag: false },
+      { description: "", status: "pending", evidence: "", approved: false },
     ]);
   };
 
@@ -124,19 +124,19 @@ export const useInitializeEscrow = () => {
         description: "Initial milestone",
         status: "pending",
         evidence: "",
-        approvedFlag: false,
+        approved: false,
       },
       {
         description: "Second milestone",
         status: "pending",
         evidence: "",
-        approvedFlag: false,
+        approved: false,
       },
       {
         description: "Final milestone",
         status: "pending",
         evidence: "",
-        approvedFlag: false,
+        approved: false,
       },
     ]);
   };
@@ -159,7 +159,10 @@ export const useInitializeEscrow = () => {
        * - We need to pass the payload to the deployEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await deployEscrow(finalPayload);
+      const { unsignedTransaction } = await deployEscrow({
+        payload: finalPayload,
+        type: "single-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -186,10 +189,7 @@ export const useInitializeEscrow = () => {
        * - We need to send the signed transaction to the API
        * - The data will be an SendTransactionResponse
        */
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: true,
-      });
+      const data = await sendTransaction(signedXdr);
 
       /**
        * @Responses:

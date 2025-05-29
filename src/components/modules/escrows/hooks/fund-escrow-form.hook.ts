@@ -45,7 +45,14 @@ export const useFundEscrowForm = () => {
     setResponse(null);
 
     try {
-      const { unsignedTransaction } = await fundEscrow(payload);
+      const { unsignedTransaction } = await fundEscrow(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
+      );
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -62,10 +69,7 @@ export const useFundEscrowForm = () => {
         throw new Error("Signed transaction is missing.");
       }
 
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: false,
-      });
+      const data = await sendTransaction(signedXdr);
 
       if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: Escrow = {

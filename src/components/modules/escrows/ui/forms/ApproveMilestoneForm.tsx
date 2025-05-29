@@ -18,13 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useChangeMilestoneFlagForm } from "../../hooks/change-milestone-flag-form.hook";
+import { useApproveMilestoneForm } from "../../hooks/approve-milestone-form";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
 
-export function ChangeMilestoneFlagForm() {
+export function ApproveMilestoneForm() {
   const { form, milestones, loading, response, onSubmit } =
-    useChangeMilestoneFlagForm();
+    useApproveMilestoneForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -116,7 +116,7 @@ export function ChangeMilestoneFlagForm() {
           />
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Updating..." : "Change Milestone Flag"}
+            {loading ? "Updating..." : "Approve Milestone"}
           </Button>
         </form>
       </Form>

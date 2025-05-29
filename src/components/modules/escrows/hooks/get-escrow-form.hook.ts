@@ -40,7 +40,7 @@ export const useGetEscrowForm = () => {
        * - We need to pass the payload to the getEscrow function
        * - The result will be an Escrow
        */
-      await getEscrow(payload);
+      await getEscrow({ payload, type: "single-release" });
 
       if (!currentEscrow) {
         throw new Error("Escrow not found");

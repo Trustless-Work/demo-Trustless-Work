@@ -18,7 +18,8 @@ import {
   ChangeMilestoneStatusPayload,
   Escrow,
   EscrowRequestResponse,
-  Milestone,
+  SingleReleaseMilestone,
+  MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
 
 export const useChangeMilestoneStatusForm = () => {
@@ -57,7 +58,14 @@ export const useChangeMilestoneStatusForm = () => {
        * - We need to pass the payload to the changeMilestoneStatus function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await changeMilestoneStatus(payload);
+      const { unsignedTransaction } = await changeMilestoneStatus(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
+      );
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -84,10 +92,7 @@ export const useChangeMilestoneStatusForm = () => {
        * - We need to send the signed transaction to the API
        * - The data will be an SendTransactionResponse
        */
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: false,
-      });
+      const data = await sendTransaction(signedXdr);
 
       /**
        * @Responses:
@@ -102,14 +107,18 @@ export const useChangeMilestoneStatusForm = () => {
       if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: Escrow = {
           ...escrow,
-          milestones: escrow!.milestones.map((milestone: Milestone, index) =>
-            index === Number(payload.milestoneIndex)
-              ? {
-                  ...milestone,
-                  status: payload.newStatus,
-                  evidence: payload.evidence || "",
-                }
-              : milestone
+          milestones: escrow!.milestones.map(
+            (
+              milestone: SingleReleaseMilestone | MultiReleaseMilestone,
+              index
+            ) =>
+              index === Number(payload.milestoneIndex)
+                ? {
+                    ...milestone,
+                    status: payload.newStatus,
+                    evidence: payload.evidence || "",
+                  }
+                : milestone
           ),
         };
 

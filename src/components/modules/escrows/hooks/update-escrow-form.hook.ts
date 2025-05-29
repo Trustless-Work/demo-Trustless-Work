@@ -83,7 +83,14 @@ export const useUpdateEscrowForm = () => {
        * - We need to pass the payload to the updateEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await updateEscrow(payload);
+      const { unsignedTransaction } = await updateEscrow(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
+      );
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -110,10 +117,7 @@ export const useUpdateEscrowForm = () => {
        * - We need to send the signed transaction to the API
        * - The data will be an SendTransactionResponse
        */
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: true,
-      });
+      const data = await sendTransaction(signedXdr);
 
       /**
        * @Responses:

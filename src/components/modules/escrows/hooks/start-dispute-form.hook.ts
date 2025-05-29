@@ -48,7 +48,14 @@ export const useStartDisputeForm = () => {
        * - We need to pass the payload to the startDispute function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await startDispute(payload);
+      const { unsignedTransaction } = await startDispute(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
+      );
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -75,10 +82,7 @@ export const useStartDisputeForm = () => {
        * - We need to send the signed transaction to the API
        * - The data will be an SendTransactionResponse
        */
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: false,
-      });
+      const data = await sendTransaction(signedXdr);
 
       /**
        * @Responses:
@@ -94,7 +98,7 @@ export const useStartDisputeForm = () => {
         const escrowUpdated: Escrow = {
           ...escrow,
           flags: {
-            disputeFlag: true,
+            disputed: true,
           },
         };
 

@@ -49,7 +49,14 @@ export const useReleaseFundsForm = () => {
        * - We need to pass the payload to the releaseFunds function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await releaseFunds(payload);
+      const { unsignedTransaction } = await releaseFunds(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
+      );
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -76,10 +83,7 @@ export const useReleaseFundsForm = () => {
        * - We need to send the signed transaction to the API
        * - The data will be an SendTransactionResponse
        */
-      const data = await sendTransaction({
-        signedXdr,
-        returnEscrowDataIsRequired: false,
-      });
+      const data = await sendTransaction(signedXdr);
 
       /**
        * @Responses:
@@ -95,7 +99,7 @@ export const useReleaseFundsForm = () => {
         const escrowUpdated: Escrow = {
           ...escrow,
           flags: {
-            releaseFlag: true,
+            released: true,
           },
           balance: "0",
         };
