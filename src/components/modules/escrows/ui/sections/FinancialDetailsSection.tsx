@@ -1,5 +1,5 @@
-import { Escrow } from "@/@types/escrows/escrow.entity";
 import { DollarSign, Landmark, Percent, PiggyBank } from "lucide-react";
+import { Escrow } from "@trustless-work/escrow/types";
 
 interface FinancialDetailsSectionProps {
   escrow: Escrow | null;

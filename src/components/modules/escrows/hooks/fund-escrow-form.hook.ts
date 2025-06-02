@@ -5,11 +5,20 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { formSchema } from "../schemas/fund-escrow-form.schema";
-import { escrowService } from "../services/escrow.service";
 import { toast } from "sonner";
-import { Escrow } from "@/@types/escrows/escrow.entity";
-import { EscrowRequestResponse } from "@/@types/escrows/escrow-response.entity";
-import { FundEscrowPayload } from "@/@types/escrows/escrow-payload.entity";
+import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { handleError } from "@/errors/utils/handle-errors";
+import { AxiosError } from "axios";
+import { WalletError } from "@/@types/errors.entity";
+import {
+  useFundEscrow,
+  useSendTransaction,
+} from "@trustless-work/escrow/hooks";
+import {
+  Escrow,
+  EscrowRequestResponse,
+  FundEscrowPayload,
+} from "@trustless-work/escrow/types";
 
 export const useFundEscrowForm = () => {
   const { escrow } = useEscrowContext();
@@ -18,6 +27,8 @@ export const useFundEscrowForm = () => {
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { fundEscrow } = useFundEscrow();
+  const { sendTransaction } = useSendTransaction();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,34 +45,35 @@ export const useFundEscrowForm = () => {
     setResponse(null);
 
     try {
-      /**
-       * API call by using the escrow service
-       * @Note:
-       * - We need to specify the endpoint and the method
-       * - We need to specify that the returnEscrowDataIsRequired is false
-       * - The result will be an EscrowRequestResponse
-       */
-      const result = (await escrowService.execute({
-        payload,
-        endpoint: "/escrow/fund-escrow",
-        method: "post",
-        returnEscrowDataIsRequired: false,
-      })) as EscrowRequestResponse;
+      const { unsignedTransaction } = await fundEscrow(
+        { payload, type: "single-release" },
+        {
+          onSuccess: (data) => {
+            console.log(data);
+          },
+        }
+      );
 
-      /**
-       * @Responses:
-       * result.status === "SUCCESS"
-       * - Escrow funded successfully
-       * - Set the escrow in the context
-       * - Show a success toast
-       *
-       * result.status !== "SUCCESS"
-       * - Show an error toast
-       */
-      if (result.status === "SUCCESS") {
-        // Validate balance in order to avoid negative balances in the escrow context
+      if (!unsignedTransaction) {
+        throw new Error(
+          "Unsigned transaction is missing from fundEscrow response."
+        );
+      }
+
+      const signedXdr = await signTransaction({
+        unsignedTransaction,
+        address: walletAddress || "",
+      });
+
+      if (!signedXdr) {
+        throw new Error("Signed transaction is missing.");
+      }
+
+      const data = await sendTransaction(signedXdr);
+
+      if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: Escrow = {
-          ...escrow!,
+          ...escrow,
           balance:
             escrow?.balance && Number(escrow.balance) > 0
               ? (Number(escrow.balance) + Number(payload.amount)).toString()
@@ -70,12 +82,15 @@ export const useFundEscrowForm = () => {
 
         setEscrow(escrowUpdated);
 
-        toast.info("Escrow Funded");
-        setResponse(result);
+        toast.success("Escrow Funded");
+        setResponse(data);
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      const mappedError = handleError(error as AxiosError | WalletError);
+      console.error("Error:", mappedError.message);
+
       toast.error(
-        err instanceof Error ? err.message : "An unknown error occurred",
+        mappedError ? mappedError.message : "An unknown error occurred"
       );
     } finally {
       setLoading(false);

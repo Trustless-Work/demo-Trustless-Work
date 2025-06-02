@@ -9,6 +9,7 @@ import { EscrowDetailsSection } from "./EscrowDetailsSection";
 import { FinancialDetailsSection } from "./FinancialDetailsSection";
 import { EscrowMilestonesSection } from "./EscrowMilestonesSection";
 import { HeaderSection } from "./HeaderSection";
+import { Milestone } from "@trustless-work/escrow/types";
 
 export const EscrowCreatedSection = () => {
   const { escrow } = useEscrowContext();
@@ -16,8 +17,8 @@ export const EscrowCreatedSection = () => {
   const totalMilestones = escrow?.milestones.length || 0;
   const completedMilestones =
     escrow?.milestones.filter(
-      (m) =>
-        m.status === "approved" || m.status === "completed" || m.approvedFlag,
+      (m: Milestone) =>
+        m.status === "approved" || m.status === "completed" || m.flags?.approved
     ).length || 0;
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;

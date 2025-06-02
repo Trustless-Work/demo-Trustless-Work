@@ -13,7 +13,7 @@ import { StartDisputeForm } from "../forms/StartDisputeForm";
 import { GetEscrowForm } from "../forms/GetEscrowForm";
 import { FundEscrowForm } from "../forms/FundEscrowForm";
 import { ChangeMilestoneStatusForm } from "../forms/ChangeMilestoneStatusForm";
-import { ChangeMilestoneFlagForm } from "../forms/ChangeMilestoneFlagForm";
+import { ApproveMilestoneForm } from "../forms/ApproveMilestoneForm";
 import { ReleaseFundsForm } from "../forms/ReleaseFundsForm";
 import { ResolveDisputeForm } from "../forms/ResolveDisputeForm";
 import { UpdateEscrowForm } from "../forms/UpdateEscrowForm";
@@ -68,7 +68,7 @@ export function EscrowEndpoints() {
             <TabsTrigger value="change-milestone-status" className="flex-1">
               Change Status
             </TabsTrigger>
-            <TabsTrigger value="change-milestone-flag" className="flex-1">
+            <TabsTrigger value="approve-milestone" className="flex-1">
               Approve Milestone
             </TabsTrigger>
             <TabsTrigger value="change-dispute-flag" className="flex-1">
@@ -96,8 +96,8 @@ export function EscrowEndpoints() {
                 <TabsContent value="change-milestone-status" className="mt-0">
                   <ChangeMilestoneStatusForm />
                 </TabsContent>
-                <TabsContent value="change-milestone-flag" className="mt-0">
-                  <ChangeMilestoneFlagForm />
+                <TabsContent value="approve-milestone" className="mt-0">
+                  <ApproveMilestoneForm />
                 </TabsContent>
                 <TabsContent value="change-dispute-flag" className="mt-0">
                   <StartDisputeForm />

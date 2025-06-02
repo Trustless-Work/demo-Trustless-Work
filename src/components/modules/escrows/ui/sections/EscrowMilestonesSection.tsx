@@ -1,5 +1,6 @@
-import { Escrow, Milestone } from "@/@types/escrows/escrow.entity";
 import { Badge } from "@/components/ui/badge";
+import { Milestone } from "@trustless-work/escrow/types";
+import { Escrow } from "@trustless-work/escrow/types";
 import { CheckCircle2 } from "lucide-react";
 
 interface EscrowMilestonesSectionProps {
@@ -15,7 +16,7 @@ export const EscrowMilestonesSection = ({
         <div
           key={index}
           className={`border rounded-lg p-4 transition-all ${
-            milestone.status === "approved" || milestone.approvedFlag
+            milestone.status === "approved" || milestone.flags?.approved
               ? "border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-900/20"
               : "hover:border-primary"
           }`}
@@ -24,7 +25,7 @@ export const EscrowMilestonesSection = ({
             <div className="flex gap-3">
               <div
                 className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full uppercase ${
-                  milestone.status === "approved" || milestone.approvedFlag
+                  milestone.status === "approved" || milestone.flags?.approved
                     ? "bg-green-100 dark:bg-green-900/50"
                     : "bg-muted"
                 }`}
@@ -60,7 +61,7 @@ export const EscrowMilestonesSection = ({
                     )}
                   </Badge>
                 )}
-                {milestone.approvedFlag && !milestone.status && (
+                {milestone.flags?.approved && !milestone.status && (
                   <Badge
                     variant="outline"
                     className="border-green-200 dark:border-green-900 text-green-800 dark:text-green-200 uppercase"

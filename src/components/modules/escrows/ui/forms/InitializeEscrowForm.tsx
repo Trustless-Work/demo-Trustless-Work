@@ -26,8 +26,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { steps } from "../../constants/initialize-steps.constant";
-import { InitializeEscrowResponse } from "@/@types/escrows/escrow-response.entity";
 import { ResponseDisplay } from "@/components/utils/response-display";
+import { InitializeEscrowResponse } from "@trustless-work/escrow/types";
 
 interface InitializeEscrowFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
@@ -69,6 +69,20 @@ export const InitializeEscrowForm = ({
           <div className="space-y-4">
             {currentStep === 0 && (
               <>
+                <FormField
+                  control={form.control}
+                  name="signer"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Signer Address</FormLabel>
+                      <FormControl>
+                        <Input disabled placeholder="GSIGN...XYZ" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="title"
@@ -154,7 +168,7 @@ export const InitializeEscrowForm = ({
                           <Select
                             onValueChange={(value) => {
                               const selectedOption = trustlinesOptions.find(
-                                (opt) => opt.value === value,
+                                (opt) => opt.value === value
                               );
                               if (selectedOption) {
                                 field.onChange(selectedOption.value);
@@ -365,7 +379,7 @@ export const InitializeEscrowForm = ({
             key={step.id}
             className={cn(
               "flex items-center",
-              index !== steps.length - 1 ? "flex-1" : "",
+              index !== steps.length - 1 ? "flex-1" : ""
             )}
           >
             <div
@@ -373,7 +387,7 @@ export const InitializeEscrowForm = ({
                 "flex items-center justify-center w-8 h-8 rounded-full transition-colors",
                 index <= currentStep
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted",
+                  : "bg-muted"
               )}
             >
               {index + 1}
@@ -382,7 +396,7 @@ export const InitializeEscrowForm = ({
               <div
                 className={cn(
                   "flex-1 h-1 mx-2 transition-colors",
-                  index < currentStep ? "bg-primary" : "bg-muted",
+                  index < currentStep ? "bg-primary" : "bg-muted"
                 )}
               />
             )}

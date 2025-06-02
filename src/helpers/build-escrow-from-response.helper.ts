@@ -1,8 +1,8 @@
 import {
+  Escrow,
   InitializeEscrowResponse,
   UpdateEscrowResponse,
-} from "@/@types/escrows/escrow-response.entity";
-import { Escrow } from "@/@types/escrows/escrow.entity";
+} from "@trustless-work/escrow/types";
 
 /**
  * Builds an Escrow object from an InitializeEscrowResponse, this structure is
@@ -10,10 +10,11 @@ import { Escrow } from "@/@types/escrows/escrow.entity";
  */
 export const buildEscrowFromResponse = (
   result: InitializeEscrowResponse | UpdateEscrowResponse,
-  walletAddress: string,
+  walletAddress: string
 ): Escrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",
+  balance: "0",
   engagementId: result.escrow.engagementId,
   title: result.escrow.title,
   description: result.escrow.description,
@@ -29,9 +30,9 @@ export const buildEscrowFromResponse = (
     receiver: result.escrow.roles.receiver,
   },
   flags: {
-    disputeFlag: false,
-    releaseFlag: false,
-    resolvedFlag: false,
+    disputed: false,
+    released: false,
+    resolved: false,
   },
   trustline: {
     address: result.escrow.trustline.address,

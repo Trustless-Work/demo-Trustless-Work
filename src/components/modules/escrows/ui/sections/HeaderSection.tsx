@@ -1,6 +1,6 @@
-import { Escrow } from "@/@types/escrows/escrow.entity";
 import { Badge } from "@/components/ui/badge";
 import { CardDescription, CardTitle } from "@/components/ui/card";
+import { Escrow } from "@trustless-work/escrow/types";
 import {
   AlertCircle,
   CheckCircle2,
@@ -46,22 +46,22 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
           <Badge
             variant="outline"
             className={
-              escrow?.flags?.releaseFlag || escrow?.flags?.resolvedFlag
+              escrow?.flags?.released || escrow?.flags?.resolved
                 ? "bg-green-100 text-green-800 hover:bg-green-200"
-                : escrow?.flags?.disputeFlag
-                  ? "bg-destructive text-white hover:bg-destructive/90"
-                  : ""
+                : escrow?.flags?.disputed
+                ? "bg-destructive text-white hover:bg-destructive/90"
+                : ""
             }
           >
-            {escrow?.flags?.releaseFlag ? (
+            {escrow?.flags?.released ? (
               <>
                 <CheckCircle2 className="mr-1 h-3 w-3" /> Released
               </>
-            ) : escrow?.flags?.resolvedFlag ? (
+            ) : escrow?.flags?.resolved ? (
               <>
                 <Handshake className="mr-1 h-3 w-3" /> Resolved
               </>
-            ) : escrow?.flags?.disputeFlag ? (
+            ) : escrow?.flags?.disputed ? (
               <>
                 <AlertCircle className="mr-1 h-3 w-3" /> Dispute
               </>

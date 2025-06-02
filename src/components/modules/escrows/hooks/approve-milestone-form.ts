@@ -1,36 +1,36 @@
+import { useEscrowContext } from "@/providers/escrow.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEscrowContext } from "@/providers/escrow.provider";
-import { formSchema } from "../schemas/change-milestone-status-form.schema";
+import { formSchema } from "../schemas/change-milestone-flag-form.schema";
 import { toast } from "sonner";
-import { useWalletContext } from "@/providers/wallet.provider";
 import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { useWalletContext } from "@/providers/wallet.provider";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  useChangeMilestoneStatus,
+  useApproveMilestone,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
 import {
-  ChangeMilestoneStatusPayload,
+  ApproveMilestonePayload,
   Escrow,
   EscrowRequestResponse,
   SingleReleaseMilestone,
   MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
 
-export const useChangeMilestoneStatusForm = () => {
-  const { escrow } = useEscrowContext();
-  const { setEscrow } = useEscrowContext();
+export const useApproveMilestoneForm = () => {
+  const { escrow, setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const { walletAddress } = useWalletContext();
-  const { changeMilestoneStatus } = useChangeMilestoneStatus();
+  const { approveMilestone } = useApproveMilestone();
   const { sendTransaction } = useSendTransaction();
 
+  // Default milestones if escrow is undefined
   const milestones = escrow?.milestones || [
     { description: "Initial setup", status: "pending" },
     { description: "Development phase", status: "pending" },
@@ -39,15 +39,14 @@ export const useChangeMilestoneStatusForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "",
+      contractId: escrow?.contractId || "CAZ6UQX7DEMO123",
       milestoneIndex: "",
-      newStatus: "",
-      evidence: "",
-      serviceProvider: escrow?.roles.serviceProvider || "",
+      newFlag: true,
+      approver: escrow?.roles.approver || "GAPPROVER123456789",
     },
   });
 
-  const onSubmit = async (payload: ChangeMilestoneStatusPayload) => {
+  const onSubmit = async (payload: ApproveMilestonePayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -55,10 +54,10 @@ export const useChangeMilestoneStatusForm = () => {
       /**
        * API call by using the trustless work hooks
        * @Note:
-       * - We need to pass the payload to the changeMilestoneStatus function
+       * - We need to pass the payload to the approveMilestone function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await changeMilestoneStatus(
+      const { unsignedTransaction } = await approveMilestone(
         { payload, type: "single-release" },
         {
           onSuccess: (data) => {
@@ -69,7 +68,7 @@ export const useChangeMilestoneStatusForm = () => {
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from changeMilestoneStatus response."
+          "Unsigned transaction is missing from changeMilestoneApprovedFlag response."
         );
       }
 
@@ -115,8 +114,7 @@ export const useChangeMilestoneStatusForm = () => {
               index === Number(payload.milestoneIndex)
                 ? {
                     ...milestone,
-                    status: payload.newStatus,
-                    evidence: payload.evidence || "",
+                    flags: { ...milestone.flags, approved: payload.newFlag },
                   }
                 : milestone
           ),
@@ -125,7 +123,7 @@ export const useChangeMilestoneStatusForm = () => {
         setEscrow(escrowUpdated);
 
         toast.success(
-          `Milestone index - ${payload.milestoneIndex} updated to ${payload.newStatus}`
+          `Milestone index - ${payload.milestoneIndex} has been approved`
         );
         setResponse(data);
         form.reset();
