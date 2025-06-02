@@ -13,5 +13,5 @@ export const formSchema = z.object({
     .refine((value) => isValidWallet(value), {
       message: "Service provider must be a valid wallet.",
     }),
-  evidence: z.string().optional(),
+  newEvidence: z.string().optional(),
 });

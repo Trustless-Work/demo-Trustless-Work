@@ -42,7 +42,7 @@ export const useChangeMilestoneStatusForm = () => {
       contractId: escrow?.contractId || "",
       milestoneIndex: "",
       newStatus: "",
-      evidence: "",
+      newEvidence: "",
       serviceProvider: escrow?.roles.serviceProvider || "",
     },
   });
@@ -116,7 +116,7 @@ export const useChangeMilestoneStatusForm = () => {
                 ? {
                     ...milestone,
                     status: payload.newStatus,
-                    evidence: payload.evidence || "",
+                    evidence: payload.newEvidence || "",
                   }
                 : milestone
           ),

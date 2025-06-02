@@ -110,10 +110,10 @@ export function ChangeMilestoneStatusForm() {
 
           <FormField
             control={form.control}
-            name="evidence"
+            name="newEvidence"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Evidence (optional)</FormLabel>
+                <FormLabel>New Evidence (optional)</FormLabel>
                 <FormControl>
                   <Input
                     placeholder="https://example.com/evidence"
