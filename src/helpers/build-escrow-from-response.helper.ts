@@ -30,9 +30,9 @@ export const buildEscrowFromResponse = (
     receiver: result.escrow.roles.receiver,
   },
   flags: {
-    disputeFlag: false,
-    releaseFlag: false,
-    resolvedFlag: false,
+    disputed: false,
+    released: false,
+    resolved: false,
   },
   trustline: {
     address: result.escrow.trustline.address,
