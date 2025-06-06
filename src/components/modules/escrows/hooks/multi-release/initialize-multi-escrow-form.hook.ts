@@ -2,16 +2,12 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchemaSingleRelease } from "../schemas/initialize-escrow-form.schema";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useTabsContext } from "@/providers/tabs.provider";
-import { trustlines } from "../constants/trustline.constant";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
-import { steps } from "../constants/initialize-steps.constant";
-import { buildSingleEscrowFromResponse } from "../../../../helpers/build-escrow-from-response.helper";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { buildMultiEscrowFromResponse } from "@/helpers/build-escrow-from-response.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
@@ -20,17 +16,21 @@ import {
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
 import {
-  InitializeSingleReleaseEscrowPayload,
-  InitializeSingleReleaseEscrowResponse,
+  InitializeMultiReleaseEscrowPayload,
+  InitializeMultiReleaseEscrowResponse,
 } from "@trustless-work/escrow/types";
+import { formSchemaMultiRelease } from "../../schemas/initialize-escrow-form.schema";
+import { trustlines } from "../../constants/trustline.constant";
+import { signTransaction } from "@/components/modules/auth/helpers/stellar-wallet-kit.helper";
+import { steps } from "../../constants/initialize-steps.constant";
 
-type FormValues = z.infer<typeof formSchemaSingleRelease>;
+type FormValues = z.infer<typeof formSchemaMultiRelease>;
 
-export const useInitializeSingleEscrow = () => {
+export const useInitializeMultiEscrowForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] =
-    useState<InitializeSingleReleaseEscrowResponse | null>(null);
+    useState<InitializeMultiReleaseEscrowResponse | null>(null);
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();
@@ -39,13 +39,12 @@ export const useInitializeSingleEscrow = () => {
   const { sendTransaction } = useSendTransaction();
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchemaSingleRelease) as Resolver<FormValues>,
+    resolver: zodResolver(formSchemaMultiRelease) as Resolver<FormValues>,
     defaultValues: {
       signer: walletAddress || "",
       engagementId: "",
       title: "",
       description: "",
-      amount: "",
       platformFee: "",
       receiverMemo: 0,
       roles: {
@@ -63,6 +62,7 @@ export const useInitializeSingleEscrow = () => {
       milestones: [
         {
           description: "",
+          amount: "",
         },
       ],
     },
@@ -71,7 +71,10 @@ export const useInitializeSingleEscrow = () => {
 
   const addMilestone = () => {
     const currentMilestones = form.getValues("milestones");
-    form.setValue("milestones", [...currentMilestones, { description: "" }]);
+    form.setValue("milestones", [
+      ...currentMilestones,
+      { description: "", amount: "" },
+    ]);
   };
 
   const removeMilestone = (index: number) => {
@@ -91,7 +94,6 @@ export const useInitializeSingleEscrow = () => {
       "This is a sample TW escrow for testing purposes"
     );
     form.setValue("engagementId", "ENG12345");
-    form.setValue("amount", "50");
     form.setValue("platformFee", "5");
     form.setValue("roles.approver", walletAddress || "");
     form.setValue("roles.serviceProvider", walletAddress || "");
@@ -107,23 +109,26 @@ export const useInitializeSingleEscrow = () => {
     form.setValue("milestones", [
       {
         description: "Initial milestone",
+        amount: "50",
       },
       {
         description: "Second milestone",
+        amount: "50",
       },
       {
         description: "Final milestone",
+        amount: "100",
       },
     ]);
   };
 
-  const onSubmit = async (payload: InitializeSingleReleaseEscrowPayload) => {
+  const onSubmit = async (payload: InitializeMultiReleaseEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 
     try {
       // This is the final payload that will be sent to the API
-      const finalPayload: InitializeSingleReleaseEscrowPayload = {
+      const finalPayload: InitializeMultiReleaseEscrowPayload = {
         ...payload,
         receiverMemo: payload.receiverMemo ?? 0,
         signer: walletAddress || "",
@@ -137,7 +142,7 @@ export const useInitializeSingleEscrow = () => {
        */
       const { unsignedTransaction } = await deployEscrow({
         payload: finalPayload,
-        type: "single-release",
+        type: "multi-release",
       });
 
       if (!unsignedTransaction) {
@@ -179,8 +184,8 @@ export const useInitializeSingleEscrow = () => {
        * - Show an error toast
        */
       if (data && data.status === "SUCCESS") {
-        const escrow = buildSingleEscrowFromResponse(
-          data as InitializeSingleReleaseEscrowResponse,
+        const escrow = buildMultiEscrowFromResponse(
+          data as InitializeMultiReleaseEscrowResponse,
           walletAddress || ""
         );
         setEscrow(escrow);
@@ -214,12 +219,12 @@ export const useInitializeSingleEscrow = () => {
 
   const getStepFields = (
     step: number
-  ): (keyof z.infer<typeof formSchemaSingleRelease>)[] => {
+  ): (keyof z.infer<typeof formSchemaMultiRelease>)[] => {
     switch (step) {
       case 0:
         return ["title", "engagementId", "description"];
       case 1:
-        return ["amount", "platformFee", "trustline", "receiverMemo"];
+        return ["platformFee", "trustline", "receiverMemo"];
       case 2:
         return ["roles"];
       case 3:
