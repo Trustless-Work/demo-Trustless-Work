@@ -1,6 +1,9 @@
 "use client";
 
-import { Escrow } from "@trustless-work/escrow/types";
+import {
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
+} from "@trustless-work/escrow/types";
 import { createContext, useContext, useState, ReactNode } from "react";
 
 /**
@@ -9,8 +12,8 @@ import { createContext, useContext, useState, ReactNode } from "react";
  *
  */
 interface EscrowContextProps {
-  escrow: Escrow | null;
-  setEscrow: (escrow: Escrow) => void;
+  escrow: SingleReleaseEscrow | MultiReleaseEscrow | null;
+  setEscrow: (escrow: SingleReleaseEscrow | MultiReleaseEscrow) => void;
   resetEscrow: () => void;
 }
 
@@ -25,14 +28,16 @@ const EscrowContext = createContext<EscrowContextProps | undefined>(undefined);
  *
  */
 export const EscrowProvider = ({ children }: { children: ReactNode }) => {
-  const [escrow, setEscrowState] = useState<Escrow | null>(null);
+  const [escrow, setEscrowState] = useState<
+    SingleReleaseEscrow | MultiReleaseEscrow | null
+  >(null);
 
   /**
    * Set Escrow
    *
    * @param newEscrow - New escrow
    */
-  const setEscrow = (newEscrow: Escrow) => {
+  const setEscrow = (newEscrow: SingleReleaseEscrow | MultiReleaseEscrow) => {
     setEscrowState(newEscrow);
   };
 
