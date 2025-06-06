@@ -63,10 +63,14 @@ export const EscrowCreatedSection = () => {
             <Progress value={progressPercentage} className="h-2" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <EscrowDetailsSection escrow={escrow} />
+          <div className="grid grid-cols-1 md:grid-cols-10 gap-10">
+            <div className="md:col-span-6">
+              <EscrowDetailsSection escrow={escrow} />
+            </div>
 
-            <FinancialDetailsSection escrow={escrow} />
+            <div className="md:col-span-4">
+              <FinancialDetailsSection escrow={escrow} />
+            </div>
           </div>
 
           <Separator className="my-6" />

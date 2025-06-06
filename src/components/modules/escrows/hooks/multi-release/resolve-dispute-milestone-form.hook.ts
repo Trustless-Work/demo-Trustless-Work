@@ -3,27 +3,26 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { formSchema } from "../schemas/resolve-dispute-form.schema";
 import { toast } from "sonner";
 import { useWalletContext } from "@/providers/wallet.provider";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  SingleReleaseEscrow,
   MultiReleaseEscrow,
   EscrowRequestResponse,
   SingleReleaseResolveDisputePayload,
   MultiReleaseResolveDisputePayload,
+  MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
 import {
   useResolveDispute,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
-import { useTabsContext } from "@/providers/tabs.provider";
+import { formSchemaMultiRelease } from "../../schemas/resolve-dispute-form.schema";
 
-export const useResolveDisputeForm = () => {
+export const useResolveDisputeMilestoneForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
@@ -31,23 +30,19 @@ export const useResolveDisputeForm = () => {
   const { walletAddress } = useWalletContext();
   const { resolveDispute } = useResolveDispute();
   const { sendTransaction } = useSendTransaction();
-  const { activeEscrowType } = useTabsContext();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaMultiRelease>>({
+    resolver: zodResolver(formSchemaMultiRelease),
     defaultValues: {
       contractId: escrow?.contractId || "",
       disputeResolver: escrow?.roles.disputeResolver || "",
+      milestoneIndex: "",
       approverFunds: "0",
       receiverFunds: "0",
     },
   });
 
-  const onSubmit = async (
-    payload:
-      | SingleReleaseResolveDisputePayload
-      | MultiReleaseResolveDisputePayload
-  ) => {
+  const onSubmit = async (payload: MultiReleaseResolveDisputePayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -59,7 +54,7 @@ export const useResolveDisputeForm = () => {
        * - The result will be an unsigned transaction
        */
       const { unsignedTransaction } = await resolveDispute(
-        { payload, type: activeEscrowType },
+        { payload, type: "multi-release" },
         {
           onSuccess: (data) => {
             console.log(data);
@@ -105,21 +100,33 @@ export const useResolveDisputeForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
+        const escrowUpdated: MultiReleaseEscrow = {
           ...escrow,
-          flags: {
-            resolved: true,
-          },
           balance: (
-            Number(escrow?.balance) -
+            Number(escrow.balance) -
             Number(payload.approverFunds) -
             Number(payload.receiverFunds)
           ).toString(),
+          milestones: (escrow.milestones as MultiReleaseMilestone[]).map(
+            (m, index) =>
+              index === parseInt(payload.milestoneIndex)
+                ? {
+                    ...m,
+                    flags: { ...m.flags, disputed: false, resolved: true },
+                  }
+                : m
+          ),
         };
 
         setEscrow(escrowUpdated);
 
-        toast.success("Dispute Resolved");
+        toast.success(
+          `Dispute Resolved in Milestone ${
+            (escrow.milestones as MultiReleaseMilestone[])[
+              parseInt(payload.milestoneIndex)
+            ].description
+          }`
+        );
         setResponse(data);
       }
     } catch (error: unknown) {

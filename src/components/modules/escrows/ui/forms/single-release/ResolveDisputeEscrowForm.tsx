@@ -10,12 +10,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useResolveDisputeForm } from "../../hooks/resolve-dispute-form.hook";
+import { useResolveDisputeEscrowForm } from "../../../hooks/single-release/resolve-dispute-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
 
-export function ResolveDisputeForm() {
-  const { form, loading, response, onSubmit } = useResolveDisputeForm();
+export function ResolveDisputeEscrowForm() {
+  const { form, loading, response, onSubmit } = useResolveDisputeEscrowForm();
   const { escrow } = useEscrowContext();
 
   return (
