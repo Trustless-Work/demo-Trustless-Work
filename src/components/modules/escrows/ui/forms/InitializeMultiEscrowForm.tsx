@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { formSchema } from "../../schemas/initialize-escrow-form.schema";
+import { formSchemaMultiRelease } from "../../schemas/initialize-escrow-form.schema";
 import {
   Select,
   SelectContent,
@@ -28,32 +28,33 @@ import { cn } from "@/lib/utils";
 import { steps } from "../../constants/initialize-steps.constant";
 import { ResponseDisplay } from "@/components/utils/response-display";
 import { InitializeEscrowResponse } from "@trustless-work/escrow/types";
+import { trustlinesOptions } from "../../constants/trustline.constant";
 
-interface InitializeEscrowFormProps {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
+type FormValues = z.infer<typeof formSchemaMultiRelease>;
+
+interface InitializeMultiEscrowFormProps {
+  form: UseFormReturn<FormValues>;
   loading?: boolean;
   response: InitializeEscrowResponse | null;
-  trustlinesOptions: { value: string; label: string }[];
   currentStep: number;
-  onSubmit: (data: z.infer<typeof formSchema>) => Promise<void>;
+  onSubmit: (data: FormValues) => Promise<void>;
   addMilestone: () => void;
   removeMilestone: (index: number) => void;
   nextStep: () => void;
   prevStep: () => void;
 }
 
-export const InitializeEscrowForm = ({
+export const InitializeMultiEscrowForm = ({
   form,
   loading,
   response,
-  trustlinesOptions,
   currentStep,
   onSubmit,
   addMilestone,
   removeMilestone,
   nextStep,
   prevStep,
-}: InitializeEscrowFormProps) => {
+}: InitializeMultiEscrowFormProps) => {
   const renderStep = () => {
     const currentStepData = steps[currentStep];
 
@@ -129,21 +130,7 @@ export const InitializeEscrowForm = ({
 
             {currentStep === 1 && (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Amount</FormLabel>
-                        <FormControl>
-                          <Input placeholder="1000" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                   <FormField
                     control={form.control}
                     name="platformFee"
@@ -328,7 +315,7 @@ export const InitializeEscrowForm = ({
                   <Card key={index}>
                     <CardContent className="p-4">
                       <div className="flex items-start gap-2">
-                        <div className="flex-1">
+                        <div className="flex-1 space-y-4">
                           <FormField
                             control={form.control}
                             name={`milestones.${index}.description`}
@@ -342,6 +329,20 @@ export const InitializeEscrowForm = ({
                                     placeholder="Milestone description"
                                     {...field}
                                   />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={form.control}
+                            name={`milestones.${index}.amount`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Amount</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="1000" {...field} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -379,7 +380,7 @@ export const InitializeEscrowForm = ({
             key={step.id}
             className={cn(
               "flex items-center",
-              index !== steps.length - 1 ? "flex-1" : ""
+              index !== steps.length - 1 && "flex-1"
             )}
           >
             <div
