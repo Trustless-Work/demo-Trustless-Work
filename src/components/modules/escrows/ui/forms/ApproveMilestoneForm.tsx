@@ -105,7 +105,6 @@ export function ApproveMilestoneForm() {
                 </div>
                 <FormControl>
                   <Switch
-                    disabled={true}
                     checked={field.value}
                     onCheckedChange={field.onChange}
                   />

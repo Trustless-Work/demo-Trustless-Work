@@ -120,7 +120,7 @@ export function ResolveDisputeMilestoneForm() {
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Resolving..." : "Resolve Dispute"}
+            {loading ? "Resolving milestone..." : "Resolve Milestone"}
           </Button>
         </form>
       </Form>
