@@ -9,16 +9,36 @@ import { EscrowDetailsSection } from "./EscrowDetailsSection";
 import { FinancialDetailsSection } from "./FinancialDetailsSection";
 import { EscrowMilestonesSection } from "./EscrowMilestonesSection";
 import { HeaderSection } from "./HeaderSection";
-import { Milestone } from "@trustless-work/escrow/types";
+import {
+  MultiReleaseMilestone,
+  SingleReleaseMilestone,
+} from "@trustless-work/escrow/types";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const EscrowCreatedSection = () => {
   const { escrow } = useEscrowContext();
+  const { activeEscrowType } = useTabsContext();
 
   const totalMilestones = escrow?.milestones.length || 0;
   const completedMilestones =
     escrow?.milestones.filter(
-      (m: Milestone) =>
-        m.status === "approved" || m.status === "completed" || m.flags?.approved
+      (m: SingleReleaseMilestone | MultiReleaseMilestone) => {
+        if (activeEscrowType === "single-release") {
+          const singleMilestone = m as SingleReleaseMilestone;
+          return (
+            singleMilestone.status === "approved" ||
+            singleMilestone.status === "completed" ||
+            singleMilestone.approved
+          );
+        } else {
+          const multiMilestone = m as MultiReleaseMilestone;
+          return (
+            multiMilestone.status === "approved" ||
+            multiMilestone.status === "completed" ||
+            multiMilestone.flags?.approved
+          );
+        }
+      }
     ).length || 0;
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
