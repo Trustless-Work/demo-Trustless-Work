@@ -10,7 +10,7 @@ import {
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { Button } from "@/components/ui/button";
-import { EscrowTabs } from "../tabs/EscrowTabs";
+import { EscrowTabs } from "../../../../tabs/EscrowTabs";
 
 export function EscrowEndpoints() {
   const { resetEscrow } = useEscrowContext();

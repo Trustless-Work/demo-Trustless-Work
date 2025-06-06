@@ -8,9 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useWalletContext } from "@/providers/wallet.provider";
-import { MainTabs } from "../tabs/MainTabs";
+import { MainTabs } from "../../../../tabs/MainTabs";
 import { ConnectWalletWarning } from "../ConnectWalletWarning";
-import { EscrowTypeTabs } from "../tabs/EscrowTypeTabs";
+import { EscrowTypeTabs } from "../../../../tabs/EscrowTypeTabs";
 
 export function Dashboard() {
   const { walletAddress } = useWalletContext();
