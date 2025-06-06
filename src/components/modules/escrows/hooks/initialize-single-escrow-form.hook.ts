@@ -2,7 +2,7 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema } from "../schemas/initialize-escrow-form.schema";
+import { formSchemaSingleRelease } from "../schemas/initialize-escrow-form.schema";
 import { toast } from "sonner";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useTabsContext } from "@/providers/tabs.provider";
@@ -22,12 +22,11 @@ import {
 import {
   InitializeEscrowPayload,
   InitializeEscrowResponse,
-  Trustline,
 } from "@trustless-work/escrow/types";
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchemaSingleRelease>;
 
-export const useInitializeEscrow = () => {
+export const useInitializeSingleEscrow = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<InitializeEscrowResponse | null>(
@@ -41,7 +40,7 @@ export const useInitializeEscrow = () => {
   const { sendTransaction } = useSendTransaction();
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema) as Resolver<FormValues>,
+    resolver: zodResolver(formSchemaSingleRelease) as Resolver<FormValues>,
     defaultValues: {
       signer: walletAddress || "",
       engagementId: "",
@@ -65,28 +64,15 @@ export const useInitializeEscrow = () => {
       milestones: [
         {
           description: "",
-          status: "pending",
-          evidence: "",
-          approved: false,
         },
       ],
     },
     mode: "onChange",
   });
 
-  const trustlinesOptions = trustlines.map(
-    (trustline: Trustline & { name?: string }) => ({
-      value: trustline.address,
-      label: trustline.name,
-    })
-  );
-
   const addMilestone = () => {
     const currentMilestones = form.getValues("milestones");
-    form.setValue("milestones", [
-      ...currentMilestones,
-      { description: "", status: "pending", evidence: "", approved: false },
-    ]);
+    form.setValue("milestones", [...currentMilestones, { description: "" }]);
   };
 
   const removeMilestone = (index: number) => {
@@ -122,21 +108,12 @@ export const useInitializeEscrow = () => {
     form.setValue("milestones", [
       {
         description: "Initial milestone",
-        status: "pending",
-        evidence: "",
-        approved: false,
       },
       {
         description: "Second milestone",
-        status: "pending",
-        evidence: "",
-        approved: false,
       },
       {
         description: "Final milestone",
-        status: "pending",
-        evidence: "",
-        approved: false,
       },
     ]);
   };
@@ -238,7 +215,7 @@ export const useInitializeEscrow = () => {
 
   const getStepFields = (
     step: number
-  ): (keyof z.infer<typeof formSchema>)[] => {
+  ): (keyof z.infer<typeof formSchemaSingleRelease>)[] => {
     switch (step) {
       case 0:
         return ["title", "engagementId", "description"];
@@ -257,7 +234,6 @@ export const useInitializeEscrow = () => {
     form,
     loading,
     response,
-    trustlinesOptions,
     currentStep,
     addMilestone,
     removeMilestone,
