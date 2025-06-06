@@ -3,8 +3,9 @@ import { GetEscrowForm } from "../modules/escrows/ui/forms/GetEscrowForm";
 import { FundEscrowForm } from "../modules/escrows/ui/forms/FundEscrowForm";
 import { ChangeMilestoneStatusForm } from "../modules/escrows/ui/forms/ChangeMilestoneStatusForm";
 import { ApproveMilestoneForm } from "../modules/escrows/ui/forms/ApproveMilestoneForm";
-import { ReleaseFundsForm } from "../modules/escrows/ui/forms/ReleaseFundsForm";
-import { ResolveDisputeForm } from "../modules/escrows/ui/forms/ResolveDisputeForm";
+import { ReleaseFundsForm } from "../modules/escrows/ui/forms/single-release/ReleaseFundsEscrowForm";
+import { ResolveDisputeEscrowForm } from "../modules/escrows/ui/forms/single-release/ResolveDisputeEscrowForm";
+import { ResolveDisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ResolveDisputeMilestoneForm";
 import { UpdateEscrowForm } from "../modules/escrows/ui/forms/UpdateEscrowForm";
 import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,7 +41,9 @@ export const EscrowTabs = () => {
             : "Dispute Milestone"}
         </TabsTrigger>
         <TabsTrigger value="resolve-dispute" className="flex-1">
-          Resolve Dispute
+          {activeEscrowType === "single-release"
+            ? "Resolve Dispute Escrow"
+            : "Resolve Dispute Milestone"}
         </TabsTrigger>
         <TabsTrigger value="release-funds" className="flex-1">
           Release Funds
@@ -72,7 +75,11 @@ export const EscrowTabs = () => {
               )}
             </TabsContent>
             <TabsContent value="resolve-dispute" className="mt-0">
-              <ResolveDisputeForm />
+              {activeEscrowType === "single-release" ? (
+                <ResolveDisputeEscrowForm />
+              ) : (
+                <ResolveDisputeMilestoneForm />
+              )}
             </TabsContent>
             <TabsContent value="release-funds" className="mt-0">
               <ReleaseFundsForm />
