@@ -42,21 +42,12 @@ export const EscrowMilestonesSection = ({
         ) => (
           <div
             key={index}
-            className={`border rounded-lg p-4 transition-all ${
-              isMilestoneApproved(milestone)
-                ? "border-green-200 dark:border-green-900 bg-green-50 dark:bg-green-900/20"
-                : "hover:border-primary"
-            }`}
+            className="border rounded-lg p-4 transition-all
+            "
           >
             <div className="flex justify-between items-start gap-4">
               <div className="flex gap-3">
-                <div
-                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full uppercase ${
-                    isMilestoneApproved(milestone)
-                      ? "bg-green-100 dark:bg-green-900/50"
-                      : "bg-muted"
-                  }`}
-                >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full uppercase">
                   <span className="font-medium text-sm">{index + 1}</span>
                 </div>
                 <div>
