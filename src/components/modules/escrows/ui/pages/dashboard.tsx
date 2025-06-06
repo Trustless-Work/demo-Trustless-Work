@@ -17,17 +17,12 @@ export function Dashboard() {
 
   return (
     <div className="space-y-8">
-      <EscrowTypeTabs />
-
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
-          <CardTitle className="text-2xl font-bold">Dashboard</CardTitle>
-          <CardDescription>
-            Manage escrow contracts and interact with the Stellar blockchain
-            using the <span className="font-bold">Trustless Work API.</span>
-          </CardDescription>
+          <h1 className="text-2xl font-bold mb-4">Escrow Types</h1>
+          <EscrowTypeTabs />
         </CardHeader>
-        <CardContent className="p-0">
+        <CardContent className="px-0">
           {walletAddress ? <MainTabs /> : <ConnectWalletWarning />}
         </CardContent>
       </Card>
