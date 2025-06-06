@@ -5,6 +5,8 @@ import {
   InitializeMultiReleaseEscrowResponse,
   UpdateSingleReleaseEscrowResponse,
   UpdateMultiReleaseEscrowResponse,
+  MultiReleaseMilestone,
+  SingleReleaseMilestone,
 } from "@trustless-work/escrow/types";
 
 /**
@@ -43,7 +45,7 @@ export const buildSingleEscrowFromResponse = (
     address: result.escrow.trustline.address,
     decimals: result.escrow.trustline.decimals,
   },
-  milestones: result.escrow.milestones.map((m) => ({
+  milestones: result.escrow.milestones.map((m: SingleReleaseMilestone) => ({
     description: m.description,
     evidence: "",
     approved: false,
@@ -81,10 +83,10 @@ export const buildMultiEscrowFromResponse = (
     address: result.escrow.trustline.address,
     decimals: result.escrow.trustline.decimals,
   },
-  milestones: result.escrow.milestones.map((m) => ({
+  milestones: result.escrow.milestones.map((m: MultiReleaseMilestone) => ({
     description: m.description,
     evidence: "",
-    amount: result.escrow.amount,
+    amount: m.amount,
     flags: {
       approved: false,
       disputed: false,
