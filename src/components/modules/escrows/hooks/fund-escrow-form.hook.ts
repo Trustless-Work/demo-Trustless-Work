@@ -40,7 +40,12 @@ export const useFundEscrowForm = () => {
       amount:
         activeEscrowType === "single-release"
           ? (escrow as SingleReleaseEscrow)?.amount?.toString() || "1000"
-          : "1000",
+          : ((escrow as MultiReleaseEscrow)?.milestones || [])
+              .reduce(
+                (total, milestone) => total + (Number(milestone.amount) || 0),
+                0
+              )
+              .toString() || "1000",
       signer: walletAddress || "Connect your wallet to get your address",
     },
   });
