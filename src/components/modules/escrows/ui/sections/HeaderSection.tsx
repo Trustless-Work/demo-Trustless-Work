@@ -106,7 +106,7 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
               </>
             ) : statusFlags?.disputed ? (
               <>
-                <AlertCircle className="mr-1 h-3 w-3" /> Dispute
+                <AlertCircle className="mr-1 h-3 w-3" /> Disputed
               </>
             ) : (
               <>

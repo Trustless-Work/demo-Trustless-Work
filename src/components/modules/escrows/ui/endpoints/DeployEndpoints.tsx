@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { InitializeSingleEscrowForm } from "../forms/InitializeSingleEscrowForm";
 import {
   Card,
   CardContent,
@@ -9,10 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useInitializeSingleEscrow } from "../../hooks/initialize-single-escrow-form.hook";
-import { useInitializeMultiEscrow } from "../../hooks/initialize-multi-escrow-form.hook";
+import { useInitializeSingleEscrowForm } from "../../hooks/single-release/initialize-single-escrow-form.hook";
 import { useTabsContext } from "@/providers/tabs.provider";
-import { InitializeMultiEscrowForm } from "../forms/InitializeMultiEscrowForm";
+import { InitializeSingleEscrowForm } from "../forms/single-release/InitializeSingleEscrowForm";
+import { InitializeMultiEscrowForm } from "../forms/multi-release/InitializeMultiEscrowForm";
+import { useInitializeMultiEscrowForm } from "../../hooks/multi-release/initialize-multi-escrow-form.hook";
 
 export function DeployEndpoints() {
   const { activeEscrowType } = useTabsContext();
@@ -28,7 +28,7 @@ export function DeployEndpoints() {
     loadTemplate,
     nextStep,
     prevStep,
-  } = useInitializeSingleEscrow();
+  } = useInitializeSingleEscrowForm();
 
   const {
     form: multiForm,
@@ -41,7 +41,7 @@ export function DeployEndpoints() {
     loadTemplate: multiLoadTemplate,
     nextStep: multiNextStep,
     prevStep: multiPrevStep,
-  } = useInitializeMultiEscrow();
+  } = useInitializeMultiEscrowForm();
 
   const handleLoadTemplate = () => {
     if (activeEscrowType === "single-release") {

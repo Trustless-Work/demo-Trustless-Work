@@ -5,7 +5,7 @@ import {
   SingleReleaseEscrow,
   MultiReleaseEscrow,
 } from "@trustless-work/escrow/types";
-import { AlertCircle, CheckCircle2, Handshake } from "lucide-react";
+import { AlertCircle, CheckCircle2, DollarSign, Handshake } from "lucide-react";
 import { useTabsContext } from "@/providers/tabs.provider";
 
 interface EscrowMilestonesSectionProps {
@@ -64,6 +64,15 @@ export const EscrowMilestonesSection = ({
                   <p className="text-muted-foreground text-sm">
                     {milestone.description}
                   </p>
+                </div>
+                <div className="flex items-center">
+                  <Badge
+                    variant="outline"
+                    className="text-muted-foreground text-sm"
+                  >
+                    <DollarSign className="h-3 w-3" />
+                    {(milestone as MultiReleaseMilestone).amount}
+                  </Badge>
                 </div>
               </div>
               <div className="flex justify-start flex-col gap-2">
@@ -134,9 +143,6 @@ export const EscrowMilestonesSection = ({
                           <Handshake className="mr-1 h-3 w-3" /> Resolved
                         </Badge>
                       )}
-                      <p className="text-muted-foreground text-sm">
-                        {(milestone as MultiReleaseMilestone).amount}
-                      </p>
                     </div>
                   )}
                 </>
