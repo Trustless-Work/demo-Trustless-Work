@@ -23,12 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useInitializeEscrow } from "../../hooks/initialize-escrow-form.hook";
+import { trustlinesOptions } from "../../constants/trustline.constant";
 
 export function UpdateEscrowForm() {
   const { form, loading, response, fields, append, remove, onSubmit } =
     useUpdateEscrowForm();
-  const { trustlinesOptions } = useInitializeEscrow();
   const { escrow } = useEscrowContext();
 
   return (
@@ -94,7 +93,7 @@ export function UpdateEscrowForm() {
                     <Select
                       onValueChange={(value) => {
                         const selectedOption = trustlinesOptions.find(
-                          (opt) => opt.value === value,
+                          (opt) => opt.value === value
                         );
                         if (selectedOption) {
                           field.onChange(selectedOption.value);

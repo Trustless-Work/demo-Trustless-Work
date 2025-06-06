@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { InitializeEscrowForm } from "../forms/InitializeEscrowForm";
+import { InitializeSingleEscrowForm } from "../forms/InitializeSingleEscrowForm";
 import {
   Card,
   CardContent,
@@ -9,25 +9,46 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useInitializeEscrow } from "../../hooks/initialize-escrow-form.hook";
+import { useInitializeSingleEscrow } from "../../hooks/initialize-single-escrow-form.hook";
+import { useInitializeMultiEscrow } from "../../hooks/initialize-multi-escrow-form.hook";
+import { useTabsContext } from "@/providers/tabs.provider";
+import { InitializeMultiEscrowForm } from "../forms/InitializeMultiEscrowForm";
 
 export function DeployEndpoints() {
+  const { activeEscrowType } = useTabsContext();
+
   const {
     form,
+    onSubmit,
     loading,
     response,
-    trustlinesOptions,
     currentStep,
     addMilestone,
     removeMilestone,
     loadTemplate,
-    onSubmit,
     nextStep,
     prevStep,
-  } = useInitializeEscrow();
+  } = useInitializeSingleEscrow();
+
+  const {
+    form: multiForm,
+    onSubmit: multiOnSubmit,
+    loading: multiLoading,
+    response: multiResponse,
+    currentStep: multiCurrentStep,
+    addMilestone: multiAddMilestone,
+    removeMilestone: multiRemoveMilestone,
+    loadTemplate: multiLoadTemplate,
+    nextStep: multiNextStep,
+    prevStep: multiPrevStep,
+  } = useInitializeMultiEscrow();
 
   const handleLoadTemplate = () => {
-    loadTemplate();
+    if (activeEscrowType === "single-release") {
+      loadTemplate();
+    } else {
+      multiLoadTemplate();
+    }
   };
 
   return (
@@ -50,21 +71,31 @@ export function DeployEndpoints() {
         </Button>
       </CardHeader>
       <CardContent className="p-6">
-        <InitializeEscrowForm
-          form={form}
-          onSubmit={onSubmit}
-          addMilestone={addMilestone}
-          removeMilestone={removeMilestone}
-          loading={loading}
-          response={response}
-          trustlinesOptions={trustlinesOptions.map((option) => ({
-            value: option.value,
-            label: option.label || option.value,
-          }))}
-          currentStep={currentStep}
-          nextStep={nextStep}
-          prevStep={prevStep}
-        />
+        {activeEscrowType === "single-release" ? (
+          <InitializeSingleEscrowForm
+            form={form}
+            onSubmit={onSubmit}
+            loading={loading}
+            response={response}
+            currentStep={currentStep}
+            addMilestone={addMilestone}
+            removeMilestone={removeMilestone}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
+        ) : (
+          <InitializeMultiEscrowForm
+            form={multiForm}
+            onSubmit={multiOnSubmit}
+            loading={multiLoading}
+            response={multiResponse}
+            currentStep={multiCurrentStep}
+            addMilestone={multiAddMilestone}
+            removeMilestone={multiRemoveMilestone}
+            nextStep={multiNextStep}
+            prevStep={multiPrevStep}
+          />
+        )}
       </CardContent>
     </Card>
   );
