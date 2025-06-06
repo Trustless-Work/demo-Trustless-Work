@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useTabsContext } from "@/providers/tabs.provider";
+import { useEscrowContext } from "@/providers/escrow.provider";
 
 const tabs = [
   { id: "multi-release", label: "Multi Release Escrow" },
@@ -10,7 +11,9 @@ const tabs = [
 
 export const EscrowTypeTabs = () => {
   const { activeEscrowType, setActiveEscrowType } = useTabsContext();
-  const disabled = false;
+  const { escrow } = useEscrowContext();
+
+  const disabled = !!escrow;
 
   return (
     <div className="w-full">
@@ -31,9 +34,8 @@ export const EscrowTypeTabs = () => {
                 relative flex-1 px-6 py-4 text-sm font-bold tracking-wide transition-colors duration-150
                 ${disabled ? "opacity-50 cursor-not-allowed" : ""}
                 ${
-                  activeEscrowType === tab.id
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground"
+                  activeEscrowType !== tab.id &&
+                  "text-muted-foreground hover:text-foreground"
                 }
               `}
             >

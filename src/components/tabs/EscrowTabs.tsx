@@ -1,12 +1,12 @@
-import { StartDisputeForm } from "../forms/StartDisputeForm";
-import { GetEscrowForm } from "../forms/GetEscrowForm";
-import { FundEscrowForm } from "../forms/FundEscrowForm";
-import { ChangeMilestoneStatusForm } from "../forms/ChangeMilestoneStatusForm";
-import { ApproveMilestoneForm } from "../forms/ApproveMilestoneForm";
-import { ReleaseFundsForm } from "../forms/ReleaseFundsForm";
-import { ResolveDisputeForm } from "../forms/ResolveDisputeForm";
-import { UpdateEscrowForm } from "../forms/UpdateEscrowForm";
-import { EscrowCreatedSection } from "../sections/EscrowCreatedSection";
+import { StartDisputeForm } from "../modules/escrows/ui/forms/StartDisputeForm";
+import { GetEscrowForm } from "../modules/escrows/ui/forms/GetEscrowForm";
+import { FundEscrowForm } from "../modules/escrows/ui/forms/FundEscrowForm";
+import { ChangeMilestoneStatusForm } from "../modules/escrows/ui/forms/ChangeMilestoneStatusForm";
+import { ApproveMilestoneForm } from "../modules/escrows/ui/forms/ApproveMilestoneForm";
+import { ReleaseFundsForm } from "../modules/escrows/ui/forms/ReleaseFundsForm";
+import { ResolveDisputeForm } from "../modules/escrows/ui/forms/ResolveDisputeForm";
+import { UpdateEscrowForm } from "../modules/escrows/ui/forms/UpdateEscrowForm";
+import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsContext } from "@/providers/tabs.provider";
 
