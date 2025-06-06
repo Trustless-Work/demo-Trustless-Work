@@ -9,16 +9,24 @@ import { toast } from "sonner";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { Escrow, GetEscrowParams } from "@trustless-work/escrow/types";
+import {
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
+  GetEscrowParams,
+} from "@trustless-work/escrow/types";
 import { useGetEscrow } from "@trustless-work/escrow/hooks";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();
   const { escrow, setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<Escrow | null>(null);
+  const [response, setResponse] = useState<
+    SingleReleaseEscrow | MultiReleaseEscrow | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
   const { getEscrow, escrow: currentEscrow } = useGetEscrow();
+  const { activeEscrowType } = useTabsContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -40,7 +48,7 @@ export const useGetEscrowForm = () => {
        * - We need to pass the payload to the getEscrow function
        * - The result will be an Escrow
        */
-      await getEscrow({ payload, type: "single-release" });
+      await getEscrow({ payload, type: activeEscrowType });
 
       if (!currentEscrow) {
         throw new Error("Escrow not found");

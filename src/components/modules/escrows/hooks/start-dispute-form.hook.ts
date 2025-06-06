@@ -11,15 +11,17 @@ import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
-  StartDisputePayload,
+  SingleReleaseStartDisputePayload,
+  MultiReleaseStartDisputePayload,
 } from "@trustless-work/escrow/types";
 import {
   useSendTransaction,
   useStartDispute,
 } from "@trustless-work/escrow/hooks";
-
+import { useTabsContext } from "@/providers/tabs.provider";
 export const useStartDisputeForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
@@ -28,6 +30,7 @@ export const useStartDisputeForm = () => {
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const { startDispute } = useStartDispute();
   const { sendTransaction } = useSendTransaction();
+  const { activeEscrowType } = useTabsContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,7 +40,9 @@ export const useStartDisputeForm = () => {
     },
   });
 
-  const onSubmit = async (payload: StartDisputePayload) => {
+  const onSubmit = async (
+    payload: SingleReleaseStartDisputePayload | MultiReleaseStartDisputePayload
+  ) => {
     setLoading(true);
     setResponse(null);
 
@@ -49,7 +54,7 @@ export const useStartDisputeForm = () => {
        * - The result will be an unsigned transaction
        */
       const { unsignedTransaction } = await startDispute(
-        { payload, type: "single-release" },
+        { payload, type: activeEscrowType },
         {
           onSuccess: (data) => {
             console.log(data);
@@ -95,7 +100,7 @@ export const useStartDisputeForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
           ...escrow,
           flags: {
             disputed: true,

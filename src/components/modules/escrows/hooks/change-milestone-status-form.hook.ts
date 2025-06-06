@@ -16,11 +16,13 @@ import {
 } from "@trustless-work/escrow/hooks";
 import {
   ChangeMilestoneStatusPayload,
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
   SingleReleaseMilestone,
   MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const useChangeMilestoneStatusForm = () => {
   const { escrow } = useEscrowContext();
@@ -30,6 +32,7 @@ export const useChangeMilestoneStatusForm = () => {
   const { walletAddress } = useWalletContext();
   const { changeMilestoneStatus } = useChangeMilestoneStatus();
   const { sendTransaction } = useSendTransaction();
+  const { activeEscrowType } = useTabsContext();
 
   const milestones = escrow?.milestones || [
     { description: "Initial setup", status: "pending" },
@@ -59,7 +62,7 @@ export const useChangeMilestoneStatusForm = () => {
        * - The result will be an unsigned transaction
        */
       const { unsignedTransaction } = await changeMilestoneStatus(
-        { payload, type: "single-release" },
+        { payload, type: activeEscrowType },
         {
           onSuccess: (data) => {
             console.log(data);
@@ -105,22 +108,24 @@ export const useChangeMilestoneStatusForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated = {
           ...escrow,
-          milestones: escrow!.milestones.map(
-            (
-              milestone: SingleReleaseMilestone | MultiReleaseMilestone,
-              index
-            ) =>
-              index === Number(payload.milestoneIndex)
+          milestones: escrow.milestones.map((milestone, index) =>
+            index === Number(payload.milestoneIndex)
+              ? activeEscrowType === "single-release"
                 ? {
-                    ...milestone,
+                    ...(milestone as SingleReleaseMilestone),
                     status: payload.newStatus,
                     evidence: payload.newEvidence || "",
                   }
-                : milestone
+                : {
+                    ...(milestone as MultiReleaseMilestone),
+                    status: payload.newStatus,
+                    evidence: payload.newEvidence || "",
+                  }
+              : milestone
           ),
-        };
+        } as SingleReleaseEscrow | MultiReleaseEscrow;
 
         setEscrow(escrowUpdated);
 

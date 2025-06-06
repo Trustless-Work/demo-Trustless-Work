@@ -11,14 +11,17 @@ import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
-  ResolveDisputePayload,
+  SingleReleaseResolveDisputePayload,
+  MultiReleaseResolveDisputePayload,
 } from "@trustless-work/escrow/types";
 import {
   useResolveDispute,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const useResolveDisputeForm = () => {
   const { escrow } = useEscrowContext();
@@ -28,6 +31,7 @@ export const useResolveDisputeForm = () => {
   const { walletAddress } = useWalletContext();
   const { resolveDispute } = useResolveDispute();
   const { sendTransaction } = useSendTransaction();
+  const { activeEscrowType } = useTabsContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +43,11 @@ export const useResolveDisputeForm = () => {
     },
   });
 
-  const onSubmit = async (payload: ResolveDisputePayload) => {
+  const onSubmit = async (
+    payload:
+      | SingleReleaseResolveDisputePayload
+      | MultiReleaseResolveDisputePayload
+  ) => {
     setLoading(true);
     setResponse(null);
 
@@ -51,7 +59,7 @@ export const useResolveDisputeForm = () => {
        * - The result will be an unsigned transaction
        */
       const { unsignedTransaction } = await resolveDispute(
-        { payload, type: "single-release" },
+        { payload, type: activeEscrowType },
         {
           onSuccess: (data) => {
             console.log(data);
@@ -97,7 +105,7 @@ export const useResolveDisputeForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
           ...escrow,
           flags: {
             resolved: true,

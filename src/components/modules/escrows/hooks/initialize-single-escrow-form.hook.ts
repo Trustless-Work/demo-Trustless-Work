@@ -10,7 +10,7 @@ import { trustlines } from "../constants/trustline.constant";
 import { z } from "zod";
 import { Resolver } from "react-hook-form";
 import { steps } from "../constants/initialize-steps.constant";
-import { buildEscrowFromResponse } from "../../../../helpers/build-escrow-from-response.helper";
+import { buildSingleEscrowFromResponse } from "../../../../helpers/build-escrow-from-response.helper";
 import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
@@ -20,8 +20,8 @@ import {
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
 import {
-  InitializeEscrowPayload,
-  InitializeEscrowResponse,
+  InitializeSingleReleaseEscrowPayload,
+  InitializeSingleReleaseEscrowResponse,
 } from "@trustless-work/escrow/types";
 
 type FormValues = z.infer<typeof formSchemaSingleRelease>;
@@ -29,9 +29,8 @@ type FormValues = z.infer<typeof formSchemaSingleRelease>;
 export const useInitializeSingleEscrow = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<InitializeEscrowResponse | null>(
-    null
-  );
+  const [response, setResponse] =
+    useState<InitializeSingleReleaseEscrowResponse | null>(null);
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
   const { setActiveTab } = useTabsContext();
@@ -118,13 +117,13 @@ export const useInitializeSingleEscrow = () => {
     ]);
   };
 
-  const onSubmit = async (payload: InitializeEscrowPayload) => {
+  const onSubmit = async (payload: InitializeSingleReleaseEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 
     try {
       // This is the final payload that will be sent to the API
-      const finalPayload: InitializeEscrowPayload = {
+      const finalPayload: InitializeSingleReleaseEscrowPayload = {
         ...payload,
         receiverMemo: payload.receiverMemo ?? 0,
         signer: walletAddress || "",
@@ -180,8 +179,8 @@ export const useInitializeSingleEscrow = () => {
        * - Show an error toast
        */
       if (data && data.status === "SUCCESS") {
-        const escrow = buildEscrowFromResponse(
-          data as InitializeEscrowResponse,
+        const escrow = buildSingleEscrowFromResponse(
+          data as InitializeSingleReleaseEscrowResponse,
           walletAddress || ""
         );
         setEscrow(escrow);

@@ -11,14 +11,17 @@ import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
-  ReleaseFundsPayload,
+  MultiReleaseReleaseFundsPayload,
+  SingleReleaseReleaseFundsPayload,
 } from "@trustless-work/escrow/types";
 import {
   useReleaseFunds,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const useReleaseFundsForm = () => {
   const { escrow } = useEscrowContext();
@@ -28,6 +31,7 @@ export const useReleaseFundsForm = () => {
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const { releaseFunds } = useReleaseFunds();
   const { sendTransaction } = useSendTransaction();
+  const { activeEscrowType } = useTabsContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -38,7 +42,9 @@ export const useReleaseFundsForm = () => {
     },
   });
 
-  const onSubmit = async (payload: ReleaseFundsPayload) => {
+  const onSubmit = async (
+    payload: SingleReleaseReleaseFundsPayload | MultiReleaseReleaseFundsPayload
+  ) => {
     setLoading(true);
     setResponse(null);
 
@@ -50,7 +56,7 @@ export const useReleaseFundsForm = () => {
        * - The result will be an unsigned transaction
        */
       const { unsignedTransaction } = await releaseFunds(
-        { payload, type: "single-release" },
+        { payload, type: activeEscrowType },
         {
           onSuccess: (data) => {
             console.log(data);
@@ -96,7 +102,7 @@ export const useReleaseFundsForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
           ...escrow,
           flags: {
             released: true,
