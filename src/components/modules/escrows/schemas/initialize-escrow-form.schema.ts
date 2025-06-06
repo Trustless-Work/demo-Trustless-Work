@@ -1,7 +1,7 @@
 import { isValidWallet } from "@/helpers/is-valid-wallet.helper";
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const formSchemaSingleRelease = z.object({
   signer: z.string().min(1, {
     message: "Signer is required.",
   }),
@@ -85,9 +85,25 @@ export const formSchema = z.object({
         description: z.string().min(1, {
           message: "Milestone description is required.",
         }),
-        status: z.string().default("pending"),
-        evidence: z.string().default(""),
-        approved: z.boolean().default(false),
+      })
+    )
+    .min(1, { message: "At least one milestone is required." }),
+});
+
+// Create multiRelease by omitting amount and adding it to milestones
+const { amount: _, ...multiReleaseFields } = formSchemaSingleRelease.shape;
+
+export const formSchemaMultiRelease = z.object({
+  ...multiReleaseFields,
+  milestones: z
+    .array(
+      z.object({
+        description: z.string().min(1, {
+          message: "Milestone description is required.",
+        }),
+        amount: z.string().min(1, {
+          message: "Milestone amount is required.",
+        }),
       })
     )
     .min(1, { message: "At least one milestone is required." }),
