@@ -11,11 +11,19 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { useStartDisputeForm } from "../../hooks/start-dispute-form.hook";
 import { ResponseDisplay } from "@/components/utils/response-display";
+import { useDisputeMilestoneForm } from "../../../hooks/multi-release/dispute-milestone-form.hook";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export function StartDisputeForm() {
-  const { form, loading, response, onSubmit } = useStartDisputeForm();
+export function DisputeMilestoneForm() {
+  const { form, loading, response, onSubmit, milestones } =
+    useDisputeMilestoneForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -54,8 +62,36 @@ export function StartDisputeForm() {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="milestoneIndex"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Milestone Index</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a milestone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {milestones.map((_, index) => (
+                        <SelectItem key={index} value={index.toString()}>
+                          Milestone {index + 1}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Starting Dispute..." : "Start Dispute"}
+            {loading ? "Disputing milestone..." : "Dispute Milestone"}
           </Button>
         </form>
       </Form>

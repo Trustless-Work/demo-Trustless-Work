@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { formSchemaSingleRelease } from "../../schemas/initialize-escrow-form.schema";
+import { formSchemaSingleRelease } from "@/components/modules/escrows/schemas/initialize-escrow-form.schema";
 import {
   Select,
   SelectContent,
@@ -25,10 +25,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { steps } from "../../constants/initialize-steps.constant";
 import { ResponseDisplay } from "@/components/utils/response-display";
 import { InitializeSingleReleaseEscrowResponse } from "@trustless-work/escrow/types";
-import { trustlinesOptions } from "../../constants/trustline.constant";
+import { trustlinesOptions } from "@/components/modules/escrows/constants/trustline.constant";
+import { steps } from "@/components/modules/escrows/constants/initialize-steps.constant";
 
 type FormValues = z.infer<typeof formSchemaSingleRelease>;
 
