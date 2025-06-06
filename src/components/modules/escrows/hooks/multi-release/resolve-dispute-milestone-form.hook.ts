@@ -53,14 +53,10 @@ export const useResolveDisputeMilestoneForm = () => {
        * - We need to pass the payload to the resolveDispute function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await resolveDispute(
-        { payload, type: "multi-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await resolveDispute({
+        payload,
+        type: "multi-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(

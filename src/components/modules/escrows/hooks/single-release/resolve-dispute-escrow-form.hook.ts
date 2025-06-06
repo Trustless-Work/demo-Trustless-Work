@@ -52,14 +52,10 @@ export const useResolveDisputeEscrowForm = () => {
        * - We need to pass the payload to the resolveDispute function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await resolveDispute(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await resolveDispute({
+        payload,
+        type: "single-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
