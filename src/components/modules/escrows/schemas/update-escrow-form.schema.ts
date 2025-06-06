@@ -1,7 +1,7 @@
 import { isValidWallet } from "@/helpers/is-valid-wallet.helper";
 import { z } from "zod";
 
-export const formSchema = z.object({
+export const formSchemaSingleRelease = z.object({
   contractId: z.string().min(1, {
     message: "Contract ID is required.",
   }),
@@ -9,11 +9,11 @@ export const formSchema = z.object({
     message: "Signer is required.",
   }),
   escrow: z.object({
-    title: z.string().min(1, {
-      message: "Title is required.",
-    }),
     engagementId: z.string().min(1, {
       message: "Engagement is required.",
+    }),
+    title: z.string().min(1, {
+      message: "Title is required.",
     }),
     description: z.string().min(10, {
       message: "Description must be at least 10 characters long.",
@@ -89,10 +89,31 @@ export const formSchema = z.object({
           description: z.string().min(1, {
             message: "Milestone description is required.",
           }),
-          status: z.string().default("pending"),
-          evidence: z.string().default(""),
-          approvedFlag: z.boolean().default(false),
-        }),
+        })
+      )
+      .min(1, { message: "At least one milestone is required." }),
+  }),
+});
+
+// Create multiRelease by omitting amount
+const { amount: _, ...multiReleaseFields } =
+  formSchemaSingleRelease.shape.escrow.shape;
+
+export const formSchemaMultiRelease = z.object({
+  contractId: z.string().min(1, { message: "Contract ID is required." }),
+  signer: z.string().min(1, { message: "Signer is required." }),
+  escrow: z.object({
+    ...multiReleaseFields,
+    milestones: z
+      .array(
+        z.object({
+          description: z.string().min(1, {
+            message: "Milestone description is required.",
+          }),
+          amount: z.string().min(1, {
+            message: "Milestone amount is required.",
+          }),
+        })
       )
       .min(1, { message: "At least one milestone is required." }),
   }),

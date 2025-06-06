@@ -6,16 +6,19 @@ import { ApproveMilestoneForm } from "../modules/escrows/ui/forms/ApproveMilesto
 import { ReleaseFundsEscrowForm } from "../modules/escrows/ui/forms/single-release/ReleaseFundsEscrowForm";
 import { ResolveDisputeEscrowForm } from "../modules/escrows/ui/forms/single-release/ResolveDisputeEscrowForm";
 import { ResolveDisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ResolveDisputeMilestoneForm";
-import { UpdateEscrowForm } from "../modules/escrows/ui/forms/UpdateEscrowForm";
+import { UpdateSingleEscrowForm } from "../modules/escrows/ui/forms/single-release/UpdateSingleEscrowForm";
 import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { DisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/DisputeMilestoneForm";
 import { ReleaseFundsMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ReleaseFundsMilestoneForm";
+import { UpdateMultiEscrowForm } from "../modules/escrows/ui/forms/multi-release/UpdateMultiEscrowForm";
+import { useEscrowContext } from "@/providers/escrow.provider";
 
 export const EscrowTabs = () => {
   const { activeEscrowTab, activeEscrowType, setActiveEscrowTab } =
     useTabsContext();
+  const { escrow } = useEscrowContext();
 
   return (
     <Tabs
@@ -92,7 +95,11 @@ export const EscrowTabs = () => {
               )}
             </TabsContent>
             <TabsContent value="update-escrow" className="mt-0">
-              <UpdateEscrowForm />
+              {activeEscrowType === "single-release" ? (
+                <UpdateSingleEscrowForm />
+              ) : (
+                <UpdateMultiEscrowForm />
+              )}
             </TabsContent>
           </div>
         </div>

@@ -7,32 +7,35 @@ import { useEscrowContext } from "@/providers/escrow.provider";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { toast } from "sonner";
-import { formSchema } from "../schemas/update-escrow-form.schema";
+import { formSchemaMultiRelease } from "../../schemas/update-escrow-form.schema";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
-import {
-  Escrow,
-  UpdateEscrowPayload,
-  UpdateEscrowResponse,
-} from "@trustless-work/escrow/types";
+import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import {
   useSendTransaction,
   useUpdateEscrow,
 } from "@trustless-work/escrow/hooks";
+import {
+  MultiReleaseEscrow,
+  UpdateMultiReleaseEscrowPayload,
+  UpdateMultiReleaseEscrowResponse,
+} from "@trustless-work/escrow";
 
-export const useUpdateEscrowForm = () => {
-  const { escrow } = useEscrowContext();
+export const useUpdateMultiEscrowForm = () => {
+  const { escrow } = useEscrowContext() as {
+    escrow: MultiReleaseEscrow | null;
+  };
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
-  const [response, setResponse] = useState<UpdateEscrowResponse | null>(null);
+  const [response, setResponse] =
+    useState<UpdateMultiReleaseEscrowResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const { updateEscrow } = useUpdateEscrow();
   const { sendTransaction } = useSendTransaction();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema) as any,
+  const form = useForm<z.infer<typeof formSchemaMultiRelease>>({
+    resolver: zodResolver(formSchemaMultiRelease) as any,
     defaultValues: {
       signer: walletAddress || "",
       contractId: escrow?.contractId || "",
@@ -40,7 +43,6 @@ export const useUpdateEscrowForm = () => {
         title: escrow?.title || "",
         engagementId: escrow?.engagementId || "",
         description: escrow?.description || "",
-        amount: escrow?.amount.toString() || "",
         platformFee: (Number(escrow?.platformFee) / 100).toString() || "",
         receiverMemo: escrow?.receiverMemo || 0,
         roles: {
@@ -55,12 +57,15 @@ export const useUpdateEscrowForm = () => {
           address: escrow?.trustline.address || "",
           decimals: escrow?.trustline.decimals || 10000000,
         },
-        milestones: escrow?.milestones || [
+        milestones: escrow?.milestones.map((milestone) => ({
+          description: milestone.description || "",
+          amount: milestone.amount?.toString() || "0",
+          evidence: milestone.evidence || "",
+        })) || [
           {
             description: "",
-            status: "pending",
+            amount: "0",
             evidence: "",
-            approvedFlag: false,
           },
         ],
       },
@@ -72,7 +77,7 @@ export const useUpdateEscrowForm = () => {
     name: "escrow.milestones",
   });
 
-  const onSubmit = async (payload: UpdateEscrowPayload) => {
+  const onSubmit = async (payload: UpdateMultiReleaseEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -83,14 +88,10 @@ export const useUpdateEscrowForm = () => {
        * - We need to pass the payload to the updateEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await updateEscrow(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await updateEscrow({
+        payload,
+        type: "multi-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -130,7 +131,7 @@ export const useUpdateEscrowForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: MultiReleaseEscrow = {
           ...escrow,
           ...payload.escrow,
           signer: payload.signer,
@@ -138,7 +139,7 @@ export const useUpdateEscrowForm = () => {
         };
 
         setEscrow(escrowUpdated);
-        setResponse(data as UpdateEscrowResponse);
+        setResponse(data as UpdateMultiReleaseEscrowResponse);
         toast.success("Escrow Updated");
       }
     } catch (error: unknown) {
