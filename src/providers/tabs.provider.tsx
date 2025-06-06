@@ -2,11 +2,30 @@
 
 import { createContext, useContext, useState, ReactNode } from "react";
 
-type Tabs = "deploy" | "escrow" | "helper";
+type MainTabs = "deploy" | "escrow" | "helper";
+type EscrowTabs =
+  | "get-escrow"
+  | "fund-escrow"
+  | "change-milestone-status"
+  | "approve-milestone"
+  | "change-dispute-flag"
+  | "resolve-dispute"
+  | "release-funds"
+  | "update-escrow";
+type EscrowType = "multi-release" | "single-release";
 
 interface TabsContextType {
-  activeTab: Tabs;
-  setActiveTab: (tab: Tabs) => void;
+  // Main navigation tabs
+  activeTab: MainTabs;
+  setActiveTab: (tab: MainTabs) => void;
+
+  // Escrow operation tabs
+  activeEscrowTab: EscrowTabs;
+  setActiveEscrowTab: (tab: EscrowTabs) => void;
+
+  // Escrow type tabs
+  activeEscrowType: EscrowType;
+  setActiveEscrowType: (tab: EscrowType) => void;
 }
 
 const TabsContext = createContext<TabsContextType | undefined>(undefined);
@@ -20,10 +39,28 @@ export function useTabsContext() {
 }
 
 export function TabsProvider({ children }: { children: ReactNode }) {
-  const [activeTab, setActiveTab] = useState<Tabs>("deploy");
+  // Main navigation state
+  const [activeTab, setActiveTab] = useState<MainTabs>("deploy");
+
+  // Escrow operations state
+  const [activeEscrowTab, setActiveEscrowTab] =
+    useState<EscrowTabs>("get-escrow");
+
+  // Escrow type state
+  const [activeEscrowType, setActiveEscrowType] =
+    useState<EscrowType>("multi-release");
 
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>
+    <TabsContext.Provider
+      value={{
+        activeTab,
+        setActiveTab,
+        activeEscrowTab,
+        setActiveEscrowTab,
+        activeEscrowType,
+        setActiveEscrowType,
+      }}
+    >
       {children}
     </TabsContext.Provider>
   );
