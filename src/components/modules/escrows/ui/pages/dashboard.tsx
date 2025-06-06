@@ -10,12 +10,15 @@ import {
 import { useWalletContext } from "@/providers/wallet.provider";
 import { MainTabs } from "../tabs/MainTabs";
 import { ConnectWalletWarning } from "../ConnectWalletWarning";
+import { EscrowTypeTabs } from "../tabs/EscrowTypeTabs";
 
 export function Dashboard() {
   const { walletAddress } = useWalletContext();
 
   return (
     <div className="space-y-8">
+      <EscrowTypeTabs />
+
       <Card className="border shadow-sm">
         <CardHeader className="pb-3">
           <CardTitle className="text-2xl font-bold">Dashboard</CardTitle>
