@@ -10,12 +10,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useReleaseFundsForm } from "../../../hooks/single-release/release-funds-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
+import { useReleaseFundsMilestoneForm } from "../../../hooks/multi-release/release-funds-milestone-form.copy";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ReleaseFundsMilestoneForm() {
-  const { form, loading, response, onSubmit } = useReleaseFundsForm();
+  const { form, loading, response, onSubmit } = useReleaseFundsMilestoneForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -68,8 +75,36 @@ export function ReleaseFundsMilestoneForm() {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name="milestoneIndex"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Milestone Index</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a milestone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {escrow?.milestones.map((_, index) => (
+                        <SelectItem key={index} value={index.toString()}>
+                          Milestone {index + 1}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Releasing..." : "Release Funds"}
+            {loading ? "Releasing milestone..." : "Release Milestone"}
           </Button>
         </form>
       </Form>

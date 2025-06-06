@@ -3,7 +3,7 @@ import { GetEscrowForm } from "../modules/escrows/ui/forms/GetEscrowForm";
 import { FundEscrowForm } from "../modules/escrows/ui/forms/FundEscrowForm";
 import { ChangeMilestoneStatusForm } from "../modules/escrows/ui/forms/ChangeMilestoneStatusForm";
 import { ApproveMilestoneForm } from "../modules/escrows/ui/forms/ApproveMilestoneForm";
-import { ReleaseFundsForm } from "../modules/escrows/ui/forms/single-release/ReleaseFundsEscrowForm";
+import { ReleaseFundsEscrowForm } from "../modules/escrows/ui/forms/single-release/ReleaseFundsEscrowForm";
 import { ResolveDisputeEscrowForm } from "../modules/escrows/ui/forms/single-release/ResolveDisputeEscrowForm";
 import { ResolveDisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ResolveDisputeMilestoneForm";
 import { UpdateEscrowForm } from "../modules/escrows/ui/forms/UpdateEscrowForm";
@@ -11,6 +11,7 @@ import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreat
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsContext } from "@/providers/tabs.provider";
 import { DisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/DisputeMilestoneForm";
+import { ReleaseFundsMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ReleaseFundsMilestoneForm";
 
 export const EscrowTabs = () => {
   const { activeEscrowTab, activeEscrowType, setActiveEscrowTab } =
@@ -46,7 +47,9 @@ export const EscrowTabs = () => {
             : "Resolve Dispute Milestone"}
         </TabsTrigger>
         <TabsTrigger value="release-funds" className="flex-1">
-          Release Funds
+          {activeEscrowType === "single-release"
+            ? "Release Funds Escrow"
+            : "Release Funds Milestone"}
         </TabsTrigger>
         <TabsTrigger value="update-escrow" className="flex-1">
           Update Escrow
@@ -82,7 +85,11 @@ export const EscrowTabs = () => {
               )}
             </TabsContent>
             <TabsContent value="release-funds" className="mt-0">
-              <ReleaseFundsForm />
+              {activeEscrowType === "single-release" ? (
+                <ReleaseFundsEscrowForm />
+              ) : (
+                <ReleaseFundsMilestoneForm />
+              )}
             </TabsContent>
             <TabsContent value="update-escrow" className="mt-0">
               <UpdateEscrowForm />

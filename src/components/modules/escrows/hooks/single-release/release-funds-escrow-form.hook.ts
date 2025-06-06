@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { formSchema } from "../../schemas/release-funds-form.schema";
+import { formSchemaSingleRelease } from "../../schemas/release-funds-form.schema";
 import { toast } from "sonner";
 import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
@@ -21,9 +21,8 @@ import {
   useReleaseFunds,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
-import { useTabsContext } from "@/providers/tabs.provider";
 
-export const useReleaseFundsForm = () => {
+export const useReleaseFundsEscrowForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
@@ -31,10 +30,9 @@ export const useReleaseFundsForm = () => {
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const { releaseFunds } = useReleaseFunds();
   const { sendTransaction } = useSendTransaction();
-  const { activeEscrowType } = useTabsContext();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaSingleRelease>>({
+    resolver: zodResolver(formSchemaSingleRelease),
     defaultValues: {
       contractId: escrow?.contractId || "",
       releaseSigner: escrow?.roles.releaseSigner || "",
@@ -56,7 +54,7 @@ export const useReleaseFundsForm = () => {
        * - The result will be an unsigned transaction
        */
       const { unsignedTransaction } = await releaseFunds(
-        { payload, type: activeEscrowType },
+        { payload, type: "single-release" },
         {
           onSuccess: (data) => {
             console.log(data);
@@ -102,13 +100,13 @@ export const useReleaseFundsForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
+        const escrowUpdated: SingleReleaseEscrow = {
           ...escrow,
           flags: {
             released: true,
           },
           balance: "0",
-        };
+        } as SingleReleaseEscrow;
 
         setEscrow(escrowUpdated);
 

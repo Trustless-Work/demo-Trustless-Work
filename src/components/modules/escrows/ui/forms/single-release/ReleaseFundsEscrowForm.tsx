@@ -10,12 +10,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useReleaseFundsForm } from "../../../hooks/single-release/release-funds-escrow-form.hook";
+import { useReleaseFundsEscrowForm } from "../../../hooks/single-release/release-funds-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function ReleaseFundsEscrowForm() {
-  const { form, loading, response, onSubmit } = useReleaseFundsForm();
+  const { form, loading, response, onSubmit } = useReleaseFundsEscrowForm();
   const { escrow } = useEscrowContext();
 
   return (
