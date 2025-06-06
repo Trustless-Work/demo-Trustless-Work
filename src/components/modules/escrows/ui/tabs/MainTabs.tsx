@@ -14,14 +14,15 @@ export const MainTabs = () => {
       onValueChange={(val) =>
         setActiveTab(val as "deploy" | "escrow" | "helper")
       }
-      className="w-full"
+      className="w-full px-6"
     >
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="deploy">Deploy</TabsTrigger>
         <TabsTrigger value="escrow">Escrows</TabsTrigger>
         <TabsTrigger value="helper">Helpers</TabsTrigger>
       </TabsList>
-      <div className="p-6">
+
+      <div className="mt-4">
         <TabsContent value="deploy" className="mt-0">
           <DeployEndpoints />
         </TabsContent>
