@@ -1,27 +1,63 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+"use client";
+
+import { motion } from "framer-motion";
 import { useTabsContext } from "@/providers/tabs.provider";
+
+const tabs = [
+  { id: "multi-release", label: "Multi Release Escrow" },
+  { id: "single-release", label: "Single Release Escrow" },
+];
 
 export const EscrowTypeTabs = () => {
   const { activeEscrowType, setActiveEscrowType } = useTabsContext();
+  const disabled = false;
 
   return (
-    <Tabs
-      value={activeEscrowType}
-      onValueChange={(val) =>
-        setActiveEscrowType(val as "multi-release" | "single-release")
-      }
-      className="w-full"
-    >
-      <TabsList>
-        <TabsTrigger value="multi-release">Multi-release</TabsTrigger>
-        <TabsTrigger value="single-release">Single-release</TabsTrigger>
-      </TabsList>
-      <TabsContent value="multi-release">
-        <h1>Multi-release</h1>
-      </TabsContent>
-      <TabsContent value="single-release">
-        <h1>Single-release</h1>
-      </TabsContent>
-    </Tabs>
+    <div className="w-full">
+      <div className="mx-auto">
+        <div className="relative flex justify-evenly border-b">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => {
+                if (!disabled) {
+                  setActiveEscrowType(
+                    tab.id as "single-release" | "multi-release"
+                  );
+                }
+              }}
+              disabled={disabled}
+              className={`
+                relative flex-1 px-6 py-4 text-sm font-bold tracking-wide transition-colors duration-150
+                ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+                ${
+                  activeEscrowType === tab.id
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }
+              `}
+            >
+              {tab.label}
+            </button>
+          ))}
+
+          {/* Clean sliding indicator */}
+          <motion.div
+            className={`absolute bottom-0 h-0.5 bg-primary ${
+              disabled ? "opacity-50 bg-primary/50" : ""
+            }`}
+            layoutId="indicator"
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            style={{
+              left: `${
+                tabs.findIndex((tab) => tab.id === activeEscrowType) *
+                (100 / tabs.length)
+              }%`,
+              width: `${100 / tabs.length}%`,
+            }}
+          />
+        </div>
+      </div>
+    </div>
   );
 };
