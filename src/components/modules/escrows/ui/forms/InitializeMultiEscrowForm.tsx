@@ -27,7 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import { steps } from "../../constants/initialize-steps.constant";
 import { ResponseDisplay } from "@/components/utils/response-display";
-import { InitializeEscrowResponse } from "@trustless-work/escrow/types";
+import { InitializeMultiReleaseEscrowResponse } from "@trustless-work/escrow/types";
 import { trustlinesOptions } from "../../constants/trustline.constant";
 
 type FormValues = z.infer<typeof formSchemaMultiRelease>;
@@ -35,7 +35,7 @@ type FormValues = z.infer<typeof formSchemaMultiRelease>;
 interface InitializeMultiEscrowFormProps {
   form: UseFormReturn<FormValues>;
   loading?: boolean;
-  response: InitializeEscrowResponse | null;
+  response: InitializeMultiReleaseEscrowResponse | null;
   currentStep: number;
   onSubmit: (data: FormValues) => Promise<void>;
   addMilestone: () => void;
