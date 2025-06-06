@@ -1,4 +1,4 @@
-import { StartDisputeForm } from "../modules/escrows/ui/forms/StartDisputeForm";
+import { DisputeEscrowForm } from "../modules/escrows/ui/forms/single-release/DisputeEscrow";
 import { GetEscrowForm } from "../modules/escrows/ui/forms/GetEscrowForm";
 import { FundEscrowForm } from "../modules/escrows/ui/forms/FundEscrowForm";
 import { ChangeMilestoneStatusForm } from "../modules/escrows/ui/forms/ChangeMilestoneStatusForm";
@@ -9,9 +9,11 @@ import { UpdateEscrowForm } from "../modules/escrows/ui/forms/UpdateEscrowForm";
 import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsContext } from "@/providers/tabs.provider";
+import { DisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/DisputeMilestoneForm";
 
 export const EscrowTabs = () => {
-  const { activeEscrowTab, setActiveEscrowTab } = useTabsContext();
+  const { activeEscrowTab, activeEscrowType, setActiveEscrowTab } =
+    useTabsContext();
 
   return (
     <Tabs
@@ -32,8 +34,10 @@ export const EscrowTabs = () => {
         <TabsTrigger value="approve-milestone" className="flex-1">
           Approve Milestone
         </TabsTrigger>
-        <TabsTrigger value="change-dispute-flag" className="flex-1">
-          Start Dispute
+        <TabsTrigger value="start-dispute" className="flex-1">
+          {activeEscrowType === "single-release"
+            ? "Dispute Escrow"
+            : "Dispute Milestone"}
         </TabsTrigger>
         <TabsTrigger value="resolve-dispute" className="flex-1">
           Resolve Dispute
@@ -60,8 +64,12 @@ export const EscrowTabs = () => {
             <TabsContent value="approve-milestone" className="mt-0">
               <ApproveMilestoneForm />
             </TabsContent>
-            <TabsContent value="change-dispute-flag" className="mt-0">
-              <StartDisputeForm />
+            <TabsContent value="start-dispute" className="mt-0">
+              {activeEscrowType === "single-release" ? (
+                <DisputeEscrowForm />
+              ) : (
+                <DisputeMilestoneForm />
+              )}
             </TabsContent>
             <TabsContent value="resolve-dispute" className="mt-0">
               <ResolveDisputeForm />
