@@ -7,7 +7,7 @@ interface EntityCardProps {
 export const EntityCard = ({ name, entity, icon }: EntityCardProps) => {
   return (
     <div className="flex items-start gap-3">
-      <div className="bg-amber-50 p-1.5 rounded-full flex items-center justify-center text-amber-600">
+      <div className="bg-primary/5 p-1.5 rounded-full flex items-center justify-center text-primary">
         {icon}
       </div>
 
