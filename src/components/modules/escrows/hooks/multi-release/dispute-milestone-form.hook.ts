@@ -39,12 +39,6 @@ export const useDisputeMilestoneForm = () => {
     },
   });
 
-  // Default milestones if escrow is undefined
-  const milestones = escrow?.milestones || [
-    { description: "Initial setup", status: "pending" },
-    { description: "Development phase", status: "pending" },
-  ];
-
   const onSubmit = async (payload: MultiReleaseStartDisputePayload) => {
     setLoading(true);
     setResponse(null);
@@ -115,7 +109,13 @@ export const useDisputeMilestoneForm = () => {
 
         setEscrow(escrowUpdated);
 
-        toast.success("Dispute Started");
+        toast.success(
+          `Dispute Started in Milestone ${
+            (escrow.milestones as MultiReleaseMilestone[])[
+              parseInt(payload.milestoneIndex)
+            ].description
+          }`
+        );
         setResponse(data);
       }
     } catch (error: unknown) {
@@ -130,5 +130,5 @@ export const useDisputeMilestoneForm = () => {
     }
   };
 
-  return { form, loading, response, onSubmit, milestones };
+  return { form, loading, response, onSubmit };
 };

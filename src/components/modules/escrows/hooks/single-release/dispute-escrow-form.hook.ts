@@ -108,7 +108,7 @@ export const useDisputeEscrowForm = () => {
 
         setEscrow(escrowUpdated);
 
-        toast.success("Dispute Started");
+        toast.success(`Dispute Started in ${escrowUpdated.title}`);
         setResponse(data);
       }
     } catch (error: unknown) {

@@ -22,8 +22,7 @@ import {
 } from "@/components/ui/select";
 
 export function DisputeMilestoneForm() {
-  const { form, loading, response, onSubmit, milestones } =
-    useDisputeMilestoneForm();
+  const { form, loading, response, onSubmit } = useDisputeMilestoneForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -77,7 +76,7 @@ export function DisputeMilestoneForm() {
                       <SelectValue placeholder="Select a milestone" />
                     </SelectTrigger>
                     <SelectContent>
-                      {milestones.map((_, index) => (
+                      {escrow?.milestones.map((_, index) => (
                         <SelectItem key={index} value={index.toString()}>
                           Milestone {index + 1}
                         </SelectItem>
