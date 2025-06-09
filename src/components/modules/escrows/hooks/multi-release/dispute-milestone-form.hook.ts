@@ -1,56 +1,45 @@
+import { useEscrowContext } from "@/providers/escrow.provider";
+import { useWalletContext } from "@/providers/wallet.provider";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEscrowContext } from "@/providers/escrow.provider";
-import { formSchema } from "../schemas/change-milestone-status-form.schema";
+import { formSchemaMultiRelease } from "../../schemas/start-dispute-form.schema";
 import { toast } from "sonner";
-import { useWalletContext } from "@/providers/wallet.provider";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  useChangeMilestoneStatus,
-  useSendTransaction,
-} from "@trustless-work/escrow/hooks";
-import {
-  ChangeMilestoneStatusPayload,
-  SingleReleaseEscrow,
   MultiReleaseEscrow,
   EscrowRequestResponse,
-  SingleReleaseMilestone,
+  MultiReleaseStartDisputePayload,
   MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
-import { useTabsContext } from "@/providers/tabs.provider";
+import {
+  useSendTransaction,
+  useStartDispute,
+} from "@trustless-work/escrow/hooks";
 
-export const useChangeMilestoneStatusForm = () => {
+export const useDisputeMilestoneForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
+  const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
-  const { walletAddress } = useWalletContext();
-  const { changeMilestoneStatus } = useChangeMilestoneStatus();
+  const { startDispute } = useStartDispute();
   const { sendTransaction } = useSendTransaction();
-  const { activeEscrowType } = useTabsContext();
 
-  const milestones = escrow?.milestones || [
-    { description: "Initial setup", status: "pending" },
-    { description: "Development phase", status: "pending" },
-  ];
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaMultiRelease>>({
+    resolver: zodResolver(formSchemaMultiRelease),
     defaultValues: {
       contractId: escrow?.contractId || "",
+      signer: walletAddress || "Connect your wallet to get your address",
       milestoneIndex: "",
-      newStatus: "",
-      newEvidence: "",
-      serviceProvider: escrow?.roles.serviceProvider || "",
     },
   });
 
-  const onSubmit = async (payload: ChangeMilestoneStatusPayload) => {
+  const onSubmit = async (payload: MultiReleaseStartDisputePayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -58,17 +47,17 @@ export const useChangeMilestoneStatusForm = () => {
       /**
        * API call by using the trustless work hooks
        * @Note:
-       * - We need to pass the payload to the changeMilestoneStatus function
+       * - We need to pass the payload to the startDispute function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await changeMilestoneStatus({
+      const { unsignedTransaction } = await startDispute({
         payload,
-        type: activeEscrowType,
+        type: "multi-release",
       });
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from changeMilestoneStatus response."
+          "Unsigned transaction is missing from startDispute response."
         );
       }
 
@@ -104,32 +93,26 @@ export const useChangeMilestoneStatusForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated = {
+        const escrowUpdated: MultiReleaseEscrow = {
           ...escrow,
-          milestones: escrow.milestones.map((milestone, index) =>
-            index === Number(payload.milestoneIndex)
-              ? activeEscrowType === "single-release"
-                ? {
-                    ...(milestone as SingleReleaseMilestone),
-                    status: payload.newStatus,
-                    evidence: payload.newEvidence || "",
-                  }
-                : {
-                    ...(milestone as MultiReleaseMilestone),
-                    status: payload.newStatus,
-                    evidence: payload.newEvidence || "",
-                  }
-              : milestone
+          milestones: (escrow.milestones as MultiReleaseMilestone[]).map(
+            (m, index) =>
+              index === parseInt(payload.milestoneIndex)
+                ? { ...m, flags: { ...m.flags, disputed: true } }
+                : m
           ),
-        } as SingleReleaseEscrow | MultiReleaseEscrow;
+        };
 
         setEscrow(escrowUpdated);
 
         toast.success(
-          `Milestone index - ${payload.milestoneIndex} updated to ${payload.newStatus}`
+          `Dispute Started in Milestone ${
+            (escrow.milestones as MultiReleaseMilestone[])[
+              parseInt(payload.milestoneIndex)
+            ].description
+          }`
         );
         setResponse(data);
-        form.reset();
       }
     } catch (error: unknown) {
       const mappedError = handleError(error as AxiosError | WalletError);
@@ -143,5 +126,5 @@ export const useChangeMilestoneStatusForm = () => {
     }
   };
 
-  return { form, milestones, loading, response, onSubmit };
+  return { form, loading, response, onSubmit };
 };

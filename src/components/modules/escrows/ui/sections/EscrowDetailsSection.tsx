@@ -1,8 +1,11 @@
-import { Escrow } from "@trustless-work/escrow/types";
+import {
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
+} from "@trustless-work/escrow/types";
 import { FileText, Info, Shield } from "lucide-react";
 
 interface EscrowDetailsSectionProps {
-  escrow: Escrow | null;
+  escrow: SingleReleaseEscrow | MultiReleaseEscrow | null;
 }
 
 export const EscrowDetailsSection = ({ escrow }: EscrowDetailsSectionProps) => {

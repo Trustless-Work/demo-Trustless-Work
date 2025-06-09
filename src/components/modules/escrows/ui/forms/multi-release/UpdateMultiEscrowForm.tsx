@@ -14,7 +14,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useUpdateEscrowForm } from "../../hooks/update-escrow-form.hook";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import {
   Select,
@@ -23,12 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useInitializeEscrow } from "../../hooks/initialize-escrow-form.hook";
+import { trustlinesOptions } from "../../../constants/trustline.constant";
+import { useUpdateMultiEscrowForm } from "../../../hooks/multi-release/update-multi-escrow-form.hook";
 
-export function UpdateEscrowForm() {
+export function UpdateMultiEscrowForm() {
   const { form, loading, response, fields, append, remove, onSubmit } =
-    useUpdateEscrowForm();
-  const { trustlinesOptions } = useInitializeEscrow();
+    useUpdateMultiEscrowForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -94,7 +93,7 @@ export function UpdateEscrowForm() {
                     <Select
                       onValueChange={(value) => {
                         const selectedOption = trustlinesOptions.find(
-                          (opt) => opt.value === value,
+                          (opt) => opt.value === value
                         );
                         if (selectedOption) {
                           field.onChange(selectedOption.value);
@@ -119,7 +118,7 @@ export function UpdateEscrowForm() {
               )}
             />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <FormField
               control={form.control}
               name="escrow.engagementId"
@@ -142,22 +141,6 @@ export function UpdateEscrowForm() {
                   <FormLabel>Receiver Memo</FormLabel>
                   <FormControl>
                     <Input placeholder="0" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              control={form.control}
-              name="escrow.amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Amount</FormLabel>
-                  <FormControl>
-                    <Input placeholder="1000" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -296,9 +279,7 @@ export function UpdateEscrowForm() {
                         onClick={() =>
                           append({
                             description: "",
-                            status: "pending",
-                            evidence: "",
-                            approvedFlag: false,
+                            amount: "0",
                           })
                         }
                       >
@@ -310,7 +291,7 @@ export function UpdateEscrowForm() {
                       <Card key={field.id}>
                         <CardContent className="p-4">
                           <div className="flex items-start gap-2">
-                            <div className="flex-1">
+                            <div className="flex-1 flex flex-col gap-4">
                               <FormField
                                 control={form.control}
                                 name={`escrow.milestones.${index}.description`}
@@ -322,6 +303,20 @@ export function UpdateEscrowForm() {
                                         placeholder="Milestone description"
                                         {...field}
                                       />
+                                    </FormControl>
+                                    <FormMessage />
+                                  </FormItem>
+                                )}
+                              />
+
+                              <FormField
+                                control={form.control}
+                                name={`escrow.milestones.${index}.amount`}
+                                render={({ field }) => (
+                                  <FormItem>
+                                    <FormLabel>Amount</FormLabel>
+                                    <FormControl>
+                                      <Input placeholder="1000" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                   </FormItem>

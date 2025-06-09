@@ -16,11 +16,13 @@ import {
 } from "@trustless-work/escrow/hooks";
 import {
   ApproveMilestonePayload,
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
   SingleReleaseMilestone,
   MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 export const useApproveMilestoneForm = () => {
   const { escrow, setEscrow } = useEscrowContext();
@@ -29,6 +31,7 @@ export const useApproveMilestoneForm = () => {
   const { walletAddress } = useWalletContext();
   const { approveMilestone } = useApproveMilestone();
   const { sendTransaction } = useSendTransaction();
+  const { activeEscrowType } = useTabsContext();
 
   // Default milestones if escrow is undefined
   const milestones = escrow?.milestones || [
@@ -57,14 +60,10 @@ export const useApproveMilestoneForm = () => {
        * - We need to pass the payload to the approveMilestone function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await approveMilestone(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await approveMilestone({
+        payload,
+        type: activeEscrowType,
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -104,21 +103,22 @@ export const useApproveMilestoneForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated = {
           ...escrow,
-          milestones: escrow!.milestones.map(
-            (
-              milestone: SingleReleaseMilestone | MultiReleaseMilestone,
-              index
-            ) =>
-              index === Number(payload.milestoneIndex)
-                ? {
-                    ...milestone,
-                    flags: { ...milestone.flags, approved: payload.newFlag },
+          milestones: escrow.milestones.map((milestone, index) =>
+            index === Number(payload.milestoneIndex)
+              ? activeEscrowType === "single-release"
+                ? { ...milestone, approved: payload.newFlag }
+                : {
+                    ...(milestone as MultiReleaseMilestone),
+                    flags: {
+                      ...(milestone as MultiReleaseMilestone).flags,
+                      approved: payload.newFlag,
+                    },
                   }
-                : milestone
+              : milestone
           ),
-        };
+        } as SingleReleaseEscrow | MultiReleaseEscrow;
 
         setEscrow(escrowUpdated);
 

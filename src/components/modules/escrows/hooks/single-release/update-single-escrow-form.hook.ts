@@ -7,40 +7,44 @@ import { useEscrowContext } from "@/providers/escrow.provider";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { useState } from "react";
 import { toast } from "sonner";
-import { formSchema } from "../schemas/update-escrow-form.schema";
+import { formSchemaSingleRelease } from "../../schemas/update-escrow-form.schema";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
-import {
-  Escrow,
-  UpdateEscrowPayload,
-  UpdateEscrowResponse,
-} from "@trustless-work/escrow/types";
+import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import {
   useSendTransaction,
   useUpdateEscrow,
 } from "@trustless-work/escrow/hooks";
+import {
+  UpdateSingleReleaseEscrowPayload,
+  UpdateSingleReleaseEscrowResponse,
+  SingleReleaseEscrow,
+} from "@trustless-work/escrow";
 
-export const useUpdateEscrowForm = () => {
-  const { escrow } = useEscrowContext();
+export const useUpdateSingleEscrowForm = () => {
+  const { escrow } = useEscrowContext() as {
+    escrow: SingleReleaseEscrow | null;
+  };
   const { walletAddress } = useWalletContext();
   const { setEscrow } = useEscrowContext();
-  const [response, setResponse] = useState<UpdateEscrowResponse | null>(null);
+  const [response, setResponse] =
+    useState<UpdateSingleReleaseEscrowResponse | null>(null);
   const [loading, setLoading] = useState(false);
   const { updateEscrow } = useUpdateEscrow();
   const { sendTransaction } = useSendTransaction();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema) as any,
+  const form = useForm<z.infer<typeof formSchemaSingleRelease>>({
+    resolver: zodResolver(formSchemaSingleRelease) as any,
     defaultValues: {
       signer: walletAddress || "",
       contractId: escrow?.contractId || "",
       escrow: {
         title: escrow?.title || "",
         engagementId: escrow?.engagementId || "",
+        amount:
+          (escrow?.amount.toString() as SingleReleaseEscrow["amount"]) || "",
         description: escrow?.description || "",
-        amount: escrow?.amount.toString() || "",
         platformFee: (Number(escrow?.platformFee) / 100).toString() || "",
         receiverMemo: escrow?.receiverMemo || 0,
         roles: {
@@ -58,9 +62,7 @@ export const useUpdateEscrowForm = () => {
         milestones: escrow?.milestones || [
           {
             description: "",
-            status: "pending",
             evidence: "",
-            approvedFlag: false,
           },
         ],
       },
@@ -72,7 +74,7 @@ export const useUpdateEscrowForm = () => {
     name: "escrow.milestones",
   });
 
-  const onSubmit = async (payload: UpdateEscrowPayload) => {
+  const onSubmit = async (payload: UpdateSingleReleaseEscrowPayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -83,14 +85,10 @@ export const useUpdateEscrowForm = () => {
        * - We need to pass the payload to the updateEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await updateEscrow(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await updateEscrow({
+        payload,
+        type: "single-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -130,7 +128,7 @@ export const useUpdateEscrowForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow = {
           ...escrow,
           ...payload.escrow,
           signer: payload.signer,
@@ -138,7 +136,7 @@ export const useUpdateEscrowForm = () => {
         };
 
         setEscrow(escrowUpdated);
-        setResponse(data as UpdateEscrowResponse);
+        setResponse(data as UpdateSingleReleaseEscrowResponse);
         toast.success("Escrow Updated");
       }
     } catch (error: unknown) {

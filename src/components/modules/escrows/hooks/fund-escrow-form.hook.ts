@@ -1,5 +1,6 @@
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { useTabsContext } from "@/providers/tabs.provider";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,7 +16,8 @@ import {
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
 import {
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
   FundEscrowPayload,
 } from "@trustless-work/escrow/types";
@@ -24,6 +26,7 @@ export const useFundEscrowForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
+  const { activeEscrowType } = useTabsContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +37,15 @@ export const useFundEscrowForm = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       contractId: escrow?.contractId || "",
-      amount: escrow?.amount?.toString() || "1000",
+      amount:
+        activeEscrowType === "single-release"
+          ? (escrow as SingleReleaseEscrow)?.amount?.toString() || "1000"
+          : ((escrow as MultiReleaseEscrow)?.milestones || [])
+              .reduce(
+                (total, milestone) => total + (Number(milestone.amount) || 0),
+                0
+              )
+              .toString() || "1000",
       signer: walletAddress || "Connect your wallet to get your address",
     },
   });
@@ -45,14 +56,10 @@ export const useFundEscrowForm = () => {
     setResponse(null);
 
     try {
-      const { unsignedTransaction } = await fundEscrow(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await fundEscrow({
+        payload,
+        type: activeEscrowType,
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -72,7 +79,7 @@ export const useFundEscrowForm = () => {
       const data = await sendTransaction(signedXdr);
 
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
           ...escrow,
           balance:
             escrow?.balance && Number(escrow.balance) > 0

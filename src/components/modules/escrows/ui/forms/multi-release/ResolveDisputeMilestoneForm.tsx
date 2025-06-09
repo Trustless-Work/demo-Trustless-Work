@@ -2,15 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { useResolveDisputeMilestoneForm } from "../../../hooks/multi-release/resolve-dispute-milestone-form.hook";
+import { useEscrowContext } from "@/providers/escrow.provider";
+import { ResponseDisplay } from "@/components/utils/response-display";
 import {
   Select,
   SelectContent,
@@ -18,13 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useApproveMilestoneForm } from "../../hooks/approve-milestone-form";
-import { useEscrowContext } from "@/providers/escrow.provider";
-import { ResponseDisplay } from "@/components/utils/response-display";
 
-export function ApproveMilestoneForm() {
-  const { form, milestones, loading, response, onSubmit } =
-    useApproveMilestoneForm();
+export function ResolveDisputeMilestoneForm() {
+  const { form, loading, response, onSubmit } =
+    useResolveDisputeMilestoneForm();
   const { escrow } = useEscrowContext();
 
   return (
@@ -51,16 +50,12 @@ export function ApproveMilestoneForm() {
 
           <FormField
             control={form.control}
-            name="approver"
+            name="disputeResolver"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Approver Address</FormLabel>
+                <FormLabel>Dispute Resolver Address</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="GSERVICE..."
-                    {...field}
-                    disabled={!!escrow?.roles.approver}
-                  />
+                  <Input disabled placeholder="GDISPUTE...XYZ" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -82,7 +77,7 @@ export function ApproveMilestoneForm() {
                       <SelectValue placeholder="Select a milestone" />
                     </SelectTrigger>
                     <SelectContent>
-                      {milestones.map((_, index) => (
+                      {escrow?.milestones.map((_, index) => (
                         <SelectItem key={index} value={index.toString()}>
                           Milestone {index + 1}
                         </SelectItem>
@@ -95,27 +90,37 @@ export function ApproveMilestoneForm() {
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="newFlag"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                <div className="space-y-0.5">
-                  <FormLabel>Approve Milestone</FormLabel>
-                </div>
-                <FormControl>
-                  <Switch
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="approverFunds"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Approver Funds</FormLabel>
+                  <FormControl>
+                    <Input placeholder="300" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="receiverFunds"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Receiver Funds</FormLabel>
+                  <FormControl>
+                    <Input placeholder="700" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Updating..." : "Approve Milestone"}
+            {loading ? "Resolving milestone..." : "Resolve Milestone"}
           </Button>
         </form>
       </Form>

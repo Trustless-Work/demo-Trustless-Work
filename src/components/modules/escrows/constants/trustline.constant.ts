@@ -1,3 +1,5 @@
+import { Trustline } from "@trustless-work/escrow/types";
+
 /**
  *
  * The allows the user to interact with some tokens, in this case, we're using USDC and EURC. But you can add more trustlines.
@@ -17,3 +19,10 @@ export const trustlines = [
 
   // you can add more trustlines here
 ];
+
+export const trustlinesOptions = trustlines.map(
+  (trustline: Trustline & { name?: string }) => ({
+    value: trustline.address,
+    label: trustline.name,
+  })
+);

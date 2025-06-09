@@ -1,8 +1,8 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsContext } from "@/providers/tabs.provider";
-import { DeployEndpoints } from "../endpoints/DeployEndpoints";
-import { EscrowEndpoints } from "../endpoints/EscrowEndpoints";
-import { HelperEndpoints } from "../endpoints/HelperEndpoints";
+import { DeployEndpoints } from "../modules/escrows/ui/endpoints/DeployEndpoints";
+import { EscrowEndpoints } from "../modules/escrows/ui/endpoints/EscrowEndpoints";
+import { HelperEndpoints } from "../modules/escrows/ui/endpoints/HelperEndpoints";
 
 export const MainTabs = () => {
   const { activeTab, setActiveTab } = useTabsContext();
@@ -14,14 +14,15 @@ export const MainTabs = () => {
       onValueChange={(val) =>
         setActiveTab(val as "deploy" | "escrow" | "helper")
       }
-      className="w-full"
+      className="w-full px-6"
     >
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="deploy">Deploy</TabsTrigger>
         <TabsTrigger value="escrow">Escrows</TabsTrigger>
         <TabsTrigger value="helper">Helpers</TabsTrigger>
       </TabsList>
-      <div className="p-6">
+
+      <div className="mt-4">
         <TabsContent value="deploy" className="mt-0">
           <DeployEndpoints />
         </TabsContent>

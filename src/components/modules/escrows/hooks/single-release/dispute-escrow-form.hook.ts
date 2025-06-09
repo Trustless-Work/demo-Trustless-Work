@@ -1,44 +1,47 @@
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { formSchema } from "../schemas/release-funds-form.schema";
+import { formSchemaSingleRelease } from "../../schemas/start-dispute-form.schema";
 import { toast } from "sonner";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  Escrow,
+  SingleReleaseEscrow,
+  MultiReleaseEscrow,
   EscrowRequestResponse,
-  ReleaseFundsPayload,
+  SingleReleaseStartDisputePayload,
+  MultiReleaseStartDisputePayload,
 } from "@trustless-work/escrow/types";
 import {
-  useReleaseFunds,
   useSendTransaction,
+  useStartDispute,
 } from "@trustless-work/escrow/hooks";
 
-export const useReleaseFundsForm = () => {
+export const useDisputeEscrowForm = () => {
   const { escrow } = useEscrowContext();
   const { setEscrow } = useEscrowContext();
   const { walletAddress } = useWalletContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
-  const { releaseFunds } = useReleaseFunds();
+  const { startDispute } = useStartDispute();
   const { sendTransaction } = useSendTransaction();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaSingleRelease>>({
+    resolver: zodResolver(formSchemaSingleRelease),
     defaultValues: {
       contractId: escrow?.contractId || "",
-      releaseSigner: escrow?.roles.releaseSigner || "",
       signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
-  const onSubmit = async (payload: ReleaseFundsPayload) => {
+  const onSubmit = async (
+    payload: SingleReleaseStartDisputePayload | MultiReleaseStartDisputePayload
+  ) => {
     setLoading(true);
     setResponse(null);
 
@@ -46,21 +49,17 @@ export const useReleaseFundsForm = () => {
       /**
        * API call by using the trustless work hooks
        * @Note:
-       * - We need to pass the payload to the releaseFunds function
+       * - We need to pass the payload to the startDispute function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await releaseFunds(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await startDispute({
+        payload,
+        type: "single-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from releaseFunds response."
+          "Unsigned transaction is missing from startDispute response."
         );
       }
 
@@ -96,17 +95,16 @@ export const useReleaseFundsForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
           ...escrow,
           flags: {
-            released: true,
+            disputed: true,
           },
-          balance: "0",
         };
 
         setEscrow(escrowUpdated);
 
-        toast.success("The escrow has been released");
+        toast.success(`Dispute Started in ${escrowUpdated.title}`);
         setResponse(data);
       }
     } catch (error: unknown) {

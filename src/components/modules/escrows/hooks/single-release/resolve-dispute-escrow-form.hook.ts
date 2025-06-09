@@ -3,25 +3,27 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEscrowContext } from "@/providers/escrow.provider";
-import { formSchema } from "../schemas/resolve-dispute-form.schema";
 import { toast } from "sonner";
 import { useWalletContext } from "@/providers/wallet.provider";
-import { signTransaction } from "../../auth/helpers/stellar-wallet-kit.helper";
+import { signTransaction } from "../../../auth/helpers/stellar-wallet-kit.helper";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
-  Escrow,
+  SingleReleaseEscrow,
   EscrowRequestResponse,
-  ResolveDisputePayload,
+  SingleReleaseResolveDisputePayload,
 } from "@trustless-work/escrow/types";
 import {
   useResolveDispute,
   useSendTransaction,
 } from "@trustless-work/escrow/hooks";
+import { formSchemaSingleRelease } from "../../schemas/resolve-dispute-form.schema";
 
-export const useResolveDisputeForm = () => {
-  const { escrow } = useEscrowContext();
+export const useResolveDisputeEscrowForm = () => {
+  const { escrow } = useEscrowContext() as {
+    escrow: SingleReleaseEscrow | null;
+  };
   const { setEscrow } = useEscrowContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<EscrowRequestResponse | null>(null);
@@ -29,8 +31,8 @@ export const useResolveDisputeForm = () => {
   const { resolveDispute } = useResolveDispute();
   const { sendTransaction } = useSendTransaction();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof formSchemaSingleRelease>>({
+    resolver: zodResolver(formSchemaSingleRelease),
     defaultValues: {
       contractId: escrow?.contractId || "",
       disputeResolver: escrow?.roles.disputeResolver || "",
@@ -39,7 +41,7 @@ export const useResolveDisputeForm = () => {
     },
   });
 
-  const onSubmit = async (payload: ResolveDisputePayload) => {
+  const onSubmit = async (payload: SingleReleaseResolveDisputePayload) => {
     setLoading(true);
     setResponse(null);
 
@@ -50,14 +52,10 @@ export const useResolveDisputeForm = () => {
        * - We need to pass the payload to the resolveDispute function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await resolveDispute(
-        { payload, type: "single-release" },
-        {
-          onSuccess: (data) => {
-            console.log(data);
-          },
-        }
-      );
+      const { unsignedTransaction } = await resolveDispute({
+        payload,
+        type: "single-release",
+      });
 
       if (!unsignedTransaction) {
         throw new Error(
@@ -97,9 +95,10 @@ export const useResolveDisputeForm = () => {
        * - Show an error toast
        */
       if (data.status === "SUCCESS" && escrow) {
-        const escrowUpdated: Escrow = {
+        const escrowUpdated: SingleReleaseEscrow = {
           ...escrow,
           flags: {
+            ...escrow.flags,
             resolved: true,
           },
           balance: (
@@ -111,7 +110,7 @@ export const useResolveDisputeForm = () => {
 
         setEscrow(escrowUpdated);
 
-        toast.success("Dispute Resolved");
+        toast.success(`Dispute Resolved in ${escrowUpdated.title}`);
         setResponse(data);
       }
     } catch (error: unknown) {

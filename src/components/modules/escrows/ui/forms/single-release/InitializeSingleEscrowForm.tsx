@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
-import { formSchema } from "../../schemas/initialize-escrow-form.schema";
+import { formSchemaSingleRelease } from "@/components/modules/escrows/schemas/initialize-escrow-form.schema";
 import {
   Select,
   SelectContent,
@@ -25,35 +25,36 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { steps } from "../../constants/initialize-steps.constant";
 import { ResponseDisplay } from "@/components/utils/response-display";
-import { InitializeEscrowResponse } from "@trustless-work/escrow/types";
+import { InitializeSingleReleaseEscrowResponse } from "@trustless-work/escrow/types";
+import { trustlinesOptions } from "@/components/modules/escrows/constants/trustline.constant";
+import { steps } from "@/components/modules/escrows/constants/initialize-steps.constant";
 
-interface InitializeEscrowFormProps {
-  form: UseFormReturn<z.infer<typeof formSchema>>;
+type FormValues = z.infer<typeof formSchemaSingleRelease>;
+
+interface InitializeSingleEscrowFormProps {
+  form: UseFormReturn<FormValues>;
   loading?: boolean;
-  response: InitializeEscrowResponse | null;
-  trustlinesOptions: { value: string; label: string }[];
+  response: InitializeSingleReleaseEscrowResponse | null;
   currentStep: number;
-  onSubmit: (data: z.infer<typeof formSchema>) => Promise<void>;
+  onSubmit: (data: FormValues) => Promise<void>;
   addMilestone: () => void;
   removeMilestone: (index: number) => void;
   nextStep: () => void;
   prevStep: () => void;
 }
 
-export const InitializeEscrowForm = ({
+export const InitializeSingleEscrowForm = ({
   form,
   loading,
   response,
-  trustlinesOptions,
   currentStep,
   onSubmit,
   addMilestone,
   removeMilestone,
   nextStep,
   prevStep,
-}: InitializeEscrowFormProps) => {
+}: InitializeSingleEscrowFormProps) => {
   const renderStep = () => {
     const currentStepData = steps[currentStep];
 
@@ -135,7 +136,7 @@ export const InitializeEscrowForm = ({
                     name="amount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Amount</FormLabel>
+                        <FormLabel>Total Amount</FormLabel>
                         <FormControl>
                           <Input placeholder="1000" {...field} />
                         </FormControl>
@@ -328,7 +329,7 @@ export const InitializeEscrowForm = ({
                   <Card key={index}>
                     <CardContent className="p-4">
                       <div className="flex items-start gap-2">
-                        <div className="flex-1">
+                        <div className="flex-1 space-y-4">
                           <FormField
                             control={form.control}
                             name={`milestones.${index}.description`}
@@ -379,7 +380,7 @@ export const InitializeEscrowForm = ({
             key={step.id}
             className={cn(
               "flex items-center",
-              index !== steps.length - 1 ? "flex-1" : ""
+              index !== steps.length - 1 && "flex-1"
             )}
           >
             <div
