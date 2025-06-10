@@ -12,9 +12,7 @@ import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import {
   SingleReleaseEscrow,
-  MultiReleaseEscrow,
   EscrowRequestResponse,
-  MultiReleaseReleaseFundsPayload,
   SingleReleaseReleaseFundsPayload,
 } from "@trustless-work/escrow/types";
 import {
@@ -40,9 +38,7 @@ export const useReleaseFundsEscrowForm = () => {
     },
   });
 
-  const onSubmit = async (
-    payload: SingleReleaseReleaseFundsPayload | MultiReleaseReleaseFundsPayload
-  ) => {
+  const onSubmit = async (payload: SingleReleaseReleaseFundsPayload) => {
     setLoading(true);
     setResponse(null);
 

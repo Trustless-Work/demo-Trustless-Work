@@ -12,7 +12,6 @@ import { WalletError } from "@/@types/errors.entity";
 import {
   MultiReleaseEscrow,
   EscrowRequestResponse,
-  SingleReleaseResolveDisputePayload,
   MultiReleaseResolveDisputePayload,
   MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";

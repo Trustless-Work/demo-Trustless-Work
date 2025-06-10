@@ -15,7 +15,6 @@ import {
   MultiReleaseEscrow,
   EscrowRequestResponse,
   SingleReleaseStartDisputePayload,
-  MultiReleaseStartDisputePayload,
 } from "@trustless-work/escrow/types";
 import {
   useSendTransaction,
@@ -39,9 +38,7 @@ export const useDisputeEscrowForm = () => {
     },
   });
 
-  const onSubmit = async (
-    payload: SingleReleaseStartDisputePayload | MultiReleaseStartDisputePayload
-  ) => {
+  const onSubmit = async (payload: SingleReleaseStartDisputePayload) => {
     setLoading(true);
     setResponse(null);
 
