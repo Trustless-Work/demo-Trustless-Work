@@ -67,7 +67,7 @@ export const EscrowMilestonesSection = ({
                 </div>
               </div>
               <div className="flex justify-start flex-col gap-2">
-                <>
+                <div className="flex flex-row gap-2">
                   {milestone.status && (
                     <Badge
                       variant={
@@ -92,8 +92,7 @@ export const EscrowMilestonesSection = ({
                   )}
                   {activeEscrowType === "single-release" ? (
                     // Single Release - Only show approved flag
-                    (milestone as SingleReleaseMilestone).approved &&
-                    !milestone.status && (
+                    (milestone as SingleReleaseMilestone).approved && (
                       <Badge
                         variant="secondary"
                         className="text-green-800 dark:text-green-200 uppercase"
@@ -103,16 +102,15 @@ export const EscrowMilestonesSection = ({
                     )
                   ) : (
                     // Multi Release - Show all flags
-                    <div className="flex flex-col gap-2">
-                      {(milestone as MultiReleaseMilestone).flags?.approved &&
-                        !milestone.status && (
-                          <Badge
-                            variant="secondary"
-                            className="text-green-800 dark:text-green-200 uppercase"
-                          >
-                            <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
-                          </Badge>
-                        )}
+                    <>
+                      {(milestone as MultiReleaseMilestone).flags?.approved && (
+                        <Badge
+                          variant="secondary"
+                          className="text-green-800 dark:text-green-200 uppercase"
+                        >
+                          <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
+                        </Badge>
+                      )}
                       {(milestone as MultiReleaseMilestone).flags?.disputed && (
                         <Badge variant="destructive" className="uppercase">
                           <AlertCircle className="mr-1 h-3 w-3" /> Disputed
@@ -134,9 +132,9 @@ export const EscrowMilestonesSection = ({
                           <Handshake className="mr-1 h-3 w-3" /> Resolved
                         </Badge>
                       )}
-                    </div>
+                    </>
                   )}
-                </>
+                </div>
               </div>
             </div>
 
