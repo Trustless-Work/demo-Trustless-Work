@@ -14,6 +14,7 @@ import {
 } from "@trustless-work/escrow/types";
 import { GetEscrowBalancesResponse } from "@trustless-work/escrow/types";
 import { useGetMultipleEscrowBalances } from "@trustless-work/escrow/hooks";
+import { useTabsContext } from "@/providers/tabs.provider";
 
 type FormData = z.infer<typeof formSchema>;
 
@@ -24,6 +25,7 @@ export const useGetMultipleEscrowBalancesForm = () => {
     EscrowRequestResponse | GetEscrowBalancesResponse[] | null
   >(null);
   const { getMultipleBalances, balances } = useGetMultipleEscrowBalances();
+  const { activeEscrowType } = useTabsContext();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -55,7 +57,10 @@ export const useGetMultipleEscrowBalancesForm = () => {
        * - We need to pass the payload to the getMultipleBalances function
        * - The result will be multiple escrow balances
        */
-      await getMultipleBalances(transformedData);
+      await getMultipleBalances({
+        payload: transformedData,
+        type: activeEscrowType,
+      });
 
       if (!balances) {
         throw new Error("Escrow not found");
