@@ -43,8 +43,6 @@ export const EscrowCreatedSection = () => {
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;
 
-  console.log(escrow);
-
   return escrow ? (
     <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto">
       <Card className="border-l-4 border-l-primary shadow-sm">

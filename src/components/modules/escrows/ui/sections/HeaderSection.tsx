@@ -5,10 +5,12 @@ import { SingleReleaseEscrow } from "@trustless-work/escrow/types";
 import { MultiReleaseEscrow } from "@trustless-work/escrow/types";
 import {
   AlertCircle,
+  AudioWaveform,
   CheckCircle2,
   Clock,
   ExternalLink,
   FileCodeIcon as FileContract,
+  GalleryHorizontalEnd,
   Handshake,
 } from "lucide-react";
 import Link from "next/link";
@@ -56,12 +58,14 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
 
           {activeEscrowType === "single-release" && (
             <Badge variant="secondary" className="gap-2">
+              <AudioWaveform />
               Single Release
             </Badge>
           )}
 
           {activeEscrowType === "multi-release" && (
             <Badge variant="secondary" className="gap-2">
+              <GalleryHorizontalEnd />
               Multi Release
             </Badge>
           )}
