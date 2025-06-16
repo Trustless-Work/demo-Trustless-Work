@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 
 type MainTabs = "deploy" | "escrow" | "helper";
-type EscrowTabs =
+export type EscrowTabs =
   | "get-escrow"
   | "fund-escrow"
   | "change-milestone-status"

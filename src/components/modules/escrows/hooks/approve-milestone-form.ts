@@ -19,7 +19,6 @@ import {
   SingleReleaseEscrow,
   MultiReleaseEscrow,
   EscrowRequestResponse,
-  SingleReleaseMilestone,
   MultiReleaseMilestone,
 } from "@trustless-work/escrow/types";
 import { useTabsContext } from "@/providers/tabs.provider";

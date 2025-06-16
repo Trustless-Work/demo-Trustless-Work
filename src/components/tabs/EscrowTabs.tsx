@@ -9,21 +9,22 @@ import { ResolveDisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-r
 import { UpdateSingleEscrowForm } from "../modules/escrows/ui/forms/single-release/UpdateSingleEscrowForm";
 import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useTabsContext } from "@/providers/tabs.provider";
+import {
+  EscrowTabs as EscrowTabsType,
+  useTabsContext,
+} from "@/providers/tabs.provider";
 import { DisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/DisputeMilestoneForm";
 import { ReleaseFundsMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ReleaseFundsMilestoneForm";
 import { UpdateMultiEscrowForm } from "../modules/escrows/ui/forms/multi-release/UpdateMultiEscrowForm";
-import { useEscrowContext } from "@/providers/escrow.provider";
 
 export const EscrowTabs = () => {
   const { activeEscrowTab, activeEscrowType, setActiveEscrowTab } =
     useTabsContext();
-  const { escrow } = useEscrowContext();
 
   return (
     <Tabs
       value={activeEscrowTab}
-      onValueChange={(val) => setActiveEscrowTab(val as any)}
+      onValueChange={(val) => setActiveEscrowTab(val as EscrowTabsType)}
       className="w-full"
     >
       <TabsList className="w-full flex flex-wrap mb-32 md:mb-4 gap-1">

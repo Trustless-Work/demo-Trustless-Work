@@ -91,7 +91,7 @@ export const formSchemaSingleRelease = z.object({
 });
 
 // Create multiRelease by omitting amount and adding it to milestones
-const { amount: _, ...multiReleaseFields } = formSchemaSingleRelease.shape;
+const { ...multiReleaseFields } = formSchemaSingleRelease.shape;
 
 export const formSchemaMultiRelease = z.object({
   ...multiReleaseFields,

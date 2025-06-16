@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { useWalletContext } from "@/providers/wallet.provider";
 import { MainTabs } from "../../../../tabs/MainTabs";
 import { ConnectWalletWarning } from "../ConnectWalletWarning";

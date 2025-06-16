@@ -62,11 +62,7 @@ export function FundEscrowForm() {
               <FormItem>
                 <FormLabel>Amount</FormLabel>
                 <FormControl>
-                  <Input
-                    disabled={Number(escrow?.balance) >= Number(escrow?.amount)}
-                    type="text"
-                    {...field}
-                  />
+                  <Input type="text" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

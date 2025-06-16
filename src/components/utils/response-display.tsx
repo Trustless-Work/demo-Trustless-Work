@@ -7,20 +7,22 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle, Copy } from "lucide-react";
 import { useUtils } from "@/hooks/utils.hook";
 import {
-  Escrow,
   EscrowRequestResponse,
   GetEscrowBalancesResponse,
-  InitializeEscrowResponse,
-  UpdateEscrowResponse,
+  InitializeSingleReleaseEscrowResponse,
+  MultiReleaseEscrow,
+  SingleReleaseEscrow,
+  UpdateSingleReleaseEscrowResponse,
 } from "@trustless-work/escrow/types";
 
 interface ResponseDisplayProps {
   response:
-    | InitializeEscrowResponse
-    | UpdateEscrowResponse
+    | InitializeSingleReleaseEscrowResponse
+    | UpdateSingleReleaseEscrowResponse
     | EscrowRequestResponse
     | GetEscrowBalancesResponse[]
-    | Escrow
+    | SingleReleaseEscrow
+    | MultiReleaseEscrow
     | null;
 }
 

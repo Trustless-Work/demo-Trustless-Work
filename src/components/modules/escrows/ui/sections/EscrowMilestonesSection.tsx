@@ -17,22 +17,6 @@ export const EscrowMilestonesSection = ({
 }: EscrowMilestonesSectionProps) => {
   const { activeEscrowType } = useTabsContext();
 
-  const isMilestoneApproved = (
-    milestone: SingleReleaseMilestone | MultiReleaseMilestone
-  ) => {
-    if (activeEscrowType === "single-release") {
-      return (
-        (milestone as SingleReleaseMilestone).approved ||
-        milestone.status === "approved"
-      );
-    } else {
-      return (
-        (milestone as MultiReleaseMilestone).flags?.approved ||
-        milestone.status === "approved"
-      );
-    }
-  };
-
   return (
     <div className="space-y-4">
       {escrow?.milestones.map(

@@ -96,8 +96,7 @@ export const formSchemaSingleRelease = z.object({
 });
 
 // Create multiRelease by omitting amount
-const { amount: _, ...multiReleaseFields } =
-  formSchemaSingleRelease.shape.escrow.shape;
+const { ...multiReleaseFields } = formSchemaSingleRelease.shape.escrow.shape;
 
 export const formSchemaMultiRelease = z.object({
   contractId: z.string().min(1, { message: "Contract ID is required." }),

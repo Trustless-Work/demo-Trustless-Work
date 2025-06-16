@@ -295,8 +295,6 @@ export function UpdateSingleEscrowForm() {
                         onClick={() =>
                           append({
                             description: "",
-                            status: "pending",
-                            evidence: "",
                           })
                         }
                       >
