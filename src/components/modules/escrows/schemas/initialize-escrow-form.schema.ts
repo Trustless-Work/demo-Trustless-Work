@@ -90,8 +90,9 @@ export const formSchemaSingleRelease = z.object({
     .min(1, { message: "At least one milestone is required." }),
 });
 
-// Create multiRelease by omitting amount and adding it to milestones
-const { ...multiReleaseFields } = formSchemaSingleRelease.shape;
+// Create multiRelease by omitting amount
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const { amount: _, ...multiReleaseFields } = formSchemaSingleRelease.shape;
 
 export const formSchemaMultiRelease = z.object({
   ...multiReleaseFields,
