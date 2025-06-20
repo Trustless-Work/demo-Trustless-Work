@@ -18,10 +18,10 @@ export const formSchemaSingleRelease = z.object({
     description: z.string().min(10, {
       message: "Description must be at least 10 characters long.",
     }),
-    amount: z.string().min(1, {
+    amount: z.number().min(1, {
       message: "Amount is required.",
     }),
-    platformFee: z.string().min(1, {
+    platformFee: z.number().min(1, {
       message: "Platform fee is required.",
     }),
     receiverMemo: z.number().min(0, {
@@ -111,7 +111,7 @@ export const formSchemaMultiRelease = z.object({
           description: z.string().min(1, {
             message: "Milestone description is required.",
           }),
-          amount: z.string().min(1, {
+          amount: z.number().min(1, {
             message: "Milestone amount is required.",
           }),
         })

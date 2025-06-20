@@ -45,8 +45,8 @@ export const useInitializeSingleEscrowForm = () => {
       engagementId: "",
       title: "",
       description: "",
-      amount: "",
-      platformFee: "",
+      amount: 0,
+      platformFee: 0,
       receiverMemo: 0,
       roles: {
         approver: "",
@@ -91,8 +91,8 @@ export const useInitializeSingleEscrowForm = () => {
       "This is a sample TW escrow for testing purposes"
     );
     form.setValue("engagementId", "ENG12345");
-    form.setValue("amount", "50");
-    form.setValue("platformFee", "5");
+    form.setValue("amount", 50);
+    form.setValue("platformFee", 5);
     form.setValue("roles.approver", walletAddress || "");
     form.setValue("roles.serviceProvider", walletAddress || "");
     form.setValue("roles.platformAddress", walletAddress || "");

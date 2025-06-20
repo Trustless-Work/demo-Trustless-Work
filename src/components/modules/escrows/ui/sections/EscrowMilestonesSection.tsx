@@ -40,15 +40,17 @@ export const EscrowMilestonesSection = ({
                     {milestone.description}
                   </p>
                 </div>
-                <div className="flex items-center">
-                  <Badge
-                    variant="outline"
-                    className="text-muted-foreground text-sm"
-                  >
-                    <DollarSign className="h-3 w-3" />
-                    {(milestone as MultiReleaseMilestone).amount}
-                  </Badge>
-                </div>
+                {activeEscrowType === "multi-release" && (
+                  <div className="flex items-center">
+                    <Badge
+                      variant="outline"
+                      className="text-muted-foreground text-sm"
+                    >
+                      <DollarSign className="h-3 w-3" />
+                      {(milestone as MultiReleaseMilestone).amount}
+                    </Badge>
+                  </div>
+                )}
               </div>
               <div className="flex justify-start flex-col gap-2">
                 <div className="flex flex-row gap-2">

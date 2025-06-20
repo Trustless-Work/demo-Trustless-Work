@@ -96,15 +96,11 @@ export const useReleaseFundsMilestoneForm = () => {
       if (data.status === "SUCCESS" && escrow) {
         const escrowUpdated: MultiReleaseEscrow = {
           ...escrow,
-          balance: (
-            Number(escrow.balance) -
-            Number(
-              (escrow.milestones as MultiReleaseMilestone[])[
-                parseInt(payload.milestoneIndex)
-              ].amount
-            )
-          ).toString(),
-
+          balance:
+            escrow.balance -
+            (escrow.milestones as MultiReleaseMilestone[])[
+              parseInt(payload.milestoneIndex)
+            ].amount,
           milestones: (escrow.milestones as MultiReleaseMilestone[]).map(
             (m, index) =>
               index === parseInt(payload.milestoneIndex)

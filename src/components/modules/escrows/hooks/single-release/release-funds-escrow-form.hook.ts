@@ -97,7 +97,7 @@ export const useReleaseFundsEscrowForm = () => {
           flags: {
             released: true,
           },
-          balance: "0",
+          balance: 0,
         } as SingleReleaseEscrow;
 
         setEscrow(escrowUpdated);

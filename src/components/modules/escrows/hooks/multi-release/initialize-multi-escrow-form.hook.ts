@@ -45,7 +45,7 @@ export const useInitializeMultiEscrowForm = () => {
       engagementId: "",
       title: "",
       description: "",
-      platformFee: "",
+      platformFee: 0,
       receiverMemo: 0,
       roles: {
         approver: "",
@@ -62,7 +62,7 @@ export const useInitializeMultiEscrowForm = () => {
       milestones: [
         {
           description: "",
-          amount: "",
+          amount: 0,
         },
       ],
     },
@@ -73,7 +73,7 @@ export const useInitializeMultiEscrowForm = () => {
     const currentMilestones = form.getValues("milestones");
     form.setValue("milestones", [
       ...currentMilestones,
-      { description: "", amount: "" },
+      { description: "", amount: 0 },
     ]);
   };
 
@@ -94,7 +94,7 @@ export const useInitializeMultiEscrowForm = () => {
       "This is a sample TW escrow for testing purposes"
     );
     form.setValue("engagementId", "ENG12345");
-    form.setValue("platformFee", "5");
+    form.setValue("platformFee", 5);
     form.setValue("roles.approver", walletAddress || "");
     form.setValue("roles.serviceProvider", walletAddress || "");
     form.setValue("roles.platformAddress", walletAddress || "");
@@ -109,15 +109,15 @@ export const useInitializeMultiEscrowForm = () => {
     form.setValue("milestones", [
       {
         description: "Initial milestone",
-        amount: "50",
+        amount: 50,
       },
       {
         description: "Second milestone",
-        amount: "50",
+        amount: 50,
       },
       {
         description: "Final milestone",
-        amount: "100",
+        amount: 100,
       },
     ]);
   };
