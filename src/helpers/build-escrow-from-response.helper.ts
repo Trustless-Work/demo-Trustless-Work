@@ -21,7 +21,7 @@ export const buildSingleEscrowFromResponse = (
 ): SingleReleaseEscrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",
-  balance: "0",
+  balance: 0,
   engagementId: result.escrow.engagementId,
   title: result.escrow.title,
   description: result.escrow.description,
@@ -65,7 +65,7 @@ export const buildMultiEscrowFromResponse = (
 ): MultiReleaseEscrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",
-  balance: "0",
+  balance: 0,
   engagementId: result.escrow.engagementId,
   title: result.escrow.title,
   description: result.escrow.description,

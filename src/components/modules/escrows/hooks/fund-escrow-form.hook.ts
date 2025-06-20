@@ -39,13 +39,11 @@ export const useFundEscrowForm = () => {
       contractId: escrow?.contractId || "",
       amount:
         activeEscrowType === "single-release"
-          ? (escrow as SingleReleaseEscrow)?.amount?.toString() || "1000"
-          : ((escrow as MultiReleaseEscrow)?.milestones || [])
-              .reduce(
-                (total, milestone) => total + (Number(milestone.amount) || 0),
-                0
-              )
-              .toString() || "1000",
+          ? (escrow as SingleReleaseEscrow)?.amount || 1000
+          : ((escrow as MultiReleaseEscrow)?.milestones || []).reduce(
+              (total, milestone) => total + (Number(milestone.amount) || 0),
+              0
+            ) || 1000,
       signer: walletAddress || "Connect your wallet to get your address",
     },
   });
@@ -82,8 +80,8 @@ export const useFundEscrowForm = () => {
         const escrowUpdated: SingleReleaseEscrow | MultiReleaseEscrow = {
           ...escrow,
           balance:
-            escrow?.balance && Number(escrow.balance) > 0
-              ? (Number(escrow.balance) + Number(payload.amount)).toString()
+            escrow?.balance && escrow.balance > 0
+              ? escrow.balance + payload.amount
               : payload.amount,
         };
 

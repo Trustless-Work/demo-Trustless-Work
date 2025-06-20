@@ -101,11 +101,10 @@ export const useResolveDisputeEscrowForm = () => {
             ...escrow.flags,
             resolved: true,
           },
-          balance: (
-            Number(escrow?.balance) -
+          balance:
+            escrow.balance -
             Number(payload.approverFunds) -
-            Number(payload.receiverFunds)
-          ).toString(),
+            Number(payload.receiverFunds),
         };
 
         setEscrow(escrowUpdated);

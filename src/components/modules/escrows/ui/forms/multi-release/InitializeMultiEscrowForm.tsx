@@ -342,7 +342,14 @@ export const InitializeMultiEscrowForm = ({
                               <FormItem>
                                 <FormLabel>Amount</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="1000" {...field} />
+                                  <Input
+                                    type="number"
+                                    placeholder="1000"
+                                    {...field}
+                                    onChange={(e) =>
+                                      field.onChange(e.target.valueAsNumber)
+                                    }
+                                  />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>

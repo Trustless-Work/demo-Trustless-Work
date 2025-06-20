@@ -19,9 +19,10 @@ export const FinancialDetailsSection = ({
     if (activeEscrowType === "single-release") {
       return (escrow as SingleReleaseEscrow).amount;
     }
-    return (escrow as MultiReleaseEscrow).milestones
-      .reduce((sum, milestone) => sum + Number(milestone.amount), 0)
-      .toString();
+    return (escrow as MultiReleaseEscrow).milestones.reduce(
+      (sum, milestone) => sum + milestone.amount,
+      0
+    );
   };
 
   return (

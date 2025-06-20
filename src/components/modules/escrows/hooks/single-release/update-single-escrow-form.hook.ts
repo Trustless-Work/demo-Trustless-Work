@@ -42,10 +42,9 @@ export const useUpdateSingleEscrowForm = () => {
       escrow: {
         title: escrow?.title || "",
         engagementId: escrow?.engagementId || "",
-        amount:
-          (escrow?.amount.toString() as SingleReleaseEscrow["amount"]) || "",
+        amount: escrow?.amount || 0,
         description: escrow?.description || "",
-        platformFee: (Number(escrow?.platformFee) / 100).toString() || "",
+        platformFee: escrow?.platformFee || 0,
         receiverMemo: escrow?.receiverMemo || 0,
         roles: {
           approver: escrow?.roles.approver || "",

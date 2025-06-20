@@ -43,7 +43,7 @@ export const useUpdateMultiEscrowForm = () => {
         title: escrow?.title || "",
         engagementId: escrow?.engagementId || "",
         description: escrow?.description || "",
-        platformFee: (Number(escrow?.platformFee) / 100).toString() || "",
+        platformFee: (escrow?.platformFee ?? 0) / 100,
         receiverMemo: escrow?.receiverMemo || 0,
         roles: {
           approver: escrow?.roles.approver || "",
@@ -59,12 +59,12 @@ export const useUpdateMultiEscrowForm = () => {
         },
         milestones: escrow?.milestones.map((milestone) => ({
           description: milestone.description || "",
-          amount: milestone.amount?.toString() || "0",
+          amount: milestone.amount || 0,
           evidence: milestone.evidence || "",
         })) || [
           {
             description: "",
-            amount: "0",
+            amount: 0,
             evidence: "",
           },
         ],
