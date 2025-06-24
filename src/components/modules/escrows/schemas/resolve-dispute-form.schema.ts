@@ -11,8 +11,18 @@ export const formSchemaSingleRelease = z.object({
     .refine((value) => isValidWallet(value), {
       message: "Dispute resolver must be a valid wallet.",
     }),
-  approverFunds: z.string().min(1, "Approver funds is required"),
-  receiverFunds: z.string().min(1, "Receiver funds is required"),
+  approverFunds: z
+    .number()
+    .min(1, "Approver funds is required")
+    .refine((val) => val % 1 === 0, {
+      message: "Approver funds must be a whole number.",
+    }),
+  receiverFunds: z
+    .number()
+    .min(1, "Receiver funds is required")
+    .refine((val) => val % 1 === 0, {
+      message: "Receiver funds must be a whole number.",
+    }),
 });
 
 export const formSchemaMultiRelease = z.object({
@@ -26,6 +36,16 @@ export const formSchemaMultiRelease = z.object({
       message: "Dispute resolver must be a valid wallet.",
     }),
   milestoneIndex: z.string().min(1, "Milestone index is required"),
-  approverFunds: z.string().min(1, "Approver funds is required"),
-  receiverFunds: z.string().min(1, "Receiver funds is required"),
+  approverFunds: z
+    .number()
+    .min(1, "Approver funds is required")
+    .refine((val) => val % 1 === 0, {
+      message: "Approver funds must be a whole number.",
+    }),
+  receiverFunds: z
+    .number()
+    .min(1, "Receiver funds is required")
+    .refine((val) => val % 1 === 0, {
+      message: "Receiver funds must be a whole number.",
+    }),
 });

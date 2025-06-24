@@ -36,8 +36,8 @@ export const useResolveDisputeEscrowForm = () => {
     defaultValues: {
       contractId: escrow?.contractId || "",
       disputeResolver: escrow?.roles.disputeResolver || "",
-      approverFunds: "0",
-      receiverFunds: "0",
+      approverFunds: 0,
+      receiverFunds: 0,
     },
   });
 
@@ -102,9 +102,7 @@ export const useResolveDisputeEscrowForm = () => {
             resolved: true,
           },
           balance:
-            escrow.balance -
-            Number(payload.approverFunds) -
-            Number(payload.receiverFunds),
+            escrow.balance - payload.approverFunds - payload.receiverFunds,
         };
 
         setEscrow(escrowUpdated);

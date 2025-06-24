@@ -98,7 +98,20 @@ export function ResolveDisputeMilestoneForm() {
                 <FormItem>
                   <FormLabel>Approver Funds</FormLabel>
                   <FormControl>
-                    <Input placeholder="300" {...field} />
+                    <Input
+                      placeholder="300"
+                      {...field}
+                      onChange={(e) => {
+                        let rawValue = e.target.value;
+                        rawValue = rawValue.replace(/[^0-9.]/g, "");
+
+                        if (rawValue.split(".").length > 2) {
+                          rawValue = rawValue.slice(0, -1);
+                        }
+
+                        field.onChange(rawValue ? Number(rawValue) : undefined);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,7 +124,20 @@ export function ResolveDisputeMilestoneForm() {
                 <FormItem>
                   <FormLabel>Receiver Funds</FormLabel>
                   <FormControl>
-                    <Input placeholder="700" {...field} />
+                    <Input
+                      placeholder="700"
+                      {...field}
+                      onChange={(e) => {
+                        let rawValue = e.target.value;
+                        rawValue = rawValue.replace(/[^0-9.]/g, "");
+
+                        if (rawValue.split(".").length > 2) {
+                          rawValue = rawValue.slice(0, -1);
+                        }
+
+                        field.onChange(rawValue ? Number(rawValue) : undefined);
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
