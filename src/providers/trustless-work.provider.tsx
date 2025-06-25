@@ -4,6 +4,7 @@ import React from "react";
 import {
   // development environment = "https://dev.api.trustlesswork.com"
   development,
+  mainNet,
   // mainnet environment = "https://api.trustlesswork.com"
   // mainNet,
   TrustlessWorkConfig,
@@ -21,8 +22,11 @@ export function TrustlessWorkProvider({
    */
   const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
 
+  const baseURL =
+    process.env.NEXT_PUBLIC_ENV === "PROD" ? mainNet : development;
+
   return (
-    <TrustlessWorkConfig baseURL={development} apiKey={apiKey}>
+    <TrustlessWorkConfig baseURL={baseURL} apiKey={apiKey}>
       {children}
     </TrustlessWorkConfig>
   );
