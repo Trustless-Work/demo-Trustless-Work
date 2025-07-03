@@ -104,7 +104,6 @@ Make sure to set up the following environment variable in your `.env` file:
 
 # TRUSTLESS WORK -> See API KEY Video
 NEXT_PUBLIC_API_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3YWxsZXQiOiJHRE42SUpMUzVCUjNXN1FCM1NBRTNNWU5CRzZINFpXRFVHWURNRVVRWEU2RjJRSFhXSFlNNU1MWCIsImlhdCI6MTc0NTcwMzQzM30.M1gr85EXzUl7JRZ82yOORtVTGmGRL_DxN2C2Cl486lY
-NEXT_PUBLIC_API_URL_LOCAL=https://local.api.trustlesswork.com
 
 
 ```
