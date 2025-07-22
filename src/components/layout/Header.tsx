@@ -24,7 +24,7 @@ export const Header = () => {
           <p className="text-xl font-bold">
             Trustless Work{" "}
             <span className="text-muted-foreground/80 text-base italic">
-              Demo
+              Testnet Demo
             </span>
           </p>
         </div>
