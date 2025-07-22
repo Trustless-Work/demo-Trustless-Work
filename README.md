@@ -72,8 +72,7 @@ Follow the steps below to get started with this project:
 2. Clone the repo locally.
 3. Execute `npm i`.
 4. Setup .env according to the information below.
-   1. The local API Key has already given.
-   2. TW Local URL has already given.
+   1. et the API Key from the htpps://dapp.dev.trustlesswork.com -> https://docs.trustlesswork.com/trustless-work/developer-resources/authentication/request-api-key
 5. Run the project.
 
 ## Installation
