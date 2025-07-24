@@ -21,7 +21,7 @@ export function GetEscrowsByContractIdsForm() {
     e.preventDefault();
 
     const payload: GetEscrowFromIndexerByContractIdsParams = {
-      contractIds: contractIds.split(",").map((id) => id.trim()),
+      contractIds: contractIds.split(",").map((id) => id.trim()).filter(id => id.length > 0),
       signer,
       validateOnChain,
     };
