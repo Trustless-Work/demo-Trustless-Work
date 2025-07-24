@@ -33,7 +33,6 @@ export function IndexerEndpoints() {
             </TabsTrigger>
             <TabsTrigger value="get-escrows-by-contract-ids" className="flex-1">
               Get Escrows by Contract IDs
-              <GetEscrowsByContractIdsForm />
             </TabsTrigger>
           </TabsList>
           <div className="mt-2 pt-4 border-t">
@@ -53,7 +52,9 @@ export function IndexerEndpoints() {
               value="get-escrows-by-contract-ids"
               className="flex justify-center mt-0"
             >
-              {/* Get Escrows by Contract IDs Form */}
+              {/* Get Escrows by Contract IDs Form */              
+              <GetEscrowsByContractIdsForm />
+}
             </TabsContent>
           </div>
         </Tabs>
