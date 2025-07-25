@@ -8,15 +8,24 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { ResponseDisplay } from "@/components/utils/response-display";
+import {
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+  } from "@/components/ui/form";
+  import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
 
 export function GetEscrowsByContractIdsForm() {
   const { getEscrowByContractIds } = useGetEscrowFromIndexerByContractIds();
+  const { form, loading, response, onSubmit } = useGetEscrowForm();
 
   const [contractIds, setContractIds] = useState<string>("");
   const [signer, setSigner] = useState<string>("");
   const [validateOnChain, setValidateOnChain] = useState<boolean>(false);
   const [result, setResult] = useState<any>(null);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -43,37 +52,35 @@ export function GetEscrowsByContractIdsForm() {
   };
 
   return (
-    <div className="w-full md:w-3/4">
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Label htmlFor="contractIds" className="block text-sm font-medium mb-1">
-            Contract IDs (comma separated)
-          </Label>
-          <Input
-            id="contractIds"
-            type="text"
-            value={contractIds}
-            onChange={(e) => setContractIds(e.target.value)}
-            placeholder="0x123..., 0x456..."
-            required
-            className="w-full"
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
+            name="contractId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Contract / Escrow ID</FormLabel>
+                <FormControl>
+                  <Input placeholder="CAZ6UQX7..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        <div>
-          <Label htmlFor="signer" className="block text-sm font-medium mb-1">
-            Signer Address
-          </Label>
-          <Input
-            id="signer"
-            type="text"
-            value={signer}
-            onChange={(e) => setSigner(e.target.value)}
-            placeholder="0x..."
-            required
-            className="w-full"
-          />
-        </div>
+          
+          <FormField
+          control={form.control}
+          name="signer"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Signer Address</FormLabel>
+              <FormControl>
+                <Input disabled placeholder="GSIGN...XYZ" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="flex items-center space-x-3 p-4 border rounded-md">
           <Checkbox
@@ -92,8 +99,8 @@ export function GetEscrowsByContractIdsForm() {
           </div>
         </div>
 
-        <Button type="submit" className="w-full">
-          Get Escrows
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Getting Escrows..." : "Get Escrows"}
         </Button>
 
         {result && (
@@ -102,6 +109,6 @@ export function GetEscrowsByContractIdsForm() {
           </div>
         )}
       </form>
-    </div>
+    </Form>
   );
 }
