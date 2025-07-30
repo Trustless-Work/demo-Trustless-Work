@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { GetEscrowsByContractIdsForm } from "../forms/GetEscrowsByContractIdsForm";
 
 export function IndexerEndpoints() {
   const [activeTab, setActiveTab] = useState("get-escrows-by-signer");
@@ -51,7 +52,9 @@ export function IndexerEndpoints() {
               value="get-escrows-by-contract-ids"
               className="flex justify-center mt-0"
             >
-              {/* Get Escrows by Contract IDs Form */}
+              {/* Get Escrows by Contract IDs Form */              
+              <GetEscrowsByContractIdsForm />
+}
             </TabsContent>
           </div>
         </Tabs>

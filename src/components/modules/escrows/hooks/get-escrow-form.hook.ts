@@ -3,7 +3,7 @@ import { useWalletContext } from "@/providers/wallet.provider";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { useState } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { handleError } from "@/errors/utils/handle-errors";
@@ -12,10 +12,9 @@ import { WalletError } from "@/@types/errors.entity";
 import {
   SingleReleaseEscrow,
   MultiReleaseEscrow,
-  GetEscrowParams,
 } from "@trustless-work/escrow/types";
-import { useGetEscrow } from "@trustless-work/escrow/hooks";
 import { useTabsContext } from "@/providers/tabs.provider";
+import { useGetEscrowFromIndexerByContractIds } from "@trustless-work/escrow/hooks";
 
 export const useGetEscrowForm = () => {
   const { walletAddress } = useWalletContext();
@@ -25,61 +24,61 @@ export const useGetEscrowForm = () => {
     SingleReleaseEscrow | MultiReleaseEscrow | null
   >(null);
   const [error, setError] = useState<string | null>(null);
-  const { getEscrow, escrow: currentEscrow } = useGetEscrow();
   const { activeEscrowType } = useTabsContext();
+  const { getEscrowByContractIds } = useGetEscrowFromIndexerByContractIds();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      contractId: escrow?.contractId || "",
+      contractIds: escrow?.contractId ? [{ value: escrow.contractId }] : [{ value: "" }],
       signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
-  const onSubmit = async (payload: GetEscrowParams) => {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "contractIds",
+  });
+
+  const onSubmit = async (payload: z.infer<typeof formSchema>) => {
     setLoading(true);
     setError(null);
     setResponse(null);
 
     try {
-      /**
-       * API call by using the trustless work hooks
-       * @Note:
-       * - We need to pass the payload to the getEscrow function
-       * - The result will be an Escrow
-       */
-      await getEscrow({ payload, type: activeEscrowType });
+      // Fetch the escrow data using the getEscrowByContractIds function
+      const escrowData = await getEscrowByContractIds({
+        contractIds: payload.contractIds.map(item => item.value),
+        signer: payload.signer,
+        validateOnChain: true
+      });
 
-      if (!currentEscrow) {
+      if (!escrowData) {
+        throw new Error("No escrow data received");
+      }
+
+      // Handle the response based on whether it's an array or a single escrow
+      const escrow = Array.isArray(escrowData) ? escrowData[0] : escrowData;
+
+      if (!escrow) {
         throw new Error("Escrow not found");
       }
 
-      /**
-       * @Responses:
-       * escrow !== null
-       * - Escrow received successfully
-       * - Set the escrow in the context
-       * - Show a success toast
-       *
-       * escrow === null
-       * - Show an error toast
-       */
-      if (currentEscrow) {
-        setEscrow({ ...currentEscrow, contractId: payload.contractId });
-        setResponse(currentEscrow);
-        toast.success("Escrow Received");
-      }
+      // Update the escrow context with the fetched data
+      setEscrow(escrow);
+      setResponse(escrow);
+      toast.success("Escrow data fetched successfully");
     } catch (error: unknown) {
       const mappedError = handleError(error as AxiosError | WalletError);
-      console.error("Error:", mappedError.message);
-
+      console.error("Error fetching escrow:", mappedError.message);
+      setError(mappedError.message);
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "Failed to fetch escrow data"
       );
     } finally {
       setLoading(false);
     }
   };
 
-  return { form, loading, response, error, onSubmit };
+  return { form, loading, response, error, onSubmit, fields, append, remove };
 };
