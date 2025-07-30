@@ -1,114 +1,92 @@
-import { useState } from "react";
-import { useGetEscrowFromIndexerByContractIds } from "@trustless-work/escrow/hooks";
-import { GetEscrowFromIndexerByContractIdsParams } from "@trustless-work/escrow/types";
-
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
-import { ResponseDisplay } from "@/components/utils/response-display";
+import { Plus, Trash } from "lucide-react";
 import {
-    Form,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormControl,
-    FormMessage,
-  } from "@/components/ui/form";
-  import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { useGetEscrowForm } from "../../hooks/get-escrow-form.hook";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export function GetEscrowsByContractIdsForm() {
-  const { getEscrowByContractIds } = useGetEscrowFromIndexerByContractIds();
-  const { form, loading, response, onSubmit } = useGetEscrowForm();
-
-  const [contractIds, setContractIds] = useState<string>("");
-  const [signer, setSigner] = useState<string>("");
-  const [validateOnChain, setValidateOnChain] = useState<boolean>(false);
-  const [result, setResult] = useState<any>(null);
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const payload: GetEscrowFromIndexerByContractIdsParams = {
-        contractIds: contractIds.split(",").map((id) => id.trim()),
-        signer,
-      validateOnChain,
-    };
-
-    try {
-      const escrows = await getEscrowByContractIds(payload);
-
-      if (!escrows) {
-        toast.error("No escrows found.");
-        return;
-      }
-
-      toast.success("Escrows received!");
-      setResult(escrows);
-    } catch (error: unknown) {
-      toast.error("Error fetching escrows.");
-      console.error(error);
-    }
-  };
+  const { form, loading, response, onSubmit, fields, append, remove } = useGetEscrowForm();
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+    <div className="w-full md:w-3/4">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Signer Address */}
           <FormField
             control={form.control}
-            name="contractId"
+            name="signer"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Contract / Escrow ID</FormLabel>
+                <FormLabel>Signer Address</FormLabel>
                 <FormControl>
-                  <Input placeholder="CAZ6UQX7..." {...field} />
+                  <Input disabled {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
-          <FormField
-          control={form.control}
-          name="signer"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Signer Address</FormLabel>
-              <FormControl>
-                <Input disabled placeholder="GSIGN...XYZ" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <div className="flex items-center space-x-3 p-4 border rounded-md">
-          <Checkbox
-            id="validateOnChain"
-            checked={validateOnChain}
-            onCheckedChange={(value) => setValidateOnChain(Boolean(value))}
-            className="h-4 w-4"
-          />
-          <div className="space-y-1">
-            <Label htmlFor="validateOnChain" className="text-sm font-medium">
-              Validate on-chain
-            </Label>
-            <p className="text-xs text-muted-foreground">
-              Check this option to validate the data on-chain (slower)
-            </p>
+          {/* Contract Addresses */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <Label>Contract / Escrow IDs</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => append({ value: "" })}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Address
+              </Button>
+            </div>
+
+            {fields.map((field: { id: string; value: string }, index: number) => (
+              <FormField
+                key={field.id}
+                control={form.control}
+                name={`contractIds.${index}.value`}
+                render={({ field }) => (
+                  <FormItem className="flex items-center gap-2">
+                    <FormControl>
+                      <Input
+                        placeholder={`Contract / Escrow ID ${index + 1}`}
+                        {...field}
+                      />
+                    </FormControl>
+                    {fields.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => remove(index)}
+                      >
+                        <Trash className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ))}
           </div>
-        </div>
 
-        <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Getting Escrows..." : "Get Escrows"}
-        </Button>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Fetching..." : "Get Escrows"}
+          </Button>
+        </form>
+      </Form>
 
-        {result && (
-          <div className="mt-4">
-            <ResponseDisplay response={result} />
-          </div>
-        )}
-      </form>
-    </Form>
+      <ResponseDisplay response={response} />
+    </div>
   );
 }
