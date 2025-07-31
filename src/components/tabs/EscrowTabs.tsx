@@ -1,5 +1,4 @@
 import { DisputeEscrowForm } from "../modules/escrows/ui/forms/single-release/DisputeEscrow";
-import { GetEscrowForm } from "../modules/escrows/ui/forms/GetEscrowForm";
 import { FundEscrowForm } from "../modules/escrows/ui/forms/FundEscrowForm";
 import { ChangeMilestoneStatusForm } from "../modules/escrows/ui/forms/ChangeMilestoneStatusForm";
 import { ApproveMilestoneForm } from "../modules/escrows/ui/forms/ApproveMilestoneForm";
@@ -28,9 +27,6 @@ export const EscrowTabs = () => {
       className="w-full"
     >
       <TabsList className="w-full flex flex-wrap mb-32 md:mb-4 gap-1">
-        <TabsTrigger value="get-escrow" className="flex-1">
-          Get Escrow
-        </TabsTrigger>
         <TabsTrigger value="fund-escrow" className="flex-1">
           Fund Escrow
         </TabsTrigger>
@@ -62,9 +58,6 @@ export const EscrowTabs = () => {
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <div className="w-full md:w-3/4">
           <div className="mt-2 pt-4 border-t">
-            <TabsContent value="get-escrow" className="mt-0">
-              <GetEscrowForm />
-            </TabsContent>
             <TabsContent value="fund-escrow" className="mt-0">
               <FundEscrowForm />
             </TabsContent>
