@@ -59,10 +59,10 @@ export const useApproveMilestoneForm = () => {
        * - We need to pass the payload to the approveMilestone function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await approveMilestone({
+      const { unsignedTransaction } = await approveMilestone(
         payload,
-        type: activeEscrowType,
-      });
+        activeEscrowType
+      );
 
       if (!unsignedTransaction) {
         throw new Error(

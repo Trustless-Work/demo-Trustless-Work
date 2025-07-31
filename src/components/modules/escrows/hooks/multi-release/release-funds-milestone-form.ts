@@ -51,10 +51,10 @@ export const useReleaseFundsMilestoneForm = () => {
        * - We need to pass the payload to the releaseFunds function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await releaseFunds({
+      const { unsignedTransaction } = await releaseFunds(
         payload,
-        type: "multi-release",
-      });
+        "multi-release"
+      );
 
       if (!unsignedTransaction) {
         throw new Error(

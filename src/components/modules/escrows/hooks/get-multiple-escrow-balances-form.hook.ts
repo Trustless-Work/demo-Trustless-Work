@@ -24,7 +24,7 @@ export const useGetMultipleEscrowBalancesForm = () => {
   const [response, setResponse] = useState<
     EscrowRequestResponse | GetEscrowBalancesResponse[] | null
   >(null);
-  const { getMultipleBalances, balances } = useGetMultipleEscrowBalances();
+  const { getMultipleBalances } = useGetMultipleEscrowBalances();
   const { activeEscrowType } = useTabsContext();
 
   const form = useForm<FormData>({
@@ -57,10 +57,10 @@ export const useGetMultipleEscrowBalancesForm = () => {
        * - We need to pass the payload to the getMultipleBalances function
        * - The result will be multiple escrow balances
        */
-      await getMultipleBalances({
-        payload: transformedData,
-        type: activeEscrowType,
-      });
+      const balances = await getMultipleBalances(
+        transformedData,
+        activeEscrowType
+      );
 
       if (!balances) {
         throw new Error("Escrow not found");

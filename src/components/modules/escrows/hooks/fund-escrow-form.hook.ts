@@ -54,10 +54,10 @@ export const useFundEscrowForm = () => {
     setResponse(null);
 
     try {
-      const { unsignedTransaction } = await fundEscrow({
+      const { unsignedTransaction } = await fundEscrow(
         payload,
-        type: activeEscrowType,
-      });
+        activeEscrowType
+      );
 
       if (!unsignedTransaction) {
         throw new Error(

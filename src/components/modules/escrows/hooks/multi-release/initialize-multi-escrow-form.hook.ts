@@ -140,10 +140,10 @@ export const useInitializeMultiEscrowForm = () => {
        * - We need to pass the payload to the deployEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await deployEscrow({
-        payload: finalPayload,
-        type: "multi-release",
-      });
+      const { unsignedTransaction } = await deployEscrow(
+        finalPayload,
+        "multi-release"
+      );
 
       if (!unsignedTransaction) {
         throw new Error(

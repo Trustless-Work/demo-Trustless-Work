@@ -84,10 +84,10 @@ export const useUpdateSingleEscrowForm = () => {
        * - We need to pass the payload to the updateEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await updateEscrow({
+      const { unsignedTransaction } = await updateEscrow(
         payload,
-        type: "single-release",
-      });
+        "single-release"
+      );
 
       if (!unsignedTransaction) {
         throw new Error(

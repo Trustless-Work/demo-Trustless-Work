@@ -135,10 +135,10 @@ export const useInitializeSingleEscrowForm = () => {
        * - We need to pass the payload to the deployEscrow function
        * - The result will be an unsigned transaction
        */
-      const { unsignedTransaction } = await deployEscrow({
-        payload: finalPayload,
-        type: "single-release",
-      });
+      const { unsignedTransaction } = await deployEscrow(
+        finalPayload,
+        "single-release"
+      );
 
       if (!unsignedTransaction) {
         throw new Error(
