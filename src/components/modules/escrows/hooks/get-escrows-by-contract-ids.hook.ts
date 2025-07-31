@@ -9,7 +9,7 @@ import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
 import { GetEscrowsFromIndexerResponse } from "@trustless-work/escrow/types";
 import { useGetEscrowFromIndexerByContractIds } from "@trustless-work/escrow/hooks";
-import { formSchema } from "../schemas/get-escrow-form.schema";
+import { formSchema } from "../schemas/get-escrows-by-contract-ids.schema";
 
 export const useGetEscrowsByContractIdsForm = () => {
   const { walletAddress } = useWalletContext();
