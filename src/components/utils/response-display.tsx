@@ -9,6 +9,7 @@ import { useUtils } from "@/hooks/utils.hook";
 import {
   EscrowRequestResponse,
   GetEscrowBalancesResponse,
+  GetEscrowsFromIndexerResponse,
   InitializeSingleReleaseEscrowResponse,
   MultiReleaseEscrow,
   SingleReleaseEscrow,
@@ -23,6 +24,7 @@ interface ResponseDisplayProps {
     | GetEscrowBalancesResponse[]
     | SingleReleaseEscrow
     | MultiReleaseEscrow
+    | GetEscrowsFromIndexerResponse
     | null;
 }
 
