@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/form";
 import { useEscrowContext } from "@/providers/escrow.provider";
 import { ResponseDisplay } from "@/components/utils/response-display";
-import { useReleaseFundsMilestoneForm } from "../../../hooks/multi-release/release-funds-milestone-form.copy";
+import { useReleaseFundsMilestoneForm } from "../../../hooks/multi-release/release-funds-milestone-form";
 import {
   Select,
   SelectContent,
