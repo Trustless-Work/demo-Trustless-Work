@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { LogOut, LogIn } from "lucide-react";
 import { useWallet } from "../modules/auth/hooks/wallet.hook";
 import { useWalletContext } from "@/providers/wallet.provider";
+import { WalletButton } from "../utils/wallet-button";
 
 export const Header = () => {
   const { walletAddress } = useWalletContext();
@@ -30,6 +31,7 @@ export const Header = () => {
         </div>
         <div className="flex items-center gap-4">
           <ThemeToggle />
+          <WalletButton />
 
           {walletAddress ? (
             <Button variant="outline" onClick={handleDisconnect}>
