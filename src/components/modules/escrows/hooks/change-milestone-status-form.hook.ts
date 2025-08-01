@@ -63,12 +63,12 @@ export const useChangeMilestoneStatusForm = () => {
        */
       const { unsignedTransaction } = await changeMilestoneStatus(
         payload,
-        activeEscrowType
+        activeEscrowType,
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from changeMilestoneStatus response."
+          "Unsigned transaction is missing from changeMilestoneStatus response.",
         );
       }
 
@@ -119,14 +119,14 @@ export const useChangeMilestoneStatusForm = () => {
                     status: payload.newStatus,
                     evidence: payload.newEvidence || "",
                   }
-              : milestone
+              : milestone,
           ),
         } as SingleReleaseEscrow | MultiReleaseEscrow;
 
         setEscrow(escrowUpdated);
 
         toast.success(
-          `Milestone index - ${payload.milestoneIndex} updated to ${payload.newStatus}`
+          `Milestone index - ${payload.milestoneIndex} updated to ${payload.newStatus}`,
         );
         setResponse(data);
         form.reset();
@@ -136,7 +136,7 @@ export const useChangeMilestoneStatusForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

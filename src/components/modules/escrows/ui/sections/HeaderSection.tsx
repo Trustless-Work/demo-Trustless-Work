@@ -96,8 +96,8 @@ export const HeaderSection = ({ escrow }: HeaderSectionProps) => {
               statusFlags?.released || statusFlags?.resolved
                 ? "bg-green-100 text-green-800 hover:bg-green-200"
                 : statusFlags?.disputed
-                ? "bg-destructive text-white hover:bg-destructive/90"
-                : ""
+                  ? "bg-destructive text-white hover:bg-destructive/90"
+                  : ""
             }
           >
             {statusFlags?.released ? (

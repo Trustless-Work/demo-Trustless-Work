@@ -25,7 +25,7 @@ export const EscrowTypeTabs = () => {
               onClick={() => {
                 if (!disabled) {
                   setActiveEscrowType(
-                    tab.id as "single-release" | "multi-release"
+                    tab.id as "single-release" | "multi-release",
                   );
                 }
               }}

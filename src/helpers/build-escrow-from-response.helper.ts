@@ -17,7 +17,7 @@ export const buildSingleEscrowFromResponse = (
   result:
     | InitializeSingleReleaseEscrowResponse
     | UpdateSingleReleaseEscrowResponse,
-  walletAddress: string
+  walletAddress: string,
 ): SingleReleaseEscrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",
@@ -61,7 +61,7 @@ export const buildMultiEscrowFromResponse = (
   result:
     | InitializeMultiReleaseEscrowResponse
     | UpdateMultiReleaseEscrowResponse,
-  walletAddress: string
+  walletAddress: string,
 ): MultiReleaseEscrow => ({
   contractId: result.contractId,
   signer: walletAddress || "",
