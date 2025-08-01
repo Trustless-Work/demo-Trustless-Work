@@ -22,7 +22,7 @@ export const Header = () => {
             width={70}
             height={70}
           />
-          <p className="text-xl font-bold">
+          <p className="text-xl font-bold hidden md:block">
             Trustless Work{" "}
             <span className="text-muted-foreground/80 text-base italic">
               Testnet Demo
@@ -35,11 +35,11 @@ export const Header = () => {
 
           {walletAddress ? (
             <Button variant="outline" onClick={handleDisconnect}>
-              <LogOut /> Disconnect
+              <LogOut /> <span className="hidden sm:inline">Disconnect</span>
             </Button>
           ) : (
             <Button variant="outline" onClick={handleConnect}>
-              <LogIn /> Connect
+              <LogIn /> <span className="hidden sm:inline">Connect</span>
             </Button>
           )}
         </div>

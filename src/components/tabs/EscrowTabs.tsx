@@ -7,7 +7,14 @@ import { ResolveDisputeEscrowForm } from "../modules/escrows/ui/forms/single-rel
 import { ResolveDisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ResolveDisputeMilestoneForm";
 import { UpdateSingleEscrowForm } from "../modules/escrows/ui/forms/single-release/UpdateSingleEscrowForm";
 import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   EscrowTabs as EscrowTabsType,
   useTabsContext,
@@ -20,86 +27,146 @@ export const EscrowTabs = () => {
   const { activeEscrowTab, activeEscrowType, setActiveEscrowTab } =
     useTabsContext();
 
+  const tabOptions = [
+    {
+      value: "fund-escrow",
+      label: "Fund Escrow",
+    },
+    {
+      value: "change-milestone-status",
+      label: "Change Status",
+    },
+    {
+      value: "approve-milestone",
+      label: "Approve Milestone",
+    },
+    {
+      value: "start-dispute",
+      label:
+        activeEscrowType === "single-release"
+          ? "Dispute Escrow"
+          : "Dispute Milestone",
+    },
+    {
+      value: "resolve-dispute",
+      label:
+        activeEscrowType === "single-release"
+          ? "Resolve Dispute Escrow"
+          : "Resolve Dispute Milestone",
+    },
+    {
+      value: "release-funds",
+      label:
+        activeEscrowType === "single-release"
+          ? "Release Funds Escrow"
+          : "Release Funds Milestone",
+    },
+    {
+      value: "update-escrow",
+      label: "Update Escrow",
+    },
+  ];
+
   return (
-    <Tabs
-      value={activeEscrowTab}
-      onValueChange={(val) => setActiveEscrowTab(val as EscrowTabsType)}
-      className="w-full"
-    >
-      <TabsList className="w-full flex flex-wrap mb-32 md:mb-4 gap-1">
-        <TabsTrigger value="fund-escrow" className="flex-1">
-          Fund Escrow
-        </TabsTrigger>
-        <TabsTrigger value="change-milestone-status" className="flex-1">
-          Change Status
-        </TabsTrigger>
-        <TabsTrigger value="approve-milestone" className="flex-1">
-          Approve Milestone
-        </TabsTrigger>
-        <TabsTrigger value="start-dispute" className="flex-1">
-          {activeEscrowType === "single-release"
-            ? "Dispute Escrow"
-            : "Dispute Milestone"}
-        </TabsTrigger>
-        <TabsTrigger value="resolve-dispute" className="flex-1">
-          {activeEscrowType === "single-release"
-            ? "Resolve Dispute Escrow"
-            : "Resolve Dispute Milestone"}
-        </TabsTrigger>
-        <TabsTrigger value="release-funds" className="flex-1">
-          {activeEscrowType === "single-release"
-            ? "Release Funds Escrow"
-            : "Release Funds Milestone"}
-        </TabsTrigger>
-        <TabsTrigger value="update-escrow" className="flex-1">
-          Update Escrow
-        </TabsTrigger>
-      </TabsList>
+    <div className="w-full">
+      {/* Mobile Select - visible on mobile, hidden on desktop */}
+      <div className="block md:hidden mb-4">
+        <Select
+          value={activeEscrowTab}
+          onValueChange={(val) => setActiveEscrowTab(val as EscrowTabsType)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select an option" />
+          </SelectTrigger>
+          <SelectContent>
+            {tabOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Desktop Tabs - hidden on mobile, visible on desktop */}
+      <div className="hidden md:block">
+        <Tabs
+          value={activeEscrowTab}
+          onValueChange={(val) => setActiveEscrowTab(val as EscrowTabsType)}
+          className="w-full"
+        >
+          <TabsList className="w-full flex flex-wrap mb-32 md:mb-4 gap-1">
+            <TabsTrigger value="fund-escrow" className="flex-1">
+              Fund Escrow
+            </TabsTrigger>
+            <TabsTrigger value="change-milestone-status" className="flex-1">
+              Change Status
+            </TabsTrigger>
+            <TabsTrigger value="approve-milestone" className="flex-1">
+              Approve Milestone
+            </TabsTrigger>
+            <TabsTrigger value="start-dispute" className="flex-1">
+              {activeEscrowType === "single-release"
+                ? "Dispute Escrow"
+                : "Dispute Milestone"}
+            </TabsTrigger>
+            <TabsTrigger value="resolve-dispute" className="flex-1">
+              {activeEscrowType === "single-release"
+                ? "Resolve Dispute Escrow"
+                : "Resolve Dispute Milestone"}
+            </TabsTrigger>
+            <TabsTrigger value="release-funds" className="flex-1">
+              {activeEscrowType === "single-release"
+                ? "Release Funds Escrow"
+                : "Release Funds Milestone"}
+            </TabsTrigger>
+            <TabsTrigger value="update-escrow" className="flex-1">
+              Update Escrow
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Content - shared between mobile and desktop */}
       <div className="flex flex-col md:flex-row gap-10 w-full">
         <div className="w-full md:w-3/4">
           <div className="mt-2 pt-4 border-t">
-            <TabsContent value="fund-escrow" className="mt-0">
-              <FundEscrowForm />
-            </TabsContent>
-            <TabsContent value="change-milestone-status" className="mt-0">
+            {activeEscrowTab === "fund-escrow" && <FundEscrowForm />}
+            {activeEscrowTab === "change-milestone-status" && (
               <ChangeMilestoneStatusForm />
-            </TabsContent>
-            <TabsContent value="approve-milestone" className="mt-0">
+            )}
+            {activeEscrowTab === "approve-milestone" && (
               <ApproveMilestoneForm />
-            </TabsContent>
-            <TabsContent value="start-dispute" className="mt-0">
-              {activeEscrowType === "single-release" ? (
+            )}
+            {activeEscrowTab === "start-dispute" &&
+              (activeEscrowType === "single-release" ? (
                 <DisputeEscrowForm />
               ) : (
                 <DisputeMilestoneForm />
-              )}
-            </TabsContent>
-            <TabsContent value="resolve-dispute" className="mt-0">
-              {activeEscrowType === "single-release" ? (
+              ))}
+            {activeEscrowTab === "resolve-dispute" &&
+              (activeEscrowType === "single-release" ? (
                 <ResolveDisputeEscrowForm />
               ) : (
                 <ResolveDisputeMilestoneForm />
-              )}
-            </TabsContent>
-            <TabsContent value="release-funds" className="mt-0">
-              {activeEscrowType === "single-release" ? (
+              ))}
+            {activeEscrowTab === "release-funds" &&
+              (activeEscrowType === "single-release" ? (
                 <ReleaseFundsEscrowForm />
               ) : (
                 <ReleaseFundsMilestoneForm />
-              )}
-            </TabsContent>
-            <TabsContent value="update-escrow" className="mt-0">
-              {activeEscrowType === "single-release" ? (
+              ))}
+            {activeEscrowTab === "update-escrow" &&
+              (activeEscrowType === "single-release" ? (
                 <UpdateSingleEscrowForm />
               ) : (
                 <UpdateMultiEscrowForm />
-              )}
-            </TabsContent>
+              ))}
           </div>
         </div>
 
         <EscrowCreatedSection />
       </div>
-    </Tabs>
+    </div>
   );
 };

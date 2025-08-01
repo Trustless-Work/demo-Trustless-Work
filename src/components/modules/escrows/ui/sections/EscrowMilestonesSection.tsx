@@ -26,109 +26,122 @@ export const EscrowMilestonesSection = ({
         ) => (
           <div
             key={index}
-            className="border rounded-lg p-4 transition-all
-            "
+            className="border rounded-lg p-4 bg-card hover:bg-accent/50 transition-colors"
           >
-            <div className="flex justify-between items-start gap-4">
-              <div className="flex gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full uppercase">
-                  <span className="font-medium text-sm">{index + 1}</span>
-                </div>
-                <div>
-                  <p className="font-medium">Milestone {index + 1}</p>
-                  <p className="text-muted-foreground text-sm">
-                    {milestone.description}
-                  </p>
-                </div>
-                {activeEscrowType === "multi-release" && (
-                  <div className="flex items-center">
-                    <Badge
-                      variant="outline"
-                      className="text-muted-foreground text-sm"
-                    >
-                      <DollarSign className="h-3 w-3" />
-                      {(milestone as MultiReleaseMilestone).amount}
-                    </Badge>
-                  </div>
-                )}
+            {/* Header with milestone info */}
+            <div className="flex items-start gap-3 mb-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                <span className="text-sm font-semibold text-primary">
+                  {index + 1}
+                </span>
               </div>
-              <div className="flex justify-start flex-col gap-2">
-                <div className="flex flex-row gap-2">
-                  {milestone.status && (
-                    <Badge
-                      variant={
-                        milestone.status === "approved"
-                          ? "default"
-                          : "secondary"
-                      }
-                      className={
-                        milestone.status === "approved"
-                          ? "bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-900/70 uppercase"
-                          : "uppercase"
-                      }
-                    >
-                      {milestone.status === "approved" ? (
-                        <>
-                          <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
-                        </>
-                      ) : (
-                        milestone.status
-                      )}
-                    </Badge>
-                  )}
-                  {activeEscrowType === "single-release" ? (
-                    // Single Release - Only show approved flag
-                    (milestone as SingleReleaseMilestone).approved && (
-                      <Badge
-                        variant="secondary"
-                        className="text-green-800 dark:text-green-200 uppercase"
-                      >
-                        <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
+
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-base">
+                      Milestone {index + 1}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                      {milestone.description}
+                    </p>
+                  </div>
+
+                  {activeEscrowType === "multi-release" && (
+                    <div className="flex-shrink-0">
+                      <Badge variant="outline" className="text-sm">
+                        <DollarSign className="w-3 h-3 mr-1" />
+                        {(milestone as MultiReleaseMilestone).amount}
                       </Badge>
-                    )
-                  ) : (
-                    // Multi Release - Show all flags
-                    <>
-                      {(milestone as MultiReleaseMilestone).flags?.approved && (
-                        <Badge
-                          variant="secondary"
-                          className="text-green-800 dark:text-green-200 uppercase"
-                        >
-                          <CheckCircle2 className="mr-1 h-3 w-3" /> Approved
-                        </Badge>
-                      )}
-                      {(milestone as MultiReleaseMilestone).flags?.disputed && (
-                        <Badge variant="destructive" className="uppercase">
-                          <AlertCircle className="mr-1 h-3 w-3" /> Disputed
-                        </Badge>
-                      )}
-                      {(milestone as MultiReleaseMilestone).flags?.released && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-green-100 text-green-800 hover:bg-green-200 uppercase"
-                        >
-                          <CheckCircle2 className="mr-1 h-3 w-3" /> Released
-                        </Badge>
-                      )}
-                      {(milestone as MultiReleaseMilestone).flags?.resolved && (
-                        <Badge
-                          variant="secondary"
-                          className="bg-green-100 text-green-800 hover:bg-green-200 uppercase"
-                        >
-                          <Handshake className="mr-1 h-3 w-3" /> Resolved
-                        </Badge>
-                      )}
-                    </>
+                    </div>
                   )}
                 </div>
               </div>
             </div>
 
+            {/* Status badges */}
+            <div className="flex flex-wrap gap-2">
+              {milestone.status && (
+                <Badge
+                  variant={
+                    milestone.status === "approved" ? "default" : "secondary"
+                  }
+                  className={
+                    milestone.status === "approved"
+                      ? "bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-900/50"
+                      : ""
+                  }
+                >
+                  {milestone.status === "approved" ? (
+                    <>
+                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                      Approved
+                    </>
+                  ) : (
+                    milestone.status
+                  )}
+                </Badge>
+              )}
+
+              {activeEscrowType === "single-release" ? (
+                // Single Release - Only show approved flag
+                (milestone as SingleReleaseMilestone).approved && (
+                  <Badge
+                    variant="secondary"
+                    className="text-green-700 dark:text-green-300"
+                  >
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    Approved
+                  </Badge>
+                )
+              ) : (
+                // Multi Release - Show all flags
+                <>
+                  {(milestone as MultiReleaseMilestone).flags?.approved && (
+                    <Badge
+                      variant="secondary"
+                      className="text-green-700 dark:text-green-300"
+                    >
+                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                      Approved
+                    </Badge>
+                  )}
+                  {(milestone as MultiReleaseMilestone).flags?.disputed && (
+                    <Badge variant="destructive">
+                      <AlertCircle className="w-3 h-3 mr-1" />
+                      Disputed
+                    </Badge>
+                  )}
+                  {(milestone as MultiReleaseMilestone).flags?.released && (
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200"
+                    >
+                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                      Released
+                    </Badge>
+                  )}
+                  {(milestone as MultiReleaseMilestone).flags?.resolved && (
+                    <Badge
+                      variant="secondary"
+                      className="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200"
+                    >
+                      <Handshake className="w-3 h-3 mr-1" />
+                      Resolved
+                    </Badge>
+                  )}
+                </>
+              )}
+            </div>
+
+            {/* Evidence section */}
             {milestone.evidence && (
-              <p className="text-muted-foreground text-sm mt-4 truncate">
-                <span className="font-medium">Evidence:</span>{" "}
-                {milestone.evidence}
-              </p>
+              <div className="mt-4 p-3 bg-muted/30 rounded-md">
+                <p className="text-sm text-muted-foreground break-words overflow-hidden">
+                  <span className="font-medium text-foreground">Evidence:</span>{" "}
+                  {milestone.evidence}
+                </p>
+              </div>
             )}
           </div>
         )

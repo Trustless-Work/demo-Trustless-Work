@@ -41,7 +41,7 @@ export function GetMultipleEscrowBalanceForm() {
           {/* Contract Addresses */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <Label>Contract / Escrow Addresses</Label>
+              <Label>Contract / Escrow IDs</Label>
               <Button
                 type="button"
                 variant="outline"
@@ -62,7 +62,7 @@ export function GetMultipleEscrowBalanceForm() {
                   <FormItem className="flex items-center gap-2">
                     <FormControl>
                       <Input
-                        placeholder={`Contract / Escrow Address ${index + 1}`}
+                        placeholder={`Contract / Escrow ID ${index + 1}`}
                         {...field}
                       />
                     </FormControl>

@@ -9,6 +9,7 @@ export type EscrowTabs =
   | "change-milestone-status"
   | "approve-milestone"
   | "change-dispute-flag"
+  | "start-dispute"
   | "resolve-dispute"
   | "release-funds"
   | "update-escrow";
@@ -44,7 +45,7 @@ export function TabsProvider({ children }: { children: ReactNode }) {
 
   // Escrow operations state
   const [activeEscrowTab, setActiveEscrowTab] =
-    useState<EscrowTabs>("get-escrow");
+    useState<EscrowTabs>("fund-escrow");
 
   // Escrow type state
   const [activeEscrowType, setActiveEscrowType] =
