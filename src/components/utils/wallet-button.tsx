@@ -18,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useState } from "react";
-import { toast } from "sonner";
 import { useUtils } from "@/hooks/utils.hook";
 import { formatAddress } from "@/helpers/format.helper";
 import { openExplorer } from "@/helpers/utils.helper";
