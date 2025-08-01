@@ -27,7 +27,7 @@ export function GetEscrowsBySignerForm() {
     <div className="w-full md:w-3/4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Signer Address - Campo obligatorio */}
+          {/* Signer Address - Required field */}
           <FormField
             control={form.control}
             name="signer"
@@ -332,13 +332,13 @@ export function GetEscrowsBySignerForm() {
         </form>
       </Form>
 
-      {/* Ejemplo para testeo */}
+      {/* Quick testing example */}
       <div className="mt-6 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/50">
         <Label className="text-sm font-medium text-blue-900 dark:text-blue-100">
-          💡 Ejemplo para testeo rápido:
+          💡 Quick testing example:
         </Label>
         <div className="mt-2 text-xs text-blue-700 dark:text-blue-300 space-y-1">
-          <p>• signer: 0xabc... (se rellena automáticamente con tu wallet)</p>
+          <p>• signer: 0xabc... (auto-filled with your wallet)</p>
           <p>• status: complete</p>
           <p>• page: 1</p>
           <p>• minAmount: 0.01</p>

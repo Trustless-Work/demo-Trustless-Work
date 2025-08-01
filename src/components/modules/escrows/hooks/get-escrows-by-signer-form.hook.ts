@@ -39,14 +39,14 @@ export const useGetEscrowsBySignerForm = () => {
     setResponse(null);
 
     try {
-      // Construir el objeto filters eliminando campos vacíos
+      // Build filters object removing empty fields
       const filters: any = {
         signer: payload.signer,
         validateOnChain: payload.validateOnChain,
         type: payload.type || activeEscrowType,
       };
 
-      // Agregar campos opcionales solo si tienen valor
+      // Add optional fields only if they have values
       if (payload.page !== undefined) filters.page = payload.page;
       if (payload.orderDirection)
         filters.orderDirection = payload.orderDirection;

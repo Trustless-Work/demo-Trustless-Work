@@ -1,10 +1,10 @@
 import { z } from "zod";
 
 export const formSchema = z.object({
-  // Campo obligatorio
+  // Required field
   signer: z.string().min(1, "Signer Address is required"),
 
-  // Campos opcionales
+  // Optional fields
   page: z.number().min(1).optional(),
   orderDirection: z.enum(["asc", "desc"]).optional(),
   orderBy: z.enum(["createdAt", "updatedAt", "amount"]).optional(),
