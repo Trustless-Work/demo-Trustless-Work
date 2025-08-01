@@ -9,6 +9,7 @@ export type EscrowTabs =
   | "change-milestone-status"
   | "approve-milestone"
   | "change-dispute-flag"
+  | "start-dispute"
   | "resolve-dispute"
   | "release-funds"
   | "update-escrow";
