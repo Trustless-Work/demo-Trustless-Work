@@ -59,14 +59,341 @@ export const InitializeMultiEscrowForm = ({
     const currentStepData = steps[currentStep];
 
     return (
-      <Card className="w-full md:w-3/4">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">
-            {currentStepData.title}
-          </CardTitle>
-          <FormDescription>{currentStepData.description}</FormDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="w-full md:w-3/4">
+        {/* Card wrapper - hidden on mobile, visible on desktop */}
+        <Card className="hidden md:block w-full">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">
+              {currentStepData.title}
+            </CardTitle>
+            <FormDescription>{currentStepData.description}</FormDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {currentStep === 0 && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="signer"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Signer Address</FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled
+                            placeholder="GSIGN...XYZ"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Escrow Title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="engagementId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Engagement ID</FormLabel>
+                        <FormControl>
+                          <Input placeholder="ENG12345" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Escrow description"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </>
+              )}
+
+              {currentStep === 1 && (
+                <>
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <FormField
+                      control={form.control}
+                      name="platformFee"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Platform Fee (%)</FormLabel>
+                          <FormControl>
+                            <Input placeholder="5" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="trustline.address"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Trustline</FormLabel>
+                          <FormControl>
+                            <Select
+                              onValueChange={(value) => {
+                                const selectedOption = trustlinesOptions.find(
+                                  (opt) => opt.value === value
+                                );
+                                if (selectedOption) {
+                                  field.onChange(selectedOption.value);
+                                }
+                              }}
+                              value={field.value || ""}
+                            >
+                              <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Select a trustline" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {trustlinesOptions.map((option) => (
+                                  <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                  >
+                                    {option.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="receiverMemo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Receiver Memo</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              placeholder="0"
+                              {...field}
+                              value={field.value}
+                              onChange={(e) =>
+                                field.onChange(Number(e.target.value))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </>
+              )}
+
+              {currentStep === 2 && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="roles.approver"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Approver Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="GCU2QK..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="roles.serviceProvider"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Service Provider Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="GCU2QK..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="roles.platformAddress"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Platform Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="GCU2QK..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="roles.releaseSigner"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Release Signer Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="GCU2QK..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="roles.disputeResolver"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Dispute Resolver Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="GCU2QK..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="roles.receiver"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Receiver Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="GCU2QK..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Milestones</FormLabel>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={addMilestone}
+                    >
+                      <Plus className="h-4 w-4 mr-2" /> Add Milestone
+                    </Button>
+                  </div>
+
+                  {form.watch("milestones").map((_, index) => (
+                    <Card key={index}>
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-2">
+                          <div className="flex-1 space-y-4">
+                            <FormField
+                              control={form.control}
+                              name={`milestones.${index}.description`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>
+                                    Milestone {index + 1} - Description
+                                  </FormLabel>
+                                  <FormControl>
+                                    <Textarea
+                                      placeholder="Milestone description"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`milestones.${index}.amount`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Amount</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      placeholder="1000"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(e.target.valueAsNumber)
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {form.watch("milestones").length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => removeMilestone(index)}
+                              className="mt-8"
+                            >
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Mobile content - visible on mobile, hidden on desktop */}
+        <div className="block md:hidden w-full">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2">{currentStepData.title}</h2>
+            <p className="text-muted-foreground">
+              {currentStepData.description}
+            </p>
+          </div>
           <div className="space-y-4">
             {currentStep === 0 && (
               <>
@@ -130,7 +457,7 @@ export const InitializeMultiEscrowForm = ({
 
             {currentStep === 1 && (
               <>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4">
                   <FormField
                     control={form.control}
                     name="platformFee"
@@ -210,7 +537,7 @@ export const InitializeMultiEscrowForm = ({
             )}
 
             {currentStep === 2 && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <FormField
                   control={form.control}
                   name="roles.approver"
@@ -312,70 +639,68 @@ export const InitializeMultiEscrowForm = ({
                 </div>
 
                 {form.watch("milestones").map((_, index) => (
-                  <Card key={index}>
-                    <CardContent className="p-4">
-                      <div className="flex items-start gap-2">
-                        <div className="flex-1 space-y-4">
-                          <FormField
-                            control={form.control}
-                            name={`milestones.${index}.description`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
-                                  Milestone {index + 1} - Description
-                                </FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder="Milestone description"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                  <div key={index} className="border rounded-lg p-4">
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1 space-y-4">
+                        <FormField
+                          control={form.control}
+                          name={`milestones.${index}.description`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>
+                                Milestone {index + 1} - Description
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Milestone description"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                          <FormField
-                            control={form.control}
-                            name={`milestones.${index}.amount`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Amount</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="number"
-                                    placeholder="1000"
-                                    {...field}
-                                    onChange={(e) =>
-                                      field.onChange(e.target.valueAsNumber)
-                                    }
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                        {form.watch("milestones").length > 1 && (
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => removeMilestone(index)}
-                            className="mt-8"
-                          >
-                            <Trash className="h-4 w-4" />
-                          </Button>
-                        )}
+                        <FormField
+                          control={form.control}
+                          name={`milestones.${index}.amount`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Amount</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="1000"
+                                  {...field}
+                                  onChange={(e) =>
+                                    field.onChange(e.target.valueAsNumber)
+                                  }
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
                       </div>
-                    </CardContent>
-                  </Card>
+                      {form.watch("milestones").length > 1 && (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => removeMilestone(index)}
+                          className="mt-8"
+                        >
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   };
 
@@ -422,12 +747,14 @@ export const InitializeMultiEscrowForm = ({
           </form>
         </Form>
 
-        <div className="flex w-3/4 justify-between pt-4">
+        {/* Navigation Buttons - Mobile Responsive */}
+        <div className="flex flex-col sm:flex-row w-full max-w-4xl justify-between pt-4 sm:pt-6 gap-4 sm:gap-0">
           <Button
             type="button"
             variant="outline"
             onClick={prevStep}
             disabled={currentStep === 0}
+            className="w-full sm:w-auto order-2 sm:order-1"
           >
             <ChevronLeft className="h-4 w-4 mr-2" />
             Previous
@@ -438,11 +765,16 @@ export const InitializeMultiEscrowForm = ({
               type="button"
               onClick={() => form.handleSubmit(onSubmit)()}
               disabled={loading}
+              className="w-full sm:w-auto order-1 sm:order-2"
             >
               {loading ? "Initializing..." : "Initialize Escrow"}
             </Button>
           ) : (
-            <Button type="button" onClick={nextStep}>
+            <Button
+              type="button"
+              onClick={nextStep}
+              className="w-full sm:w-auto order-1 sm:order-2"
+            >
               Next
               <ChevronRight className="h-4 w-4 ml-2" />
             </Button>
