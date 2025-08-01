@@ -44,7 +44,7 @@ export function TabsProvider({ children }: { children: ReactNode }) {
 
   // Escrow operations state
   const [activeEscrowTab, setActiveEscrowTab] =
-    useState<EscrowTabs>("get-escrow");
+    useState<EscrowTabs>("fund-escrow");
 
   // Escrow type state
   const [activeEscrowType, setActiveEscrowType] =
