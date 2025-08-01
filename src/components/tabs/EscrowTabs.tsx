@@ -7,7 +7,7 @@ import { ResolveDisputeEscrowForm } from "../modules/escrows/ui/forms/single-rel
 import { ResolveDisputeMilestoneForm } from "../modules/escrows/ui/forms/multi-release/ResolveDisputeMilestoneForm";
 import { UpdateSingleEscrowForm } from "../modules/escrows/ui/forms/single-release/UpdateSingleEscrowForm";
 import { EscrowCreatedSection } from "../modules/escrows/ui/sections/EscrowCreatedSection";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
