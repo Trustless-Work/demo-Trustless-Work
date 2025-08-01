@@ -115,7 +115,7 @@ export function DeployEndpoints() {
             type="button"
             variant="outline"
             onClick={handleLoadTemplate}
-            className="w-full"
+            className="w-full mb-4"
           >
             Use Template
           </Button>
