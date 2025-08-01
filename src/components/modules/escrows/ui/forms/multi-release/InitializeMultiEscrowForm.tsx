@@ -62,7 +62,7 @@ export const InitializeMultiEscrowForm = ({
       <div className="w-full md:w-3/4">
         {/* Card wrapper - hidden on mobile, visible on desktop */}
         <Card className="hidden md:block w-full">
-          <CardHeader>
+          <CardHeader className="mb-4">
             <CardTitle className="text-2xl font-bold">
               {currentStepData.title}
             </CardTitle>
