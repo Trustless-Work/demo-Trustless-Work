@@ -79,7 +79,7 @@ export const useInitializeSingleEscrowForm = () => {
     if (currentMilestones.length > 1) {
       form.setValue(
         "milestones",
-        currentMilestones.filter((_, i) => i !== index)
+        currentMilestones.filter((_, i) => i !== index),
       );
     }
   };
@@ -88,7 +88,7 @@ export const useInitializeSingleEscrowForm = () => {
     form.setValue("title", "Sample TW Escrow");
     form.setValue(
       "description",
-      "This is a sample TW escrow for testing purposes"
+      "This is a sample TW escrow for testing purposes",
     );
     form.setValue("engagementId", "ENG12345");
     form.setValue("amount", 50);
@@ -102,7 +102,7 @@ export const useInitializeSingleEscrowForm = () => {
     form.setValue("receiverMemo", 90909090);
     form.setValue(
       "trustline.address",
-      trustlines.find((t) => t.name === "USDC")?.address || ""
+      trustlines.find((t) => t.name === "USDC")?.address || "",
     );
     form.setValue("milestones", [
       {
@@ -137,12 +137,12 @@ export const useInitializeSingleEscrowForm = () => {
        */
       const { unsignedTransaction } = await deployEscrow(
         finalPayload,
-        "single-release"
+        "single-release",
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from deployEscrow response."
+          "Unsigned transaction is missing from deployEscrow response.",
         );
       }
 
@@ -181,7 +181,7 @@ export const useInitializeSingleEscrowForm = () => {
       if (data && data.status === "SUCCESS") {
         const escrow = buildSingleEscrowFromResponse(
           data as InitializeSingleReleaseEscrowResponse,
-          walletAddress || ""
+          walletAddress || "",
         );
         setEscrow(escrow);
         setActiveTab("escrow");
@@ -192,7 +192,7 @@ export const useInitializeSingleEscrowForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);
@@ -213,7 +213,7 @@ export const useInitializeSingleEscrowForm = () => {
   };
 
   const getStepFields = (
-    step: number
+    step: number,
   ): (keyof z.infer<typeof formSchemaSingleRelease>)[] => {
     switch (step) {
       case 0:

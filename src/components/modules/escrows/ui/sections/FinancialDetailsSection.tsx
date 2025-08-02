@@ -21,7 +21,7 @@ export const FinancialDetailsSection = ({
     }
     return (escrow as MultiReleaseEscrow).milestones.reduce(
       (sum, milestone) => sum + milestone.amount,
-      0
+      0,
     );
   };
 

@@ -80,7 +80,7 @@ export function GetEscrowsByContractIdsForm() {
                     </FormItem>
                   )}
                 />
-              )
+              ),
             )}
           </div>
 

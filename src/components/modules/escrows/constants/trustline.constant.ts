@@ -24,5 +24,5 @@ export const trustlinesOptions = trustlines.map(
   (trustline: Trustline & { name?: string }) => ({
     value: trustline.address,
     label: trustline.name,
-  })
+  }),
 );

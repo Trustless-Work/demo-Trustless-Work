@@ -22,7 +22,7 @@ export const EscrowMilestonesSection = ({
       {escrow?.milestones.map(
         (
           milestone: SingleReleaseMilestone | MultiReleaseMilestone,
-          index: number
+          index: number,
         ) => (
           <div
             key={index}
@@ -144,7 +144,7 @@ export const EscrowMilestonesSection = ({
               </div>
             )}
           </div>
-        )
+        ),
       )}
     </div>
   );

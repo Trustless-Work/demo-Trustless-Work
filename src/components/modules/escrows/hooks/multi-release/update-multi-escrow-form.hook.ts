@@ -90,12 +90,12 @@ export const useUpdateMultiEscrowForm = () => {
        */
       const { unsignedTransaction } = await updateEscrow(
         payload,
-        "multi-release"
+        "multi-release",
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from updateEscrow response."
+          "Unsigned transaction is missing from updateEscrow response.",
         );
       }
 
@@ -147,7 +147,7 @@ export const useUpdateMultiEscrowForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);
