@@ -18,6 +18,6 @@ export const formSchema = z.object({
   status: z
     .enum(["pending", "active", "complete", "disputed", "cancelled"])
     .optional(),
-  validateOnChain: z.boolean().default(true),
+  validateOnChain: z.boolean().optional(),
   type: z.enum(["single-release", "multi-release"]).optional(),
 });

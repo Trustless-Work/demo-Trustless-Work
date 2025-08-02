@@ -40,6 +40,7 @@ export const useGetEscrowsBySignerForm = () => {
 
     try {
       // Build filters object removing empty fields
+      // Using any type here as the SDK types are not fully exposed
       const filters: any = {
         signer: payload.signer,
         validateOnChain: payload.validateOnChain,
@@ -68,7 +69,8 @@ export const useGetEscrowsBySignerForm = () => {
         throw new Error("No escrow data received");
       }
 
-      setResponse(escrowData);
+      // The SDK returns an array, but we store it as a single response object
+      setResponse(escrowData as any);
       toast.success("Escrow data fetched successfully");
     } catch (error: unknown) {
       const mappedError = handleError(error as AxiosError | WalletError);
