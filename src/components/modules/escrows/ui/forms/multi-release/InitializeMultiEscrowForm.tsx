@@ -152,10 +152,10 @@ export const InitializeMultiEscrowForm = ({
                               min="1"
                               placeholder="5"
                               {...field}
-                              value={field.value || ""}
+                              value={isNaN(field.value) ? "" : field.value || ""}
                               onChange={(e) =>
                                 field.onChange(
-                                  e.target.value ? Number(e.target.value) : ""
+                                  e.target.value ? Number(e.target.value) : undefined
                                 )
                               }
                             />
@@ -181,7 +181,7 @@ export const InitializeMultiEscrowForm = ({
                                   field.onChange(selectedOption.value);
                                 }
                               }}
-                              value={field.value || ""}
+                              value={isNaN(field.value) ? "" : field.value || ""}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a trustline" />
@@ -484,7 +484,7 @@ export const InitializeMultiEscrowForm = ({
                             value={field.value || ""}
                             onChange={(e) =>
                               field.onChange(
-                                e.target.value ? Number(e.target.value) : ""
+                                e.target.value ? Number(e.target.value) : undefined
                               )
                             }
                           />

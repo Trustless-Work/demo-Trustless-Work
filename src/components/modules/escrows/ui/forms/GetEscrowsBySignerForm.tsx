@@ -59,10 +59,10 @@ export function GetEscrowsBySignerForm() {
                       <Input
                         type="number"
                         placeholder="1"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : "",
+                            e.target.value ? Number(e.target.value) : undefined,
                           )
                         }
                       />
@@ -158,7 +158,7 @@ export function GetEscrowsBySignerForm() {
                     <FormControl>
                       <Input
                         type="date"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -177,7 +177,7 @@ export function GetEscrowsBySignerForm() {
                     <FormControl>
                       <Input
                         type="date"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -198,10 +198,10 @@ export function GetEscrowsBySignerForm() {
                         type="number"
                         step="0.01"
                         placeholder="0.01"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : "",
+                            e.target.value ? Number(e.target.value) : undefined,
                           )
                         }
                       />
@@ -223,10 +223,10 @@ export function GetEscrowsBySignerForm() {
                         type="number"
                         step="0.01"
                         placeholder="1000"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : "",
+                            e.target.value ? Number(e.target.value) : undefined,
                           )
                         }
                       />
@@ -246,7 +246,7 @@ export function GetEscrowsBySignerForm() {
                     <FormControl>
                       <Input
                         placeholder="Escrow title"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -265,7 +265,7 @@ export function GetEscrowsBySignerForm() {
                     <FormControl>
                       <Input
                         placeholder="engagement_id"
-                        value={field.value || ""}
+                                                    value={isNaN(field.value) ? "" : field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
