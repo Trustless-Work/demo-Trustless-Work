@@ -155,7 +155,7 @@ export const InitializeMultiEscrowForm = ({
                               value={field.value || ""}
                               onChange={(e) =>
                                 field.onChange(
-                                  e.target.value ? Number(e.target.value) : undefined
+                                  e.target.value ? Number(e.target.value) : ""
                                 )
                               }
                             />
@@ -484,7 +484,7 @@ export const InitializeMultiEscrowForm = ({
                             value={field.value || ""}
                             onChange={(e) =>
                               field.onChange(
-                                e.target.value ? Number(e.target.value) : undefined
+                                e.target.value ? Number(e.target.value) : ""
                               )
                             }
                           />
