@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/form";
 import { ResponseDisplay } from "@/components/utils/response-display";
 import { useGetEscrowsBySignerForm } from "../../hooks/get-escrows-by-signer-form.hook";
+import { GetEscrowsFromIndexerResponse } from "@trustless-work/escrow/types";
 
 export function GetEscrowsBySignerForm() {
   const { form, loading, response, onSubmit } = useGetEscrowsBySignerForm();
@@ -42,7 +43,7 @@ export function GetEscrowsBySignerForm() {
             )}
           />
 
-          {/* Campos Opcionales Agrupados */}
+          {/* Optional Grouped Fields */}
           <div className="space-y-4 border rounded-lg p-4 bg-muted/30">
             <Label className="text-base font-medium">Optional Filters</Label>
 
@@ -332,20 +333,11 @@ export function GetEscrowsBySignerForm() {
         </form>
       </Form>
 
-      {/* Quick testing example */}
-      <div className="mt-6 p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/50">
-        <Label className="text-sm font-medium text-blue-900 dark:text-blue-100">
-          💡 Quick testing example:
-        </Label>
-        <div className="mt-2 text-xs text-blue-700 dark:text-blue-300 space-y-1">
-          <p>• signer: 0xabc... (auto-filled with your wallet)</p>
-          <p>• status: complete</p>
-          <p>• page: 1</p>
-          <p>• minAmount: 0.01</p>
-        </div>
-      </div>
 
-      <ResponseDisplay response={response} />
+
+      <ResponseDisplay 
+        response={response as GetEscrowsFromIndexerResponse[] | null} 
+      />
     </div>
   );
 }

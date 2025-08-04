@@ -8,7 +8,10 @@ import { toast } from "sonner";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { GetEscrowsFromIndexerResponse } from "@trustless-work/escrow/types";
+import { 
+  GetEscrowsFromIndexerResponse,
+  GetEscrowsFromIndexerBySignerParams 
+} from "@trustless-work/escrow/types";
 import { useGetEscrowsFromIndexerBySigner } from "@trustless-work/escrow/hooks";
 import { formSchema } from "../schemas/get-escrows-by-signer.schema";
 
@@ -17,7 +20,7 @@ export const useGetEscrowsBySignerForm = () => {
   const { activeEscrowType } = useTabsContext();
   const [loading, setLoading] = useState(false);
   const [response, setResponse] =
-    useState<GetEscrowsFromIndexerResponse | null>(null);
+    useState<GetEscrowsFromIndexerResponse[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { getEscrowsBySigner } = useGetEscrowsFromIndexerBySigner();
 
@@ -39,29 +42,23 @@ export const useGetEscrowsBySignerForm = () => {
     setResponse(null);
 
     try {
-      // Build filters object removing empty fields
-      // Using any type here as the SDK types are not fully exposed
-      const filters: any = {
+      // Build filters object with proper typing - all filters come from the form
+      const filters = {
         signer: payload.signer,
-        validateOnChain: payload.validateOnChain,
+        validateOnChain: payload.validateOnChain ?? true,
         type: payload.type || activeEscrowType,
-      };
-
-      // Add optional fields only if they have values
-      if (payload.page !== undefined) filters.page = payload.page;
-      if (payload.orderDirection)
-        filters.orderDirection = payload.orderDirection;
-      if (payload.orderBy) filters.orderBy = payload.orderBy;
-      if (payload.startDate) filters.startDate = payload.startDate;
-      if (payload.endDate) filters.endDate = payload.endDate;
-      if (payload.maxAmount !== undefined)
-        filters.maxAmount = payload.maxAmount;
-      if (payload.minAmount !== undefined)
-        filters.minAmount = payload.minAmount;
-      if (payload.isActive !== undefined) filters.isActive = payload.isActive;
-      if (payload.title) filters.title = payload.title;
-      if (payload.engagementId) filters.engagementId = payload.engagementId;
-      if (payload.status) filters.status = payload.status;
+        ...(payload.page !== undefined && { page: payload.page }),
+        ...(payload.orderDirection && { orderDirection: payload.orderDirection }),
+        ...(payload.orderBy && { orderBy: payload.orderBy }),
+        ...(payload.startDate && { startDate: payload.startDate }),
+        ...(payload.endDate && { endDate: payload.endDate }),
+        ...(payload.maxAmount !== undefined && { maxAmount: payload.maxAmount }),
+        ...(payload.minAmount !== undefined && { minAmount: payload.minAmount }),
+        ...(payload.isActive !== undefined && { isActive: payload.isActive }),
+        ...(payload.title && { title: payload.title }),
+        ...(payload.engagementId && { engagementId: payload.engagementId }),
+        ...(payload.status && { status: payload.status }),
+      } as GetEscrowsFromIndexerBySignerParams;
 
       const escrowData = await getEscrowsBySigner(filters);
 
@@ -69,8 +66,8 @@ export const useGetEscrowsBySignerForm = () => {
         throw new Error("No escrow data received");
       }
 
-      // The SDK returns an array, but we store it as a single response object
-      setResponse(escrowData as any);
+      // Handle the response properly - the SDK returns an array of escrows
+      setResponse(escrowData);
       toast.success("Escrow data fetched successfully");
     } catch (error: unknown) {
       const mappedError = handleError(error as AxiosError | WalletError);
