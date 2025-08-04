@@ -147,7 +147,18 @@ export const InitializeMultiEscrowForm = ({
                         <FormItem>
                           <FormLabel>Platform Fee (%)</FormLabel>
                           <FormControl>
-                            <Input placeholder="5" {...field} />
+                            <Input
+                              type="number"
+                              min="1"
+                              placeholder="5"
+                              {...field}
+                              value={field.value || ""}
+                              onChange={(e) =>
+                                field.onChange(
+                                  e.target.value ? Number(e.target.value) : undefined
+                                )
+                              }
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -465,7 +476,18 @@ export const InitializeMultiEscrowForm = ({
                       <FormItem>
                         <FormLabel>Platform Fee (%)</FormLabel>
                         <FormControl>
-                          <Input placeholder="5" {...field} />
+                          <Input
+                            type="number"
+                            min="1"
+                            placeholder="5"
+                            {...field}
+                            value={field.value || ""}
+                            onChange={(e) =>
+                              field.onChange(
+                                e.target.value ? Number(e.target.value) : undefined
+                              )
+                            }
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
