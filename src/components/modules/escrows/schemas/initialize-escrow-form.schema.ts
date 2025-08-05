@@ -17,12 +17,9 @@ export const formSchemaSingleRelease = z.object({
   amount: z.number().min(1, {
     message: "Amount is required.",
   }),
-  platformFee: z.union([
-    z.number().min(1, {
-      message: "Platform fee is required.",
-    }),
-    z.string().length(0)
-  ]).transform((val) => val === "" ? undefined : val),
+  platformFee: z.number().min(0, {
+    message: "Platform fee must be a non-negative number.",
+  }),
   receiverMemo: z.number().min(0, {
     message: "Receiver memo must be a non-negative number.",
   }),

@@ -42,27 +42,27 @@ export const useInitializeMultiEscrowForm = () => {
     resolver: zodResolver(formSchemaMultiRelease) as Resolver<FormValues>,
     defaultValues: {
       signer: walletAddress || "",
-      engagementId: "",
-      title: "",
-      description: "",
-      platformFee: 0,
-      receiverMemo: 0,
+      engagementId: "ENG12345",
+      title: "Sample TW Escrow",
+      description: "This is a sample TW escrow for testing purposes",
+      platformFee: 5,
+      receiverMemo: 90909090,
       roles: {
-        approver: "",
-        serviceProvider: "",
-        platformAddress: "",
-        releaseSigner: "",
-        disputeResolver: "",
-        receiver: "",
+        approver: walletAddress || "",
+        serviceProvider: walletAddress || "",
+        platformAddress: walletAddress || "",
+        releaseSigner: walletAddress || "",
+        disputeResolver: walletAddress || "",
+        receiver: walletAddress || "",
       },
       trustline: {
-        address: "",
+        address: trustlines.find((t) => t.name === "USDC")?.address || "",
         decimals: 10000000,
       },
       milestones: [
         {
-          description: "",
-          amount: 0,
+          description: "Initial milestone",
+          amount: 50,
         },
       ],
     },
@@ -134,6 +134,8 @@ export const useInitializeMultiEscrowForm = () => {
         signer: walletAddress || "",
       };
 
+
+
       /**
        * API call by using the trustless work hooks
        * @Note:
@@ -191,14 +193,30 @@ export const useInitializeMultiEscrowForm = () => {
         setEscrow(escrow);
         setActiveTab("escrow");
         toast.success("Escrow Created");
+      } else if (data && data.status !== "SUCCESS") {
+        throw new Error((data as { message?: string }).message || "Failed to create escrow");
+      } else {
+        throw new Error("Invalid response from server");
       }
     } catch (error: unknown) {
-      const mappedError = handleError(error as AxiosError | WalletError);
-      console.error("Error:", mappedError.message);
+      console.error("Error:", error);
+      
+      let errorMessage = "An unknown error occurred";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else {
+        try {
+          const mappedError = handleError(error as AxiosError | WalletError);
+          errorMessage = mappedError.message;
+        } catch (handleErrorException) {
+          console.error("Error in handleError:", handleErrorException);
+        }
+      }
 
-      toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred",
-      );
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

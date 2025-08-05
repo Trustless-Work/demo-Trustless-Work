@@ -181,7 +181,7 @@ export const InitializeMultiEscrowForm = ({
                                   field.onChange(selectedOption.value);
                                 }
                               }}
-                              value={isNaN(field.value) ? "" : field.value || ""}
+                              value={field.value || ""}
                             >
                               <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Select a trustline" />
