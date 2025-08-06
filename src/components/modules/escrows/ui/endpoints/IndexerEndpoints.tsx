@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { GetEscrowsByContractIdsForm } from "../forms/GetEscrowsByContractIdsForm";
+import { GetEscrowsByRoleForm } from "../forms/GetEscrowsByRoleForm";
 
 export function IndexerEndpoints() {
   const [activeTab, setActiveTab] = useState("get-escrows-by-signer");
@@ -35,26 +36,6 @@ export function IndexerEndpoints() {
       label: "Get Escrows by Contract IDs",
     },
   ];
-
-  const renderContent = () => (
-    <div className="mt-2 pt-4 border-t">
-      {activeTab === "get-escrows-by-signer" && (
-        <div className="flex justify-center mt-0">
-          {/* Get Escrows by Signer Form */}
-        </div>
-      )}
-      {activeTab === "get-escrows-by-role" && (
-        <div className="flex justify-center mt-0">
-          {/* Get Escrows by Role Form */}
-        </div>
-      )}
-      {activeTab === "get-escrows-by-contract-ids" && (
-        <div className="flex justify-center mt-0">
-          <GetEscrowsByContractIdsForm />
-        </div>
-      )}
-    </div>
-  );
 
   return (
     <div className="w-full">
@@ -86,7 +67,24 @@ export function IndexerEndpoints() {
                 Get Escrows by Contract IDs
               </TabsTrigger>
             </TabsList>
-            {renderContent()}
+
+            <TabsContent value="get-escrows-by-signer">
+              <div className="flex justify-center mt-0">
+                {/* Get Escrows by Signer Form */}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="get-escrows-by-role">
+              <div className="flex justify-center mt-0">
+                <GetEscrowsByRoleForm />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="get-escrows-by-contract-ids">
+              <div className="flex justify-center mt-0">
+                <GetEscrowsByContractIdsForm />
+              </div>
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>
@@ -116,7 +114,21 @@ export function IndexerEndpoints() {
             </Select>
           </div>
 
-          {renderContent()}
+          {activeTab === "get-escrows-by-signer" && (
+            <div className="flex justify-center mt-0">
+              {/* Get Escrows by Signer Form */}
+            </div>
+          )}
+          {activeTab === "get-escrows-by-role" && (
+            <div className="flex justify-center mt-0">
+              <GetEscrowsByRoleForm />
+            </div>
+          )}
+          {activeTab === "get-escrows-by-contract-ids" && (
+            <div className="flex justify-center mt-0">
+              <GetEscrowsByContractIdsForm />
+            </div>
+          )}
         </div>
       </div>
     </div>
