@@ -1,5 +1,4 @@
 import { useWalletContext } from "@/providers/wallet.provider";
-import { useTabsContext } from "@/providers/tabs.provider";
 import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -8,19 +7,19 @@ import { toast } from "sonner";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { 
+import {
   GetEscrowsFromIndexerResponse,
-  GetEscrowsFromIndexerBySignerParams 
+  GetEscrowsFromIndexerBySignerParams,
 } from "@trustless-work/escrow/types";
 import { useGetEscrowsFromIndexerBySigner } from "@trustless-work/escrow/hooks";
 import { formSchema } from "../schemas/get-escrows-by-signer.schema";
 
 export const useGetEscrowsBySignerForm = () => {
   const { walletAddress } = useWalletContext();
-  const { activeEscrowType } = useTabsContext();
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] =
-    useState<GetEscrowsFromIndexerResponse[] | null>(null);
+  const [response, setResponse] = useState<
+    GetEscrowsFromIndexerResponse[] | null
+  >(null);
   const [error, setError] = useState<string | null>(null);
   const { getEscrowsBySigner } = useGetEscrowsFromIndexerBySigner();
 
@@ -32,7 +31,7 @@ export const useGetEscrowsBySignerForm = () => {
       orderDirection: "desc",
       orderBy: "createdAt",
       validateOnChain: true,
-      type: activeEscrowType,
+      type: "all",
     },
   });
 
@@ -46,14 +45,20 @@ export const useGetEscrowsBySignerForm = () => {
       const filters = {
         signer: payload.signer,
         validateOnChain: payload.validateOnChain ?? true,
-        type: payload.type || activeEscrowType,
+        type: payload.type === "all" ? undefined : payload.type,
         ...(payload.page !== undefined && { page: payload.page }),
-        ...(payload.orderDirection && { orderDirection: payload.orderDirection }),
+        ...(payload.orderDirection && {
+          orderDirection: payload.orderDirection,
+        }),
         ...(payload.orderBy && { orderBy: payload.orderBy }),
         ...(payload.startDate && { startDate: payload.startDate }),
         ...(payload.endDate && { endDate: payload.endDate }),
-        ...(payload.maxAmount !== undefined && { maxAmount: payload.maxAmount }),
-        ...(payload.minAmount !== undefined && { minAmount: payload.minAmount }),
+        ...(payload.maxAmount !== undefined && {
+          maxAmount: payload.maxAmount,
+        }),
+        ...(payload.minAmount !== undefined && {
+          minAmount: payload.minAmount,
+        }),
         ...(payload.isActive !== undefined && { isActive: payload.isActive }),
         ...(payload.title && { title: payload.title }),
         ...(payload.engagementId && { engagementId: payload.engagementId }),
@@ -74,7 +79,7 @@ export const useGetEscrowsBySignerForm = () => {
       console.error("Error fetching escrows:", mappedError.message);
       setError(mappedError.message);
       toast.error(
-        mappedError ? mappedError.message : "Failed to fetch escrow data",
+        mappedError ? mappedError.message : "Failed to fetch escrow data"
       );
     } finally {
       setLoading(false);

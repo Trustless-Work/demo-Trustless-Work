@@ -34,7 +34,7 @@ export function GetEscrowsBySignerForm() {
             name="signer"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Signer Address *</FormLabel>
+                <FormLabel>Signer Address</FormLabel>
                 <FormControl>
                   <Input disabled {...field} />
                 </FormControl>
@@ -45,9 +45,28 @@ export function GetEscrowsBySignerForm() {
 
           {/* Optional Grouped Fields */}
           <div className="space-y-4 border rounded-lg p-4 bg-muted/30">
-            <Label className="text-base font-medium">Optional Filters</Label>
+            <div className="flex justify-between items-center">
+              <Label className="text-base font-medium">Optional Filters</Label>
+              <Button
+                type="button"
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  form.reset({
+                    signer: form.getValues("signer"),
+                    page: 1,
+                    orderDirection: "desc",
+                    orderBy: "createdAt",
+                    validateOnChain: true,
+                    type: form.getValues("type"),
+                  });
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               {/* Page */}
               <FormField
                 control={form.control}
@@ -59,10 +78,14 @@ export function GetEscrowsBySignerForm() {
                       <Input
                         type="number"
                         placeholder="1"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        value={
+                          field.value === undefined || isNaN(field.value)
+                            ? ""
+                            : field.value || ""
+                        }
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                       />
@@ -84,7 +107,7 @@ export function GetEscrowsBySignerForm() {
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select direction" />
                         </SelectTrigger>
                       </FormControl>
@@ -107,7 +130,7 @@ export function GetEscrowsBySignerForm() {
                     <FormLabel>Order By</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select order by" />
                         </SelectTrigger>
                       </FormControl>
@@ -131,7 +154,7 @@ export function GetEscrowsBySignerForm() {
                     <FormLabel>Status</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="w-full">
                           <SelectValue placeholder="Select status" />
                         </SelectTrigger>
                       </FormControl>
@@ -148,6 +171,36 @@ export function GetEscrowsBySignerForm() {
                 )}
               />
 
+              {/* Type */}
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Type</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="all">All Types</SelectItem>
+                        <SelectItem value="single-release">
+                          Single Release
+                        </SelectItem>
+                        <SelectItem value="multi-release">
+                          Multi Release
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Start Date */}
               <FormField
                 control={form.control}
@@ -158,7 +211,7 @@ export function GetEscrowsBySignerForm() {
                     <FormControl>
                       <Input
                         type="date"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        value={field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -177,7 +230,7 @@ export function GetEscrowsBySignerForm() {
                     <FormControl>
                       <Input
                         type="date"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        value={field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -197,11 +250,15 @@ export function GetEscrowsBySignerForm() {
                       <Input
                         type="number"
                         step="0.01"
-                        placeholder="0.01"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        placeholder="0"
+                        value={
+                          field.value === undefined || isNaN(field.value)
+                            ? ""
+                            : field.value || ""
+                        }
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                       />
@@ -222,11 +279,15 @@ export function GetEscrowsBySignerForm() {
                       <Input
                         type="number"
                         step="0.01"
-                        placeholder="1000"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        placeholder="999999"
+                        value={
+                          field.value === undefined || isNaN(field.value)
+                            ? ""
+                            : field.value || ""
+                        }
                         onChange={(e) =>
                           field.onChange(
-                            e.target.value ? Number(e.target.value) : undefined,
+                            e.target.value ? Number(e.target.value) : undefined
                           )
                         }
                       />
@@ -245,8 +306,8 @@ export function GetEscrowsBySignerForm() {
                     <FormLabel>Title</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Escrow title"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        placeholder="Escrow Title"
+                        value={field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -264,8 +325,8 @@ export function GetEscrowsBySignerForm() {
                     <FormLabel>Engagement ID</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="engagement_id"
-                                                    value={isNaN(field.value) ? "" : field.value || ""}
+                        placeholder="ENG12345"
+                        value={field.value || ""}
                         onChange={field.onChange}
                       />
                     </FormControl>
@@ -273,59 +334,59 @@ export function GetEscrowsBySignerForm() {
                   </FormItem>
                 )}
               />
+
+              {/* Is Active Checkbox */}
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-background">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value || false}
+                        onCheckedChange={field.onChange}
+                        className="mt-1"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-base font-medium">
+                        Active Escrows Only
+                      </FormLabel>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Filter to show only currently active escrows
+                      </p>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              {/* Validate On Chain Checkbox */}
+              <FormField
+                control={form.control}
+                name="validateOnChain"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-muted/30">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                        className="mt-1"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel className="text-base font-medium">
+                        Validate on Chain
+                      </FormLabel>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Verify escrow data against the blockchain for enhanced
+                        security and accuracy
+                      </p>
+                    </div>
+                  </FormItem>
+                )}
+              />
             </div>
-
-            {/* Is Active Checkbox */}
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-background">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value || false}
-                      onCheckedChange={field.onChange}
-                      className="mt-1"
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel className="text-base font-medium">
-                      Active Escrows Only
-                    </FormLabel>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Filter to show only currently active escrows
-                    </p>
-                  </div>
-                </FormItem>
-              )}
-            />
           </div>
-
-          {/* Validate On Chain Checkbox */}
-          <FormField
-            control={form.control}
-            name="validateOnChain"
-            render={({ field }) => (
-              <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-lg border p-4 bg-muted/30">
-                <FormControl>
-                  <Checkbox
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className="mt-1"
-                  />
-                </FormControl>
-                <div className="space-y-1 leading-none">
-                  <FormLabel className="text-base font-medium">
-                    Validate on Chain
-                  </FormLabel>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    Verify escrow data against the blockchain for enhanced
-                    security and accuracy
-                  </p>
-                </div>
-              </FormItem>
-            )}
-          />
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Fetching..." : "Get Escrows by Signer"}
@@ -333,10 +394,8 @@ export function GetEscrowsBySignerForm() {
         </form>
       </Form>
 
-
-
-      <ResponseDisplay 
-        response={response as GetEscrowsFromIndexerResponse[] | null} 
+      <ResponseDisplay
+        response={response as GetEscrowsFromIndexerResponse[] | null}
       />
     </div>
   );
