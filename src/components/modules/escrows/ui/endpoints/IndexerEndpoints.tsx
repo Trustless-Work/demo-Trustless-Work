@@ -17,6 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { GetEscrowsByContractIdsForm } from "../forms/GetEscrowsByContractIdsForm";
+import { GetEscrowsBySignerForm } from "../forms/GetEscrowsBySignerForm";
 import { GetEscrowsByRoleForm } from "../forms/GetEscrowsByRoleForm";
 
 export function IndexerEndpoints() {
@@ -70,7 +71,7 @@ export function IndexerEndpoints() {
 
             <TabsContent value="get-escrows-by-signer">
               <div className="flex justify-center mt-0">
-                {/* Get Escrows by Signer Form */}
+                <GetEscrowsBySignerForm />
               </div>
             </TabsContent>
 
@@ -116,7 +117,7 @@ export function IndexerEndpoints() {
 
           {activeTab === "get-escrows-by-signer" && (
             <div className="flex justify-center mt-0">
-              {/* Get Escrows by Signer Form */}
+              <GetEscrowsBySignerForm />
             </div>
           )}
           {activeTab === "get-escrows-by-role" && (

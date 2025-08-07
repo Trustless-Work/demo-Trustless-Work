@@ -61,12 +61,12 @@ export const useApproveMilestoneForm = () => {
        */
       const { unsignedTransaction } = await approveMilestone(
         payload,
-        activeEscrowType
+        activeEscrowType,
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from changeMilestoneApprovedFlag response."
+          "Unsigned transaction is missing from changeMilestoneApprovedFlag response.",
         );
       }
 
@@ -115,14 +115,14 @@ export const useApproveMilestoneForm = () => {
                       approved: payload.newFlag,
                     },
                   }
-              : milestone
+              : milestone,
           ),
         } as SingleReleaseEscrow | MultiReleaseEscrow;
 
         setEscrow(escrowUpdated);
 
         toast.success(
-          `Milestone index - ${payload.milestoneIndex} has been approved`
+          `Milestone index - ${payload.milestoneIndex} has been approved`,
         );
         setResponse(data);
         form.reset();
@@ -132,7 +132,7 @@ export const useApproveMilestoneForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

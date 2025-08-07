@@ -82,7 +82,7 @@ export const useInitializeMultiEscrowForm = () => {
     if (currentMilestones.length > 1) {
       form.setValue(
         "milestones",
-        currentMilestones.filter((_, i) => i !== index)
+        currentMilestones.filter((_, i) => i !== index),
       );
     }
   };
@@ -91,7 +91,7 @@ export const useInitializeMultiEscrowForm = () => {
     form.setValue("title", "Sample TW Escrow");
     form.setValue(
       "description",
-      "This is a sample TW escrow for testing purposes"
+      "This is a sample TW escrow for testing purposes",
     );
     form.setValue("engagementId", "ENG12345");
     form.setValue("platformFee", 5);
@@ -104,7 +104,7 @@ export const useInitializeMultiEscrowForm = () => {
     form.setValue("receiverMemo", 90909090);
     form.setValue(
       "trustline.address",
-      trustlines.find((t) => t.name === "USDC")?.address || ""
+      trustlines.find((t) => t.name === "USDC")?.address || "",
     );
     form.setValue("milestones", [
       {
@@ -134,6 +134,8 @@ export const useInitializeMultiEscrowForm = () => {
         signer: walletAddress || "",
       };
 
+
+
       /**
        * API call by using the trustless work hooks
        * @Note:
@@ -142,12 +144,12 @@ export const useInitializeMultiEscrowForm = () => {
        */
       const { unsignedTransaction } = await deployEscrow(
         finalPayload,
-        "multi-release"
+        "multi-release",
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from deployEscrow response."
+          "Unsigned transaction is missing from deployEscrow response.",
         );
       }
 
@@ -186,19 +188,35 @@ export const useInitializeMultiEscrowForm = () => {
       if (data && data.status === "SUCCESS") {
         const escrow = buildMultiEscrowFromResponse(
           data as InitializeMultiReleaseEscrowResponse,
-          walletAddress || ""
+          walletAddress || "",
         );
         setEscrow(escrow);
         setActiveTab("escrow");
         toast.success("Escrow Created");
+      } else if (data && data.status !== "SUCCESS") {
+        throw new Error((data as { message?: string }).message || "Failed to create escrow");
+      } else {
+        throw new Error("Invalid response from server");
       }
     } catch (error: unknown) {
-      const mappedError = handleError(error as AxiosError | WalletError);
-      console.error("Error:", mappedError.message);
+      console.error("Error:", error);
+      
+      let errorMessage = "An unknown error occurred";
+      
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === "string") {
+        errorMessage = error;
+      } else {
+        try {
+          const mappedError = handleError(error as AxiosError | WalletError);
+          errorMessage = mappedError.message;
+        } catch (handleErrorException) {
+          console.error("Error in handleError:", handleErrorException);
+        }
+      }
 
-      toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
-      );
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -218,7 +236,7 @@ export const useInitializeMultiEscrowForm = () => {
   };
 
   const getStepFields = (
-    step: number
+    step: number,
   ): (keyof z.infer<typeof formSchemaMultiRelease>)[] => {
     switch (step) {
       case 0:

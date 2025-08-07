@@ -51,12 +51,12 @@ export const useDisputeEscrowForm = () => {
        */
       const { unsignedTransaction } = await startDispute(
         payload,
-        "single-release"
+        "single-release",
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from startDispute response."
+          "Unsigned transaction is missing from startDispute response.",
         );
       }
 
@@ -109,7 +109,7 @@ export const useDisputeEscrowForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

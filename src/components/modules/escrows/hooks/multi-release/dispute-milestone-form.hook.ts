@@ -52,12 +52,12 @@ export const useDisputeMilestoneForm = () => {
        */
       const { unsignedTransaction } = await startDispute(
         payload,
-        "multi-release"
+        "multi-release",
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from startDispute response."
+          "Unsigned transaction is missing from startDispute response.",
         );
       }
 
@@ -99,7 +99,7 @@ export const useDisputeMilestoneForm = () => {
             (m, index) =>
               index === parseInt(payload.milestoneIndex)
                 ? { ...m, flags: { ...m.flags, disputed: true } }
-                : m
+                : m,
           ),
         };
 
@@ -110,7 +110,7 @@ export const useDisputeMilestoneForm = () => {
             (escrow.milestones as MultiReleaseMilestone[])[
               parseInt(payload.milestoneIndex)
             ].description
-          }`
+          }`,
         );
         setResponse(data);
       }
@@ -119,7 +119,7 @@ export const useDisputeMilestoneForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

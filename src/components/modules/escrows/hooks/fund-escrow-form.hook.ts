@@ -42,7 +42,7 @@ export const useFundEscrowForm = () => {
           ? (escrow as SingleReleaseEscrow)?.amount || 1000
           : ((escrow as MultiReleaseEscrow)?.milestones || []).reduce(
               (total, milestone) => total + (Number(milestone.amount) || 0),
-              0
+              0,
             ) || 1000,
       signer: walletAddress || "Connect your wallet to get your address",
     },
@@ -56,12 +56,12 @@ export const useFundEscrowForm = () => {
     try {
       const { unsignedTransaction } = await fundEscrow(
         payload,
-        activeEscrowType
+        activeEscrowType,
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from fundEscrow response."
+          "Unsigned transaction is missing from fundEscrow response.",
         );
       }
 
@@ -95,7 +95,7 @@ export const useFundEscrowForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);

@@ -38,7 +38,7 @@ export const EscrowCreatedSection = () => {
             multiMilestone.flags?.approved
           );
         }
-      }
+      },
     ).length || 0;
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;

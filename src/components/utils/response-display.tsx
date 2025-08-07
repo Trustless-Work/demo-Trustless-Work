@@ -25,6 +25,7 @@ interface ResponseDisplayProps {
     | SingleReleaseEscrow
     | MultiReleaseEscrow
     | GetEscrowsFromIndexerResponse
+    | GetEscrowsFromIndexerResponse[]
     | null;
 }
 

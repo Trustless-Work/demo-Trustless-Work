@@ -59,7 +59,7 @@ export const useGetMultipleEscrowBalancesForm = () => {
        */
       const balances = await getMultipleBalances(
         transformedData,
-        activeEscrowType
+        activeEscrowType,
       );
 
       if (!balances) {
@@ -85,7 +85,7 @@ export const useGetMultipleEscrowBalancesForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred"
+        mappedError ? mappedError.message : "An unknown error occurred",
       );
     } finally {
       setLoading(false);
