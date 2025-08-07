@@ -8,7 +8,10 @@ import { toast } from "sonner";
 import { handleError } from "@/errors/utils/handle-errors";
 import { AxiosError } from "axios";
 import { WalletError } from "@/@types/errors.entity";
-import { GetEscrowsFromIndexerResponse } from "@trustless-work/escrow/types";
+import {
+  GetEscrowsFromIndexerByRoleParams,
+  GetEscrowsFromIndexerResponse,
+} from "@trustless-work/escrow/types";
 import { useGetEscrowsFromIndexerByRole } from "@trustless-work/escrow/hooks";
 import { getEscrowsByRoleSchema } from "../schemas/get-escrows-by-role-form.schema";
 import { useWalletContext } from "@/providers/wallet.provider";
@@ -64,7 +67,7 @@ export const useGetEscrowsByRoleForm = () => {
         ...(payload.title && { title: payload.title }),
         ...(payload.engagementId && { engagementId: payload.engagementId }),
         ...(payload.status && { status: payload.status }),
-      } as any;
+      } as GetEscrowsFromIndexerByRoleParams;
 
       const escrowData = await getEscrowsByRole(filters);
 
