@@ -66,7 +66,7 @@ export function GetEscrowsBySignerForm() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* Page */}
               <FormField
                 control={form.control}
@@ -146,7 +146,7 @@ export function GetEscrowsBySignerForm() {
               />
 
               {/* Status */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="status"
                 render={({ field }) => (
@@ -169,7 +169,7 @@ export function GetEscrowsBySignerForm() {
                     <FormMessage />
                   </FormItem>
                 )}
-              />
+              /> */}
 
               {/* Type */}
               <FormField
