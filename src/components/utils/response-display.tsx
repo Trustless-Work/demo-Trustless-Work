@@ -37,10 +37,25 @@ export function ResponseDisplay({ response }: ResponseDisplayProps) {
 
   const responseString = JSON.stringify(response, null, 2);
 
+  // Counter for array responses
+  const isArrayResponse = Array.isArray(response);
+  const resultCount = isArrayResponse ? response.length : 1;
+
   return (
     <Card className="mt-6 border shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-lg">Response</CardTitle>
+        <div className="flex items-center gap-3">
+          <CardTitle className="text-lg">Response</CardTitle>
+
+          {isArrayResponse && (
+            <span
+              className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md"
+              aria-label={`${resultCount} ${resultCount === 1 ? "result" : "results"}`}
+            >
+              {resultCount} result{resultCount !== 1 ? "s" : ""}
+            </span>
+          )}
+        </div>
         <Button
           variant="outline"
           size="sm"
