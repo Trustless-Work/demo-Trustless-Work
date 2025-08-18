@@ -11,7 +11,6 @@ export const formSchemaSingleRelease = z.object({
     .refine((value) => isValidWallet(value), {
       message: "Release signer must be a valid wallet.",
     }),
-  signer: z.string().min(1, "Signer address is required"),
 });
 
 export const formSchemaMultiRelease = z.object({
@@ -24,6 +23,5 @@ export const formSchemaMultiRelease = z.object({
     .refine((value) => isValidWallet(value), {
       message: "Release signer must be a valid wallet.",
     }),
-  signer: z.string().min(1, "Signer address is required"),
   milestoneIndex: z.string().min(1, "Milestone index is required"),
 });

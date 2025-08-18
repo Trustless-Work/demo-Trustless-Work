@@ -35,7 +35,6 @@ export const useReleaseFundsMilestoneForm = () => {
     defaultValues: {
       contractId: escrow?.contractId || "",
       releaseSigner: escrow?.roles.releaseSigner || "",
-      signer: walletAddress || "Connect your wallet to get your address",
       milestoneIndex: "0",
     },
   });
@@ -53,12 +52,12 @@ export const useReleaseFundsMilestoneForm = () => {
        */
       const { unsignedTransaction } = await releaseFunds(
         payload,
-        "multi-release",
+        "multi-release"
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from releaseFunds response.",
+          "Unsigned transaction is missing from releaseFunds response."
         );
       }
 
@@ -108,7 +107,7 @@ export const useReleaseFundsMilestoneForm = () => {
                     ...m,
                     flags: { ...m.flags, released: true },
                   }
-                : m,
+                : m
           ),
         };
 
@@ -119,7 +118,7 @@ export const useReleaseFundsMilestoneForm = () => {
             (escrow.milestones as MultiReleaseMilestone[])[
               parseInt(payload.milestoneIndex)
             ].description
-          }`,
+          }`
         );
         setResponse(data);
       }
@@ -128,7 +127,7 @@ export const useReleaseFundsMilestoneForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred",
+        mappedError ? mappedError.message : "An unknown error occurred"
       );
     } finally {
       setLoading(false);

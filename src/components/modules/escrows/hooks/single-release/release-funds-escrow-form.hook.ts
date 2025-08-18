@@ -34,7 +34,6 @@ export const useReleaseFundsEscrowForm = () => {
     defaultValues: {
       contractId: escrow?.contractId || "",
       releaseSigner: escrow?.roles.releaseSigner || "",
-      signer: walletAddress || "Connect your wallet to get your address",
     },
   });
 
@@ -51,12 +50,12 @@ export const useReleaseFundsEscrowForm = () => {
        */
       const { unsignedTransaction } = await releaseFunds(
         payload,
-        "single-release",
+        "single-release"
       );
 
       if (!unsignedTransaction) {
         throw new Error(
-          "Unsigned transaction is missing from releaseFunds response.",
+          "Unsigned transaction is missing from releaseFunds response."
         );
       }
 
@@ -110,7 +109,7 @@ export const useReleaseFundsEscrowForm = () => {
       console.error("Error:", mappedError.message);
 
       toast.error(
-        mappedError ? mappedError.message : "An unknown error occurred",
+        mappedError ? mappedError.message : "An unknown error occurred"
       );
     } finally {
       setLoading(false);

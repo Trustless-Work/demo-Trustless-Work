@@ -49,20 +49,6 @@ export function ReleaseFundsMilestoneForm() {
 
           <FormField
             control={form.control}
-            name="signer"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Signer Address</FormLabel>
-                <FormControl>
-                  <Input disabled placeholder="GSIGN...XYZ" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="releaseSigner"
             render={({ field }) => (
               <FormItem>
