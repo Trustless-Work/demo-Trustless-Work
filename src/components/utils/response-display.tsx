@@ -11,22 +11,27 @@ import {
   GetEscrowBalancesResponse,
   GetEscrowsFromIndexerResponse,
   InitializeSingleReleaseEscrowResponse,
+  InitializeMultiReleaseEscrowResponse,
   MultiReleaseEscrow,
   SingleReleaseEscrow,
   UpdateSingleReleaseEscrowResponse,
+  UpdateMultiReleaseEscrowResponse,
 } from "@trustless-work/escrow/types";
 
 interface ResponseDisplayProps {
   response:
-    | InitializeSingleReleaseEscrowResponse
-    | UpdateSingleReleaseEscrowResponse
-    | EscrowRequestResponse
-    | GetEscrowBalancesResponse[]
-    | SingleReleaseEscrow
-    | MultiReleaseEscrow
-    | GetEscrowsFromIndexerResponse
-    | GetEscrowsFromIndexerResponse[]
-    | null;
+  | InitializeSingleReleaseEscrowResponse
+  | InitializeMultiReleaseEscrowResponse
+  | UpdateSingleReleaseEscrowResponse
+  | UpdateMultiReleaseEscrowResponse
+  | EscrowRequestResponse
+  | GetEscrowBalancesResponse[]
+  | SingleReleaseEscrow
+  | MultiReleaseEscrow
+  | GetEscrowsFromIndexerResponse
+  | GetEscrowsFromIndexerResponse[]
+  | Record<string, unknown>
+  | null;
 }
 
 export function ResponseDisplay({ response }: ResponseDisplayProps) {

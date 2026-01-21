@@ -22,6 +22,7 @@ export function useInitializeEscrow({
   onSuccess,
 }: { onSuccess?: () => void } = {}) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [response, setResponse] = React.useState<InitializeMultiReleaseEscrowResponse | null>(null);
 
   const { getMultiReleaseFormSchema } = useInitializeEscrowSchema();
   const formSchema = getMultiReleaseFormSchema();
@@ -170,16 +171,17 @@ export function useInitializeEscrow({
        * @param type - The type of the escrow
        * @param address - The address of the escrow
        */
-      const response: InitializeMultiReleaseEscrowResponse =
+      const responseData: InitializeMultiReleaseEscrowResponse =
         (await deployEscrow.mutateAsync({
           payload: finalPayload,
           type: "multi-release",
           address: walletAddress || "",
         })) as InitializeMultiReleaseEscrowResponse;
 
+      setResponse(responseData);
       toast.success("Escrow initialized successfully");
 
-      setSelectedEscrow({ ...finalPayload, contractId: response.contractId });
+      setSelectedEscrow({ ...finalPayload, contractId: responseData.contractId });
 
       onSuccess?.();
 
@@ -187,6 +189,7 @@ export function useInitializeEscrow({
       setActiveTab("escrow");
       setActiveEscrowTab("fund-escrow");
     } catch (error) {
+      setResponse(null);
       toast.error(handleError(error as ErrorResponse).message);
     } finally {
       setIsSubmitting(false);
@@ -203,5 +206,6 @@ export function useInitializeEscrow({
     handleSubmit,
     handleAddMilestone,
     handleRemoveMilestone,
+    response,
   };
 }

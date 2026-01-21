@@ -26,6 +26,7 @@ export function useFundEscrow({ onSuccess }: { onSuccess?: () => void } = {}) {
   });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [response, setResponse] = React.useState<Record<string, unknown> | null>(null);
 
   const handleSubmit = form.handleSubmit(async (payload) => {
     try {
@@ -53,11 +54,13 @@ export function useFundEscrow({ onSuccess }: { onSuccess?: () => void } = {}) {
        * @param type - The type of the escrow
        * @param address - The address of the escrow
        */
-      await fundEscrow.mutateAsync({
+      const responseData = await fundEscrow.mutateAsync({
         payload: finalPayload,
         type: selectedEscrow?.type || "multi-release",
         address: walletAddress || "",
       });
+
+      setResponse(responseData as Record<string, unknown>);
 
       updateEscrow({
         ...selectedEscrow,
@@ -67,9 +70,8 @@ export function useFundEscrow({ onSuccess }: { onSuccess?: () => void } = {}) {
       toast.success("Escrow funded successfully");
 
       onSuccess?.();
-
-      // do something with the response ...
     } catch (error) {
+      setResponse(null);
       toast.error(handleError(error as ErrorResponse).message);
     } finally {
       setIsSubmitting(false);
@@ -77,5 +79,5 @@ export function useFundEscrow({ onSuccess }: { onSuccess?: () => void } = {}) {
     }
   });
 
-  return { form, handleSubmit, isSubmitting };
+  return { form, handleSubmit, isSubmitting, response };
 }

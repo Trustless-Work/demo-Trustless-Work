@@ -33,6 +33,7 @@ export function useChangeMilestoneStatus({
   });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [response, setResponse] = React.useState<Record<string, unknown> | null>(null);
 
   const handleSubmit = form.handleSubmit(async (payload) => {
     try {
@@ -59,12 +60,13 @@ export function useChangeMilestoneStatus({
        * @param type - The type of the escrow
        * @param address - The address of the escrow
        */
-      await changeMilestoneStatus.mutateAsync({
+      const responseData = await changeMilestoneStatus.mutateAsync({
         payload: finalPayload,
         type: selectedEscrow?.type || "multi-release",
         address: walletAddress || "",
       });
 
+      setResponse(responseData as Record<string, unknown>);
       toast.success("Milestone status updated successfully");
 
       onSuccess?.();
@@ -83,6 +85,7 @@ export function useChangeMilestoneStatus({
         }),
       });
     } catch (error) {
+      setResponse(null);
       toast.error(handleError(error as ErrorResponse).message);
     } finally {
       setIsSubmitting(false);
@@ -90,5 +93,5 @@ export function useChangeMilestoneStatus({
     }
   });
 
-  return { form, handleSubmit, isSubmitting };
+  return { form, handleSubmit, isSubmitting, response };
 }

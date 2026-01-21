@@ -13,6 +13,7 @@ import { useResolveDispute } from "./useResolveDispute";
 import { Loader2, Trash2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import Link from "next/link";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export const ResolveDisputeForm = () => {
   const {
@@ -29,11 +30,13 @@ export const ResolveDisputeForm = () => {
     distributedSum,
     isExactMatch,
     difference,
+    response,
   } = useResolveDispute();
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-6 w-full">
+    <>
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6 w-full">
         <Card className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 mb-4">
           <Link
             className="flex-1"
@@ -147,7 +150,10 @@ export const ResolveDisputeForm = () => {
             )}
           </Button>
         </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+
+      <ResponseDisplay response={response} />
+    </>
   );
 };

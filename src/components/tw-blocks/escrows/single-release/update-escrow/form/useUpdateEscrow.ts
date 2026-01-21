@@ -24,6 +24,7 @@ export function useUpdateEscrow({
   onSuccess,
 }: { onSuccess?: () => void } = {}) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [response, setResponse] = React.useState<UpdateSingleReleaseEscrowResponse | null>(null);
 
   const { getSingleReleaseFormSchema } = useUpdateEscrowSchema();
   const formSchema = getSingleReleaseFormSchema();
@@ -197,11 +198,13 @@ export function useUpdateEscrow({
        * @param type - The type of the escrow
        * @param address - The address of the escrow
        */
-      (await updateEscrow.mutateAsync({
+      const responseData = (await updateEscrow.mutateAsync({
         payload: finalPayload,
         type: "single-release",
         address: walletAddress || "",
       })) as UpdateSingleReleaseEscrowResponse;
+
+      setResponse(responseData);
 
       if (!selectedEscrow) return;
 
@@ -218,6 +221,7 @@ export function useUpdateEscrow({
       toast.success("Escrow updated successfully");
       onSuccess?.();
     } catch (error) {
+      setResponse(null);
       toast.error(handleError(error as ErrorResponse).message);
     } finally {
       setIsSubmitting(false);
@@ -236,5 +240,6 @@ export function useUpdateEscrow({
     handlePlatformFeeChange,
     isEscrowLocked,
     initialMilestonesCount: initialMilestonesCountRef.current,
+    response,
   };
 }

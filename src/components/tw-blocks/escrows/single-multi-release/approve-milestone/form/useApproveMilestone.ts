@@ -31,6 +31,7 @@ export function useApproveMilestone({
   });
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [response, setResponse] = React.useState<Record<string, unknown> | null>(null);
 
   const handleSubmit = form.handleSubmit(async (payload) => {
     try {
@@ -42,12 +43,13 @@ export function useApproveMilestone({
         approver: walletAddress || "",
       };
 
-      await approveMilestone.mutateAsync({
+      const responseData = await approveMilestone.mutateAsync({
         payload: finalPayload,
         type: selectedEscrow?.type || "multi-release",
         address: walletAddress || "",
       });
 
+      setResponse(responseData as Record<string, unknown>);
       toast.success("Milestone approved flag updated successfully");
 
       onSuccess?.();
@@ -72,6 +74,7 @@ export function useApproveMilestone({
         }),
       });
     } catch (error) {
+      setResponse(null);
       toast.error(handleError(error as ErrorResponse).message);
     } finally {
       setIsSubmitting(false);
@@ -79,5 +82,5 @@ export function useApproveMilestone({
     }
   });
 
-  return { form, handleSubmit, isSubmitting };
+  return { form, handleSubmit, isSubmitting, response };
 }

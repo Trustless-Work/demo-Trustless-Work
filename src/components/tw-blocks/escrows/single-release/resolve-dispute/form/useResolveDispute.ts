@@ -33,6 +33,7 @@ export function useResolveDispute({ onSuccess }: { onSuccess?: () => void } = {}
   const distributions = form.watch("distributions") as DistributionInput[];
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [response, setResponse] = React.useState<Record<string, unknown> | null>(null);
 
   const allowedAmount = React.useMemo(() => {
     return Number(selectedEscrow?.amount || 0);
@@ -114,12 +115,13 @@ export function useResolveDispute({ onSuccess }: { onSuccess?: () => void } = {}
         })) as [{ address: string; amount: number }],
       };
 
-      await resolveDispute.mutateAsync({
+      const responseData = await resolveDispute.mutateAsync({
         payload: finalPayload,
         type: "single-release",
         address: walletAddress || "",
       });
 
+      setResponse(responseData as Record<string, unknown>);
       toast.success("Dispute resolved successfully");
 
       onSuccess?.();
@@ -139,6 +141,7 @@ export function useResolveDispute({ onSuccess }: { onSuccess?: () => void } = {}
         balance: (selectedEscrow?.balance || 0) - sumDistributed || 0,
       });
     } catch (error) {
+      setResponse(null);
       toast.error(handleError(error as ErrorResponse).message);
     } finally {
       setIsSubmitting(false);
@@ -160,5 +163,6 @@ export function useResolveDispute({ onSuccess }: { onSuccess?: () => void } = {}
     distributedSum,
     isExactMatch,
     difference,
+    response,
   };
 }

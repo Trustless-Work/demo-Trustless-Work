@@ -22,6 +22,7 @@ import { useUpdateEscrow } from "./useUpdateEscrow";
 import { Trash2, DollarSign, Percent, Loader2, Lock } from "lucide-react";
 import Link from "next/link";
 import { trustlineOptions } from "@/components/tw-blocks/wallet-kit/trustlines";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export const UpdateEscrowForm = () => {
   const {
@@ -36,11 +37,13 @@ export const UpdateEscrowForm = () => {
     handlePlatformFeeChange,
     isEscrowLocked,
     initialMilestonesCount,
+    response,
   } = useUpdateEscrow();
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
+    <>
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
         <Card className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4">
           <Link
             className="flex-1"
@@ -445,7 +448,10 @@ export const UpdateEscrowForm = () => {
             )}
           </Button>
         </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+
+      <ResponseDisplay response={response} />
+    </>
   );
 };

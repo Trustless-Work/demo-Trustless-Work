@@ -38,15 +38,16 @@ export const EscrowCreatedSection = () => {
     return isNaN(total) ? "0" : String(total);
   };
 
-  const totalMilestones = selectedEscrow?.milestones.length || 0;
+  const totalMilestones = selectedEscrow?.milestones?.length || 0;
   const completedMilestones =
     activeEscrowType === "multi-release"
-      ? (selectedEscrow?.milestones as MultiReleaseMilestone[]).filter((m) => {
-          const multiMilestone = m as MultiReleaseMilestone;
-          return (
-            multiMilestone.flags?.released || multiMilestone.flags?.resolved
-          );
-        }).length || 0
+      ? (selectedEscrow?.milestones as MultiReleaseMilestone[] | undefined)
+          ?.filter((m) => {
+            const multiMilestone = m as MultiReleaseMilestone;
+            return (
+              multiMilestone.flags?.released || multiMilestone.flags?.resolved
+            );
+          }).length || 0
       : 0;
   const progressPercentage =
     totalMilestones > 0 ? (completedMilestones / totalMilestones) * 100 : 0;

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useChangeMilestoneStatus } from "./useChangeMilestoneStatus";
 import { Loader2 } from "lucide-react";
 import { useEscrowContext } from "@/components/tw-blocks/providers/EscrowProvider";
+import { ResponseDisplay } from "@/components/utils/response-display";
 import {
   Select,
   SelectContent,
@@ -24,12 +25,13 @@ import { Card } from "@/components/ui/card";
 import Link from "next/link";
 
 export const ChangeMilestoneStatusForm = () => {
-  const { form, handleSubmit, isSubmitting } = useChangeMilestoneStatus();
+  const { form, handleSubmit, isSubmitting, response } = useChangeMilestoneStatus();
   const { selectedEscrow } = useEscrowContext();
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-6 w-full">
+    <>
+      <Form {...form}>
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-6 w-full">
         <Card className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4">
           <Link
             className="flex-1"
@@ -126,7 +128,10 @@ export const ChangeMilestoneStatusForm = () => {
             )}
           </Button>
         </div>
-      </form>
-    </Form>
+        </form>
+      </Form>
+
+      <ResponseDisplay response={response} />
+    </>
   );
 };

@@ -22,6 +22,7 @@ import { useInitializeEscrow } from "./useInitializeEscrow";
 import { Trash2, DollarSign, Percent, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { trustlineOptions } from "@/components/tw-blocks/wallet-kit/trustlines";
+import { ResponseDisplay } from "@/components/utils/response-display";
 
 export const InitializeEscrowForm = () => {
   const {
@@ -33,6 +34,7 @@ export const InitializeEscrowForm = () => {
     handleAddMilestone,
     handleRemoveMilestone,
     fillTemplateForm,
+    response,
   } = useInitializeEscrow();
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -487,6 +489,8 @@ export const InitializeEscrowForm = () => {
           </div>
         </form>
       </Form>
+
+      <ResponseDisplay response={response} />
     </div>
   );
 };
